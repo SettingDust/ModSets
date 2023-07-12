@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${author}"
+  ],
+  "contact": {
+    "homepage": "${source}",
+    "sources": "${source}",
+    "issues": "${source}/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/${id}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "${group}.ModSetsModMenu"
+      }
+    ]
+  },
+  "languageAdapters": {
+    "modsets": "${group}.PreloadAdapter"
+  },
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": ">=${minecraft_version}",
+    "fabric-language-kotlin": ">=${fabric_language_kotlin_version}"
+  },
+  "recommends": {
+    "modmenu": ">=${mod_menu_version}"
+  }
+}
