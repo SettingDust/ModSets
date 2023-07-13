@@ -3,8 +3,6 @@ package settingdust.modsets;
 import net.fabricmc.loader.api.metadata.ModOrigin;
 import net.fabricmc.loader.impl.ModContainerImpl;
 import net.fabricmc.loader.impl.discovery.ClasspathModCandidateFinder;
-import settingdust.modsets.ConfigKt;
-import settingdust.modsets.ModSets;
 
 import java.util.List;
 
