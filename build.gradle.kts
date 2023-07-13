@@ -22,9 +22,10 @@ val archives_name: String by project
 project.version = "$mod_version+${libs.versions.minecraft.get()}"
 project.group = maven_group
 
-val finalJar = tasks.registering(Jar::class) {
-    from(project(":fabric").task("remapJar"))
-    from(project(":quilt").task("remapJar"))
+val finalJar by tasks.registering(Jar::class) {
+    dependsOn(":fabric:remapJar")
+    from(zipTree(project(":fabric").tasks.getByName("remapJar").outputs.files.first()))
+//    from(project(":quilt").tasks.getByName("remapJar"))
 
     archiveBaseName = archives_name
     archiveVersion = "${project.version}"

@@ -1,4 +1,4 @@
-package settingdust.modsets
+package settingdust.modsets.fabric
 
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.LanguageAdapter
@@ -11,6 +11,10 @@ import net.fabricmc.loader.impl.metadata.DependencyOverrides
 import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
+import settingdust.modsets.FilteredDirectoryModCandidateFinder
+import settingdust.modsets.ModContainerModCandidateFinder
+import settingdust.modsets.ModSets
+import settingdust.modsets.config
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries

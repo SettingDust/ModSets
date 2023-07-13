@@ -1,4 +1,4 @@
-package settingdust.modsets
+package settingdust.modsets.fabric
 
 import net.fabricmc.loader.api.LanguageAdapter
 import net.fabricmc.loader.api.ModContainer

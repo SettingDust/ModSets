@@ -19,7 +19,7 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "${group}.Entrypoint"
+        "value": "${group}.fabric.Entrypoint"
       }
     ],
     "modmenu": [
