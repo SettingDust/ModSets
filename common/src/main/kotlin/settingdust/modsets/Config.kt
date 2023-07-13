@@ -1,15 +1,18 @@
 package settingdust.modsets
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigRenderOptions
+import dev.isxander.yacl.api.ConfigCategory
 import dev.isxander.yacl.api.YetAnotherConfigLib
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.hocon.Hocon
-import kotlinx.serialization.hocon.decodeFromConfig
-import kotlinx.serialization.hocon.encodeToConfig
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import settingdust.kinecraft.serialization.ComponentSerializer
+import settingdust.kinecraft.serialization.GsonElementSerializer
 import kotlin.io.path.*
 
 @Suppress("DEPRECATION")
@@ -21,7 +24,7 @@ val ModSets.rules: Rules
     get() = Rules
 
 @OptIn(ExperimentalSerializationApi::class)
-@Deprecated("Use ModSets.rules: instead", ReplaceWith("ModSets.rules"))
+@Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
 data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = FabricLoader.getInstance().configDir / "modsets"
 
@@ -32,12 +35,43 @@ data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
     private val rulesDir = configDir / "rules"
 
+    private val json = Json {
+        isLenient = true
+        serializersModule = SerializersModule {
+            contextual(ComponentSerializer)
+            contextual(GsonElementSerializer)
+        }
+    }
+
     private val config: YetAnotherConfigLib
         get() {
             load()
-            val builder = YetAnotherConfigLib.createBuilder()
-                .title(Component.translatable("modsets.name"))
-
+            val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
+            if (this@Rules.isNotEmpty()) {
+                builder.run {
+                    categories(
+                        this@Rules.map { (_, ruleSet) ->
+                            ConfigCategory.createBuilder().run {
+                                name(ruleSet.text)
+                                ruleSet.tooltip?.let { tooltip(it) }
+                                ruleSet.rules.forEach { rule ->
+                                    when (val controller = rule.controller) {
+                                        is OptionRule<*> -> option(controller.get(rule))
+                                        is GroupRule -> group(controller.get(rule))
+                                    }
+                                }
+                                build()
+                            }
+                        },
+                    )
+                    save(ModSets.config::save)
+                    build()
+                }
+            } else {
+                builder.category(
+                    ConfigCategory.createBuilder().name(Component.translatable("modsets.no_rules")).build(),
+                )
+            }
             return builder.save(ModSets.config::save).build()
         }
 
@@ -49,24 +83,20 @@ data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private fun load() {
         try {
             configDir.createDirectories()
-            (configDir / "modsets.json").createFile()
+            modSetsPath.createFile()
+            modSetsPath.writeText("{}")
         } catch (_: Exception) {
         }
 
         userModSets.clear()
-        userModSets.putAll(
-            ModSets.config.hocon.decodeFromConfig(
-                ConfigFactory.parseReader(modSetsPath.reader()),
-            ),
-        )
+        userModSets.putAll(json.decodeFromStream(modSetsPath.inputStream()))
 
+        clear()
         rulesDir.listDirectoryEntries("*.json").forEach {
             try {
-                clear()
-                this[it.nameWithoutExtension] = ModSets.config.hocon.decodeFromConfig(
-                    ConfigFactory.parseReader(it.reader()),
-                )
-            } catch (_: Exception) {
+                this[it.nameWithoutExtension] = json.decodeFromStream(it.inputStream())
+            } catch (e: Exception) {
+                throw RuntimeException("Failed to load rule ${it.name}", e)
             }
         }
     }
@@ -75,14 +105,16 @@ data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-@Deprecated("Use ModSets.config: instead", ReplaceWith("ModSets.config"))
+@Deprecated("Use ModSets.config instead", ReplaceWith("ModSets.config"))
 data object ModSetsConfig {
     val disabledMods = mutableSetOf<String>()
 
     private val configDir = FabricLoader.getInstance().configDir / "modsets"
     private val disabledModsPath = configDir / "disabled_mods.json"
 
-    internal val hocon = Hocon { }
+    private val json = Json {
+        isLenient = true
+    }
 
     init {
         load()
@@ -91,29 +123,24 @@ data object ModSetsConfig {
     private fun load() {
         try {
             configDir.createDirectories()
-            (configDir / "disabled_mods.json").createFile()
+            disabledModsPath.createFile()
             save()
         } catch (_: Exception) {
         }
 
         try {
             disabledMods.clear()
-            disabledMods.addAll(
-                hocon.decodeFromConfig(
-                    ConfigFactory.parseReader(disabledModsPath.reader()),
-                ),
-            )
+            disabledMods.addAll(json.decodeFromStream(disabledModsPath.inputStream()))
         } catch (_: Exception) {
         }
     }
 
     internal fun save() {
-        disabledModsPath.writeText(
-            hocon.encodeToConfig(disabledMods).root().render(
-                ConfigRenderOptions.defaults().apply {
-                    json = false
-                },
-            ),
-        )
+        disabledModsPath.outputStream().use {
+            json.encodeToStream(
+                disabledMods,
+                it,
+            )
+        }
     }
 }

@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.fabric.loom) apply false
 
     alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.minotaur)
 }
 
 val mod_version: String by project
@@ -27,4 +28,19 @@ val finalJar = tasks.registering(Jar::class) {
 
     archiveBaseName = archives_name
     archiveVersion = "${project.version}"
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN")) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
+    projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
+    syncBodyFrom.set(rootProject.file("README.md").readText())
+    versionType.set("release") // This is the default -- can also be `beta` or `alpha`
+    uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    gameVersions.addAll(
+        "1.19.2",
+    ) // Must be an array, even with only one version
+    loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+    dependencies {
+        required.version("Ha28R6CL", "1.10.0+kotlin.1.9.0")
+    }
 }

@@ -7,6 +7,7 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -30,6 +31,18 @@ base {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
     maven {
@@ -52,13 +65,14 @@ dependencies {
     )
 
     api(libs.kotlinx.serialization.core)
-    api(libs.kotlinx.serialization.hocon)
+    api(libs.kotlinx.serialization.json)
     api(libs.kotlin.reflect)
 
     modApi(libs.yacl)
     modApi(libs.modmenu)
 
     modApi(libs.fabric.loader)
+    modApi(libs.kinecraft.serialization)
 }
 
 tasks {
@@ -67,6 +81,12 @@ tasks {
         targetCompatibility = JavaVersion.VERSION_17
 
         withSourcesJar()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
 
     jar {

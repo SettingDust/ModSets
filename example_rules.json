@@ -1,0 +1,73 @@
+{
+  "text": {
+    "text": "My first rule set",
+    "bold": true,
+    "color": "green"
+  },
+  "tooltip": "Awwww",
+  "rules": [
+    {
+      "text": "The label",
+      "tooltip": "Text Text",
+      "controller": {
+        "type": "label"
+      }
+    },
+    {
+      "text": "The boolean",
+      "tooltip": "Text Text",
+      "controller": {
+        "type": "boolean",
+        "mod": "sodium"
+      }
+    },
+    {
+      "text": "The cycling",
+      "tooltip": "Text Text",
+      "controller": {
+        "type": "cycling",
+        "mods": [
+          "sodium",
+          "optifabric"
+        ]
+      }
+    },
+    {
+      "text": "The mods group",
+      "tooltip": "Text Text",
+      "controller": {
+        "type": "mods_group",
+        "collapsed": false,
+        "mods": [
+          "sodium",
+          "optifabric"
+        ]
+      }
+    },
+    {
+      "text": "The rules group",
+      "tooltip": "Text Text",
+      "controller": {
+        "type": "rules_group",
+        "collapsed": true,
+        "rules": [
+          {
+            "text": "text",
+            "tooltip": "tooltip",
+            "controller": {
+              "type": "label"
+            }
+          },
+          {
+            "text": "text",
+            "tooltip": "tooltip",
+            "controller": {
+              "type": "boolean",
+              "mod": "sodium"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

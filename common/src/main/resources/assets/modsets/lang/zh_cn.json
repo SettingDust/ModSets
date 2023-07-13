@@ -1,3 +1,6 @@
 {
-  "modsets.name": "模组集"
+  "modsets.name": "模组集",
+  "modsets.no_rules": "无规则",
+  "modmenu.nameTranslation.mod-sets": "模组集",
+  "modmenu.descriptionTranslation.mod-sets": "使用配置切换要加载的模组"
 }

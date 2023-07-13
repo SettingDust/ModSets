@@ -7,6 +7,7 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -37,7 +38,7 @@ loom {
                 libs.kotlin.stdlib.jdk8.get(),
                 libs.kotlin.reflect.get(),
                 libs.kotlinx.serialization.core.get(),
-                libs.kotlinx.serialization.hocon.get(),
+                libs.kotlinx.serialization.json.get(),
             )
         }
     }
@@ -73,7 +74,7 @@ dependencies {
 
     include(libs.kotlin.stdlib.jdk8)
     include(libs.kotlinx.serialization.core)
-    include(libs.kotlinx.serialization.hocon)
+    include(libs.kotlinx.serialization.json)
     include(libs.kotlin.reflect)
     include(libs.typesafe.config)
 
@@ -116,6 +117,12 @@ tasks {
         targetCompatibility = JavaVersion.VERSION_17
 
         withSourcesJar()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
 
     jar {

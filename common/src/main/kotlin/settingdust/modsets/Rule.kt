@@ -2,10 +2,12 @@ package settingdust.modsets
 
 import dev.isxander.yacl.api.Binding
 import dev.isxander.yacl.api.Option
+import dev.isxander.yacl.api.OptionFlag
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.LabelController
 import dev.isxander.yacl.gui.controllers.TickBoxController
 import dev.isxander.yacl.gui.controllers.cycling.CyclingListController
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
@@ -16,16 +18,24 @@ interface Described {
 }
 
 @Serializable
-data class ModSet(override val text: Component, override val tooltip: Component?, val mods: List<String>) :
+data class ModSet(
+    override val text: @Contextual Component,
+    override val tooltip: @Contextual Component?,
+    val mods: List<String>,
+) :
     Described
 
 @Serializable
-data class RuleSet(override val text: Component, override val tooltip: Component?, val rules: List<Rule>) : Described
+data class RuleSet(
+    override val text: @Contextual Component,
+    override val tooltip: @Contextual Component?,
+    val rules: List<Rule>,
+) : Described
 
 @Serializable
 data class Rule(
-    override val text: Component,
-    override val tooltip: Component?,
+    override val text: @Contextual Component,
+    override val tooltip: @Contextual Component?,
     val controller: RuleController,
 ) : Described
 
@@ -51,23 +61,27 @@ data object LabelRule : OptionRule<Component> {
         Option.createBuilder(Component::class.java)
             .name(rule.text)
             .apply { rule.tooltip?.let { tooltip(it) } }
+            .flag(OptionFlag.GAME_RESTART)
             .controller(::LabelController)
             .binding(Binding.immutable(rule.text))
             .build()!!
 }
 
 private val String.booleanBinding: Binding<Boolean>
-    get() = Binding.generic(
-        true,
-        { !ModSets.config.disabledMods.contains(this) },
-        {
-            if (it) {
-                ModSets.config.disabledMods.remove(this)
-            } else {
-                ModSets.config.disabledMods.add(this)
-            }
-        },
-    )
+    get() {
+        val mods = ModSets.rules.modSets[this]!!.mods.toSet()
+        return Binding.generic(
+            true,
+            { mods.any { it !in ModSets.config.disabledMods } },
+            {
+                if (it) {
+                    ModSets.config.disabledMods.removeAll(mods)
+                } else {
+                    ModSets.config.disabledMods.addAll(mods)
+                }
+            },
+        )
+    }
 
 @Serializable
 @SerialName("boolean")
@@ -77,6 +91,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
         Option.createBuilder(Boolean::class.java)
             .name(rule.text)
             .apply { rule.tooltip?.let { tooltip(it) } }
+            .flag(OptionFlag.GAME_RESTART)
             .controller(::TickBoxController)
             .binding(mod.booleanBinding)
             .build()!!
@@ -91,23 +106,24 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
         val option = Option.createBuilder(String::class.java).name(rule.text)
         return option.controller { CyclingListController(it, mods) }
             .apply { rule.tooltip?.let { tooltip(it) } }
+            .flag(OptionFlag.GAME_RESTART)
             .binding(
                 Binding.generic(
                     firstMod,
                     {
-                        val enabled = mods.asSequence().filter { !ModSets.config.disabledMods.contains(it) }.toList()
-                        if (enabled.size > 1) {
-                            ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabled.joinToString() + ". Will take the first and disable the others")
-                            for (i in 1..<enabled.size) ModSets.config.disabledMods.add(enabled[i])
-                            return@generic enabled.first()
+                        val enabledModSet = mods.asSequence().filter { modSet -> ModSets.rules.modSets[modSet]!!.mods.all { it !in ModSets.config.disabledMods } }.toList()
+                        if (enabledModSet.size > 1) {
+                            ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
+                            for (i in 1..<enabledModSet.size) ModSets.config.disabledMods.add(enabledModSet[i])
+                            return@generic enabledModSet.first()
                         }
-                        val currentSelected = enabled.singleOrNull() ?: firstMod
+                        val currentSelected = enabledModSet.singleOrNull() ?: firstMod
                         ModSets.config.disabledMods.remove(currentSelected)
                         return@generic currentSelected
                     },
                 ) { value: String ->
-                    ModSets.config.disabledMods.addAll(mods)
-                    ModSets.config.disabledMods.remove(value)
+                    ModSets.config.disabledMods.addAll(mods.flatMap { ModSets.rules.modSets[it]!!.mods })
+                    ModSets.config.disabledMods.removeAll(ModSets.rules.modSets[value]!!.mods.toSet())
                 },
             ).build()
     }
@@ -123,7 +139,7 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             val modSet = ModSets.rules.modSets[mod]!!
             val option = Option.createBuilder(Boolean::class.java).name(modSet.text)
             modSet.tooltip?.let { option.tooltip(it) }
-            group.option(option.controller(::TickBoxController).binding(mod.booleanBinding).build())
+            group.option(option.controller(::TickBoxController).binding(mod.booleanBinding).flag(OptionFlag.GAME_RESTART).build())
         }
         return group.collapsed(collapsed).build()
     }

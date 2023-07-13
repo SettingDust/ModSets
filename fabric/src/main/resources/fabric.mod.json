@@ -16,6 +16,12 @@
   "icon": "assets/${id}/icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "${group}.Entrypoint"
+      }
+    ],
     "modmenu": [
       {
         "adapter": "kotlin",
