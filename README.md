@@ -36,7 +36,7 @@ Example:
 ```
 
 ## Rule
-![img.png](img.png)
+![img.png](https://github.com/SettingDust/ModSets/raw/main/img.png)
 Every rule hold a text and tooltip for displaying the info you want.  
 And a controller for YACL user interface
 Example:
@@ -163,3 +163,4 @@ Example:
 ```
   
 Notice: Every text and tooltip is text raw json.
+Using https://www.minecraftjson.com/ for generating text.
