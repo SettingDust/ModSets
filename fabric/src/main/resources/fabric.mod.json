@@ -35,7 +35,9 @@
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": ">=${minecraft_version}",
-    "fabric-language-kotlin": ">=${fabric_language_kotlin_version}"
+    "fabric-language-kotlin": ">=${fabric_language_kotlin_version}",
+    "yacl": "${yacl_version}",
+    "kinecraft-serialization": "${kinecraft_serialization_version}"
   },
   "recommends": {
     "modmenu": ">=${mod_menu_version}"

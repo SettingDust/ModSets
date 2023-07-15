@@ -42,6 +42,10 @@ modrinth {
     ) // Must be an array, even with only one version
     loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
     dependencies {
-        required.version("Ha28R6CL", "1.10.0+kotlin.1.9.0")
+        required.version("Ha28R6CL", libs.versions.fabric.language.kotlin.get())
+        // https://modrinth.com/mod/yacl
+        required.version("yacl", libs.versions.yacl.get())
+        // https://modrinth.com/mod/kinecraft-serialization
+        embedded.version("epmEbmF0", libs.versions.kinecraft.serialization.get())
     }
 }

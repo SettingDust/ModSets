@@ -45,6 +45,18 @@ loom {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
     maven {
@@ -76,7 +88,7 @@ dependencies {
     include(libs.kotlinx.serialization.core)
     include(libs.kotlinx.serialization.json)
     include(libs.kotlin.reflect)
-    include(libs.typesafe.config)
+    include(libs.kinecraft.serialization)
 
     implementation(libs.kotlin.reflect)
 }
@@ -93,6 +105,8 @@ tasks {
         inputs.property("minecraft_version", libs.versions.minecraft.get())
         inputs.property("fabric_loader_version", libs.versions.fabric.loader.get())
         inputs.property("fabric_language_kotlin_version", libs.versions.fabric.language.kotlin.get())
+        inputs.property("yacl_version", libs.versions.yacl.get())
+        inputs.property("kinecraft_serialization_version", libs.versions.kinecraft.serialization.get())
         inputs.property("mod_menu_version", libs.versions.modmenu.get())
 
         filesMatching("fabric.mod.json") {
@@ -107,6 +121,8 @@ tasks {
                 "minecraft_version" to libs.versions.minecraft.get(),
                 "fabric_loader_version" to libs.versions.fabric.loader.get(),
                 "fabric_language_kotlin_version" to libs.versions.fabric.language.kotlin.get(),
+                "yacl_version" to libs.versions.yacl.get(),
+                "kinecraft_serialization_version" to libs.versions.kinecraft.serialization.get(),
                 "mod_menu_version" to libs.versions.modmenu.get(),
             )
         }
