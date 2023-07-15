@@ -11,6 +11,8 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
 
 interface Described {
     val text: Component
@@ -90,7 +92,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
     override fun get(rule: Described) =
         Option.createBuilder(Boolean::class.java)
             .name(rule.text)
-            .apply { rule.tooltip?.let { tooltip(it) } }
+            .apply { (rule.tooltip ?: ModSets.rules.modSets[mod]?.tooltip)?.let { tooltip(it) } }
             .flag(OptionFlag.GAME_RESTART)
             .controller(::TickBoxController)
             .binding(mod.booleanBinding)
@@ -104,14 +106,31 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
 
     override fun get(rule: Described): Option<String> {
         val option = Option.createBuilder(String::class.java).name(rule.text)
-        return option.controller { CyclingListController(it, mods) }
+        return option.controller {
+            CyclingListController(it, mods) { mod ->
+                val modSet = ModSets.rules.modSets[mod]!!
+                modSet.text.copy()
+                    .withStyle(
+                        Style.EMPTY.withHoverEvent(
+                            modSet.tooltip?.let { tooltip ->
+                                HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    tooltip,
+                                )
+                            },
+                        ),
+                    )
+            }
+        }
             .apply { rule.tooltip?.let { tooltip(it) } }
             .flag(OptionFlag.GAME_RESTART)
             .binding(
                 Binding.generic(
                     firstMod,
                     {
-                        val enabledModSet = mods.asSequence().filter { modSet -> ModSets.rules.modSets[modSet]!!.mods.all { it !in ModSets.config.disabledMods } }.toList()
+                        val enabledModSet = mods.asSequence()
+                            .filter { modSet -> ModSets.rules.modSets[modSet]!!.mods.all { it !in ModSets.config.disabledMods } }
+                            .toList()
                         if (enabledModSet.size > 1) {
                             ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
                             for (i in 1..<enabledModSet.size) ModSets.config.disabledMods.add(enabledModSet[i])
@@ -139,7 +158,10 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             val modSet = ModSets.rules.modSets[mod]!!
             val option = Option.createBuilder(Boolean::class.java).name(modSet.text)
             modSet.tooltip?.let { option.tooltip(it) }
-            group.option(option.controller(::TickBoxController).binding(mod.booleanBinding).flag(OptionFlag.GAME_RESTART).build())
+            group.option(
+                option.controller(::TickBoxController).binding(mod.booleanBinding).flag(OptionFlag.GAME_RESTART)
+                    .build(),
+            )
         }
         return group.collapsed(collapsed).build()
     }
