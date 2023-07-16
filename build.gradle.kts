@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization) apply false
 
 //    alias(libs.plugins.quilt.loom) apply false
-    alias(libs.plugins.fabric.loom) apply false
+//    alias(libs.plugins.fabric.loom) apply false
 
     alias(libs.plugins.shadow) apply false
     alias(libs.plugins.minotaur)

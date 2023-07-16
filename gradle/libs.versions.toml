@@ -3,22 +3,24 @@
 minecraft = "1.19.2"
 parchmentmc = "2022.11.27"
 
-kotlin = "1.9.0"
+kotlin = "1.8.22"
 kotlinx_serialization = "1.5.1"
 
 #fabric
 fabric_loader = "0.14.21"
-fabric_language_kotlin = "1.10.0+kotlin.1.9.0"
+fabric_language_kotlin = "1.9.6+kotlin.1.8.22"
 # quilt
 quilt_loader = "0.20.0-beta.2"
+quilted_fabric_api = "4.0.0-beta.26+0.72.0-1.19.2"
+qsl_version = "3.0.0-beta.29+1.19.2"
 
 yacl = "1.7.1"
 modmenu = "4.0.6"
 
 typesafe_config = "1.4.1"
 
-kinecraft_serialization = "1.0.1"
-minotaur="2.+"
+kinecraft_serialization = "1.0.2"
+minotaur = "2.+"
 
 [libraries]
 # common
@@ -30,6 +32,8 @@ fabric_languageKotlin = { module = "net.fabricmc:fabric-language-kotlin", versio
 
 # quilt
 quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
+quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", version.ref = "quilted_fabric_api" }
+quilt_standard_libraries_core = { module = "org.quiltmc.qsl:core", version.ref = "qsl_version" }
 
 yacl = { module = "dev.isxander:yet-another-config-lib", version.ref = "yacl" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }

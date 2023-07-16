@@ -25,7 +25,7 @@ val ModSets.rules: Rules
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
-data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
+object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = FabricLoader.getInstance().configDir / "modsets"
 
     val modSets = mutableMapOf<String, ModSet>()
@@ -48,25 +48,21 @@ data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
             load()
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
             if (this@Rules.isNotEmpty()) {
-                builder.run {
-                    categories(
-                        this@Rules.map { (_, ruleSet) ->
-                            ConfigCategory.createBuilder().run {
-                                name(ruleSet.text)
-                                ruleSet.tooltip?.let { tooltip(it) }
-                                ruleSet.rules.forEach { rule ->
-                                    when (val controller = rule.controller) {
-                                        is OptionRule<*> -> option(controller.get(rule))
-                                        is GroupRule -> group(controller.get(rule))
-                                    }
+                builder.categories(
+                    this@Rules.map { (_, ruleSet) ->
+                        ConfigCategory.createBuilder().run {
+                            name(ruleSet.text)
+                            ruleSet.tooltip?.let { tooltip(it) }
+                            ruleSet.rules.forEach { rule ->
+                                when (val controller = rule.controller) {
+                                    is OptionRule<*> -> option(controller.get(rule))
+                                    is GroupRule -> group(controller.get(rule))
                                 }
-                                build()
                             }
-                        },
-                    )
-                    save(ModSets.config::save)
-                    build()
-                }
+                            build()
+                        }
+                    },
+                )
             } else {
                 builder.category(
                     ConfigCategory.createBuilder().name(Component.translatable("modsets.no_rules")).build(),
@@ -106,7 +102,7 @@ data object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.config instead", ReplaceWith("ModSets.config"))
-data object ModSetsConfig {
+object ModSetsConfig {
     val disabledMods = mutableSetOf<String>()
 
     private val configDir = FabricLoader.getInstance().configDir / "modsets"

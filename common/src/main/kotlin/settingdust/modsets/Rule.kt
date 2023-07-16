@@ -58,7 +58,7 @@ sealed interface GroupRule : RuleController {
 
 @Serializable
 @SerialName("label")
-data object LabelRule : OptionRule<Component> {
+object LabelRule : OptionRule<Component> {
     override fun get(rule: Described) =
         Option.createBuilder(Component::class.java)
             .name(rule.text)
@@ -104,6 +104,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
 data class CyclingRule(val mods: List<String>) : OptionRule<String> {
     private val firstMod = mods.first()
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun get(rule: Described): Option<String> {
         val option = Option.createBuilder(String::class.java).name(rule.text)
         return option.controller {
