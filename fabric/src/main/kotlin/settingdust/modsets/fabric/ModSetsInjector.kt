@@ -11,6 +11,7 @@ import net.fabricmc.loader.impl.metadata.DependencyOverrides
 import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
+import net.fabricmc.loader.impl.util.log.LogCategory
 import settingdust.modsets.FilteredDirectoryModCandidateFinder
 import settingdust.modsets.ModContainerModCandidateFinder
 import settingdust.modsets.ModSets
@@ -25,14 +26,16 @@ import kotlin.reflect.full.functions
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
+private val logCategory = LogCategory.create("ModSets")
+
 object ModSetsInjector {
     private val loader = FabricLoader.getInstance() as FabricLoaderImpl
-    private val mods = loader.modsInternal
+    private val mods: MutableList<ModContainerImpl>
     private var envDisabledMods = mutableMapOf<String, Set<ModCandidate>>()
 
     @Suppress("UNCHECKED_CAST")
     private val modsProperty =
-        FabricLoaderImpl::class.memberProperties.single { it.name == "mods" } as KMutableProperty<List<ModContainerImpl>>
+        FabricLoaderImpl::class.memberProperties.single { it.name == "mods" } as KMutableProperty<MutableList<ModContainerImpl>>
 
     @Suppress("UNCHECKED_CAST")
     private val adapterMapProperty =
@@ -50,15 +53,16 @@ object ModSetsInjector {
         try {
             requireNotNull(ModSets.config)
         } catch (e: Exception) {
-            Log.error(ModSets.logCategory, "ModSets config loading failed", e)
+            Log.error(logCategory, "ModSets config loading failed", e)
         }
         modsProperty.isAccessible = true
         adapterMapProperty.isAccessible = true
         addModFunction.isAccessible = true
+        mods = loader.modsInternal
         hookSetupMods()
     }
 
-    private data object DummyList : MutableList<ModContainerImpl> by mods {
+    private object DummyList : MutableList<ModContainerImpl> by mods {
         override fun iterator(): MutableIterator<ModContainerImpl> {
             setupModsInvoked()
             return mods.iterator()
@@ -79,7 +83,7 @@ object ModSetsInjector {
             emptyList() // unreachable
         }
         Log.info(
-            ModSets.logCategory,
+            logCategory,
             "Loading %s additional mod%s%s",
             candidates.size,
             if (candidates.size > 1) "s" else "",
@@ -101,7 +105,7 @@ object ModSetsInjector {
             .listDirectoryEntries()
             .filter { it.isDirectory() }
             .forEach {
-                Log.debug(ModSets.logCategory, "Discovering mods from %s", it)
+                Log.debug(logCategory, "Discovering mods from %s", it)
                 addCandidateFinderFunction.call(
                     discoverer,
                     FilteredDirectoryModCandidateFinder(
@@ -138,7 +142,7 @@ object ModSetsInjector {
             val definitions = candidate.metadata.languageAdapterDefinitions
             if (definitions.isEmpty()) continue
 
-            Log.debug(ModSets.logCategory, "Setting up language adapter for %s", candidate.id)
+            Log.debug(logCategory, "Setting up language adapter for %s", candidate.id)
             definitions.forEach { (id, value) ->
                 if (id in adapterMap) throw IllegalArgumentException("Duplicate language adapter ID: $id")
                 val adapter = Class.forName(value, true, FabricLauncherBase.getLauncher().targetClassLoader)

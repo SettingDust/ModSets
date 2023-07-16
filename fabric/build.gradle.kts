@@ -81,16 +81,24 @@ dependencies {
     include(project(path = ":common", configuration = "namedElements"))
     implementation(project(path = ":common", configuration = "namedElements"))
 
-    modRuntimeOnly(libs.fabric.loader)
-    modRuntimeOnly(libs.fabric.languageKotlin)
+    modImplementation(libs.fabric.loader)
+    modRuntimeOnly(libs.fabric.languageKotlin) {
+        exclude(module = "fabric-loader")
+    }
+
+    modRuntimeOnly(libs.yacl) {
+        exclude(module = "fabric-loader")
+    }
+    modRuntimeOnly(libs.modmenu) {
+        exclude(module = "fabric-loader")
+    }
+    modRuntimeOnly(libs.kinecraft.serialization)
 
     include(libs.kotlin.stdlib.jdk8)
     include(libs.kotlinx.serialization.core)
     include(libs.kotlinx.serialization.json)
     include(libs.kotlin.reflect)
     include(libs.kinecraft.serialization)
-
-    implementation(libs.kotlin.reflect)
 }
 
 tasks {
