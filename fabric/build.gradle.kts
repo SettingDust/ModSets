@@ -110,12 +110,12 @@ tasks {
         inputs.property("description", rootProject.property("mod_description").toString())
         inputs.property("author", rootProject.property("mod_author").toString())
         inputs.property("source", rootProject.property("mod_source").toString())
-        inputs.property("minecraft_version", libs.versions.minecraft.get())
+        inputs.property("minecraft_version", libs.versions.min.minecraft.get())
         inputs.property("fabric_loader_version", libs.versions.fabric.loader.get())
         inputs.property("fabric_language_kotlin_version", libs.versions.fabric.language.kotlin.get())
-        inputs.property("yacl_version", libs.versions.yacl.get())
+        inputs.property("yacl_version", libs.versions.min.yacl.get())
         inputs.property("kinecraft_serialization_version", libs.versions.kinecraft.serialization.get())
-        inputs.property("mod_menu_version", libs.versions.modmenu.get())
+        inputs.property("mod_menu_version", libs.versions.min.modmenu.get())
 
         filesMatching("fabric.mod.json") {
             expand(
@@ -126,12 +126,12 @@ tasks {
                 "description" to rootProject.property("mod_description").toString(),
                 "author" to rootProject.property("mod_author").toString(),
                 "source" to rootProject.property("mod_source").toString(),
-                "minecraft_version" to libs.versions.minecraft.get(),
+                "minecraft_version" to libs.versions.min.minecraft.get(),
                 "fabric_loader_version" to libs.versions.fabric.loader.get(),
                 "fabric_language_kotlin_version" to libs.versions.fabric.language.kotlin.get(),
-                "yacl_version" to libs.versions.yacl.get(),
+                "yacl_version" to libs.versions.min.yacl.get(),
                 "kinecraft_serialization_version" to libs.versions.kinecraft.serialization.get(),
-                "mod_menu_version" to libs.versions.modmenu.get(),
+                "mod_menu_version" to libs.versions.min.modmenu.get(),
             )
         }
     }

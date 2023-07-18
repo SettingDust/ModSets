@@ -1,6 +1,7 @@
 [versions]
 # The latest Quilt versions are available at https://lambdaurora.dev/tools/import_quilt.html
 minecraft = "1.20.1"
+min_minecraft = "1.19.4"
 parchmentmc = "2023.07.16"
 
 kotlin = "1.8.22"
@@ -15,10 +16,14 @@ quilted_fabric_api = "7.0.6+0.85.0-1.20.1"
 qsl_version = "6.0.4+1.20.1"
 
 yacl = "3.0.3+1.20"
+min_yacl = "3.0.3"
 modmenu = "7.1.0"
+min_modmenu = "3.0.0"
 
 kinecraft_serialization = "1.0.2"
 minotaur = "2.+"
+
+curseforge_gradle = "1.1.15"
 
 [libraries]
 # common
@@ -55,3 +60,4 @@ shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+curseforge = { id = "net.darkhax.curseforgegradle", version.ref = "curseforge_gradle" }

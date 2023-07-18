@@ -1,5 +1,9 @@
 # Mod Sets
 
+[Modrinth](https://modrinth.com/mod/mod-sets)
+[CurseForge](https://www.curseforge.com/minecraft/mc-mods/mod-sets)
+[Github](https://github.com/SettingDust/ModSets)
+
 This project heavily inspired by [ThatOrThis](https://github.com/EZForever/ThatOrThis)  
 The mod is using for Minecraft Fabric/~~Quilt~~ for managing mod loading in game.   
 And useful for modpack developer
