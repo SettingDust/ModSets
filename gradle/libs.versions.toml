@@ -22,6 +22,8 @@ typesafe_config = "1.4.1"
 kinecraft_serialization = "1.0.2"
 minotaur = "2.+"
 
+curseforge_gradle = "1.1.15"
+
 [libraries]
 # common
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -43,7 +45,6 @@ kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlinx_serialization_core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx_serialization" }
 kotlinx_serialization_json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx_serialization" }
 kotlinx_serialization_hocon = { module = "org.jetbrains.kotlinx:kotlinx-serialization-hocon", version.ref = "kotlinx_serialization" }
-typesafe_config = { module = "com.typesafe:config", version.ref = "typesafe_config" }
 
 parchment = { module = "org.parchmentmc.data:parchment-1.19.2", version.ref = "parchmentmc" }
 
@@ -57,3 +58,4 @@ shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+curseforge = { id = "net.darkhax.curseforgegradle", version.ref = "curseforge_gradle" }
