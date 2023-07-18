@@ -68,11 +68,11 @@ dependencies {
     api(libs.kotlinx.serialization.json)
     api(libs.kotlin.reflect)
 
-    modImplementation(libs.yacl)
-    modImplementation(libs.modmenu)
+    modApi(libs.yacl)
+    modApi(libs.modmenu)
 
     modImplementation(libs.fabric.loader)
-    modImplementation(libs.kinecraft.serialization)
+    modApi(libs.kinecraft.serialization)
 }
 
 tasks {

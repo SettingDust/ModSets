@@ -71,8 +71,14 @@ dependencies {
         },
     )
 
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlin.reflect)
+
     include(project(path = ":common", configuration = "namedElements"))
-    implementation(project(path = ":common", configuration = "namedElements"))
+    implementation(project(path = ":common", configuration = "namedElements")) {
+        isTransitive = false
+    }
 
     modImplementation(libs.quilt.loader)
     modImplementation(libs.quilt.standard.libraries.core)

@@ -1,6 +1,5 @@
 package settingdust.modsets.quilt
 
-import org.quiltmc.loader.api.LanguageAdapter
 import org.quiltmc.loader.api.plugin.ModContainerExt
 import org.quiltmc.loader.impl.QuiltLoaderImpl
 import org.quiltmc.loader.impl.util.log.Log
@@ -8,7 +7,6 @@ import org.quiltmc.loader.impl.util.log.LogCategory
 import settingdust.modsets.ModSets
 import settingdust.modsets.config
 import kotlin.reflect.KMutableProperty
-import kotlin.reflect.KProperty
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
