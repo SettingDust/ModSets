@@ -17,8 +17,6 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization)
 
     alias(libs.plugins.fabric.loom)
-
-    alias(libs.plugins.shadow)
 }
 
 val archives_name: String by rootProject
@@ -68,7 +66,7 @@ dependencies {
     api(libs.kotlinx.serialization.json)
     api(libs.kotlin.reflect)
 
-    modApi(libs.yacl)
+    modApi(libs.yacl.fabric)
     modApi(libs.modmenu)
 
     modImplementation(libs.fabric.loader)

@@ -87,9 +87,7 @@ dependencies {
         exclude(module = "fabric-loader")
     }
 
-    modRuntimeOnly(libs.yacl) {
-        exclude(module = "fabric-loader")
-    }
+    modRuntimeOnly(libs.yacl.fabric)
     modRuntimeOnly(libs.modmenu) {
         exclude(module = "fabric-loader")
     }

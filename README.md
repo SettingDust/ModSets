@@ -36,7 +36,7 @@ Example:
 ```
 
 ## Rule
-![img.png](https://github.com/SettingDust/ModSets/raw/main/img.png)
+![img_1.png](https://github.com/SettingDust/ModSets/raw/main/img_1.png)
 Every rule hold a text and tooltip for displaying the info you want.  
 And a controller for YACL user interface
 Example:

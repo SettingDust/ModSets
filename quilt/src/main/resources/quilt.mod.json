@@ -39,7 +39,7 @@
         "versions": ">=${fabric_language_kotlin_version}"
       },
       {
-        "id": "yet-another-config-lib",
+        "id": "yet_another_config_lib_v3",
         "versions": "${yacl_version}"
       },
       {

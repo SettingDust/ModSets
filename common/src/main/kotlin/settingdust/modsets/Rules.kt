@@ -1,7 +1,7 @@
 package settingdust.modsets
 
-import dev.isxander.yacl.api.ConfigCategory
-import dev.isxander.yacl.api.YetAnotherConfigLib
+import dev.isxander.yacl3.api.ConfigCategory
+import dev.isxander.yacl3.api.YetAnotherConfigLib
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
