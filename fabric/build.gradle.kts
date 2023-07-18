@@ -79,7 +79,9 @@ dependencies {
     )
 
     include(project(path = ":common", configuration = "namedElements"))
-    implementation(project(path = ":common", configuration = "namedElements"))
+    implementation(project(path = ":common", configuration = "namedElements")) {
+        exclude(module = "fabric-loader")
+    }
 
     modImplementation(libs.fabric.loader)
     modRuntimeOnly(libs.fabric.languageKotlin) {
