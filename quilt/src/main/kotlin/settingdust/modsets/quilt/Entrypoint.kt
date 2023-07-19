@@ -14,11 +14,11 @@ class Entrypoint : ModInitializer {
     override fun onInitialize(container: ModContainer) {
         // TODO The directories can't treat as mod set for now
         val modSets = ModSets.rules.modSets
-        val entrypointKtClass = QuiltLoader::class.java.classLoader.loadClass("settingdust.modsets.quilt.EntrypointKt")
-        val modSetFunction = entrypointKtClass.getDeclaredMethod("ModSet", ModMetadata::class.java)
+//        val entrypointKtClass = QuiltLoader::class.java.classLoader.loadClass("settingdust.modsets.quilt.EntrypointKt")
+//        val modSetFunction = entrypointKtClass.getDeclaredMethod("ModSet", ModMetadata::class.java)
         for (mod in QuiltLoader.getAllMods().map { it.metadata() }) {
             if (mod.id() in modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${mod.id()}")
-            modSets.putIfAbsent(mod.id(), modSetFunction.invoke(null, mod) as ModSet)
+            modSets.putIfAbsent(mod.id(), ModSet(mod))
         }
     }
 }

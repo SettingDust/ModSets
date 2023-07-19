@@ -33,6 +33,13 @@ loom {
             vmArg("-Dloader.workaround.disable_strict_parsing=true")
         }
     }
+
+    mods {
+        register(archives_name) {
+            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
+            sourceSet(sourceSets.main.get())
+        }
+    }
 }
 
 repositories {

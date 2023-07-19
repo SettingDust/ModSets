@@ -22,8 +22,14 @@
       "modsets": "${group}.quilt.PreloadAdapter"
     },
     "entrypoints": {
-      "init": "${group}.quilt.Entrypoint",
-      "modmenu": "${group}.ModSetsModMenu"
+      "init": {
+        "adapter": "kotlin",
+        "value": "${group}.quilt.Entrypoint"
+      },
+      "modmenu": {
+        "adapter": "kotlin",
+        "value": "${group}.ModSetsModMenu"
+      }
     },
     "depends": [
       {
