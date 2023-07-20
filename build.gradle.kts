@@ -60,5 +60,6 @@ modrinth {
         required.version("yacl", "${libs.versions.yacl.get()}+1.19.2-fabric")
         // https://modrinth.com/mod/kinecraft-serialization
         embedded.version("kinecraft-serialization", libs.versions.kinecraft.serialization.get())
+        optional.project("modmenu")
     }
 }
