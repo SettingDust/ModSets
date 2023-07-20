@@ -94,10 +94,6 @@ dependencies {
     }
     modRuntimeOnly(libs.kinecraft.serialization)
 
-    include(libs.kotlin.stdlib.jdk8)
-    include(libs.kotlinx.serialization.core)
-    include(libs.kotlinx.serialization.json)
-    include(libs.kotlin.reflect)
     include(libs.kinecraft.serialization)
 }
 
