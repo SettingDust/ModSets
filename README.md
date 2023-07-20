@@ -32,7 +32,7 @@ Example:
   // If disable this mod set, the mod in list won't load if it is exist
   "sodium": {
     "text": "Sodium",
-    "tooltip": "Performance: +++++",
+    "description": "Performance: +++++",
     "mods": [
       "sodium",
       "indium"
@@ -43,7 +43,7 @@ Example:
 
 ## Rule
 ![img_1.png](https://github.com/SettingDust/ModSets/raw/main/img_1.png)
-Every rule hold a text and tooltip for displaying the info you want.  
+Every rule hold a text and description for displaying the info you want.  
 And a controller for YACL user interface
 Example:
 
@@ -54,11 +54,11 @@ Example:
     "bold": true,
     "color": "green"
   },
-  "tooltip": "Awwww",
+  "description": "Awwww",
   "rules": [
     {
       "text": "text",
-      "tooltip": "tooltip",
+      "description": "description",
       "controller": {
         "type": "type"
       }
@@ -77,7 +77,7 @@ Example:
 ```json
 {
   "text": "The label",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "label"
   }
@@ -90,7 +90,7 @@ Example:
 ```json
 {
   "text": "The boolean",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "boolean",
     "mod": "sodium"
@@ -105,7 +105,7 @@ Example:
 ```json
 {
   "text": "The cycling",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "cycling",
     "mods": [
@@ -123,7 +123,7 @@ Example:
 ```json
 {
   "text": "The mods group",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "mods_group",
     // Default is true
@@ -142,7 +142,7 @@ Example:
 ```json
 {
   "text": "The rules group",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "rules_group",
     // Default is true
@@ -150,14 +150,14 @@ Example:
     "rules": [
       {
         "text": "text",
-        "tooltip": "tooltip",
+        "description": "description",
         "controller": {
           "type": "label"
         }
       },
       {
         "text": "text",
-        "tooltip": "tooltip",
+        "description": "description",
         "controller": {
           "type": "boolean",
           "mod": "sodium"
@@ -168,5 +168,5 @@ Example:
 }
 ```
   
-Notice: Every text and tooltip is text raw json.
+Notice: Every text and description is text raw json.
 Using https://www.minecraftjson.com/ for generating text.

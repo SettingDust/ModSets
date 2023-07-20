@@ -43,7 +43,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                     this@Rules.map { (_, ruleSet) ->
                         ConfigCategory.createBuilder().run {
                             name(ruleSet.text)
-                            ruleSet.tooltip?.let { tooltip(it) }
+                            ruleSet.description?.let { tooltip(it) }
                             ruleSet.rules.forEach { rule ->
                                 when (val controller = rule.controller) {
                                     is OptionRule<*> -> option(controller.get(rule))

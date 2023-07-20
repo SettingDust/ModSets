@@ -13,13 +13,13 @@ import net.minecraft.network.chat.Style
 
 interface Described {
     val text: Component
-    val tooltip: Component?
+    val description: Component?
 }
 
 @Serializable
 data class ModSet(
     override val text: @Contextual Component,
-    override val tooltip: @Contextual Component?,
+    override val description: @Contextual Component?,
     val mods: List<String>,
 ) :
     Described
@@ -27,14 +27,14 @@ data class ModSet(
 @Serializable
 data class RuleSet(
     override val text: @Contextual Component,
-    override val tooltip: @Contextual Component?,
+    override val description: @Contextual Component?,
     val rules: List<Rule>,
 ) : Described
 
 @Serializable
 data class Rule(
     override val text: @Contextual Component,
-    override val tooltip: @Contextual Component?,
+    override val description: @Contextual Component?,
     val controller: RuleController,
 ) : Described
 
@@ -59,7 +59,7 @@ object LabelRule : OptionRule<Component> {
     override fun get(rule: Described) =
         Option.createBuilder<Component>()
             .name(rule.text)
-            .apply { rule.tooltip?.let { description(OptionDescription.of(it)) } }
+            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
             .flag(OptionFlag.GAME_RESTART)
             .customController(::LabelController)
             .binding(Binding.immutable(rule.text))
@@ -90,7 +90,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
         Option.createBuilder<Boolean>()
             .name(rule.text)
             .apply {
-                (rule.tooltip ?: ModSets.rules.modSets[mod]?.tooltip)?.let { description(OptionDescription.of(it)) }
+                (rule.description ?: ModSets.rules.modSets[mod]?.description)?.let { description(OptionDescription.of(it)) }
             }
             .flag(OptionFlag.GAME_RESTART)
             .controller(TickBoxControllerBuilder::create)
@@ -114,7 +114,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                     modSet.text.copy()
                         .withStyle(
                             Style.EMPTY.withHoverEvent(
-                                modSet.tooltip?.let { tooltip ->
+                                modSet.description?.let { tooltip ->
                                     HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
                                         tooltip,
@@ -124,7 +124,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                         )
                 }
         }
-            .apply { rule.tooltip?.let { description(OptionDescription.of(it)) } }
+            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
             .flag(OptionFlag.GAME_RESTART)
             .binding(
                 Binding.generic(
@@ -155,11 +155,11 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
 data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) : GroupRule {
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
-        rule.tooltip?.let { group.description(OptionDescription.of(it)) }
+        rule.description?.let { group.description(OptionDescription.of(it)) }
         for (mod in mods) {
             val modSet = ModSets.rules.modSets[mod]!!
             val option = Option.createBuilder<Boolean>().name(modSet.text)
-            modSet.tooltip?.let { option.description(OptionDescription.of(it)) }
+            modSet.description?.let { option.description(OptionDescription.of(it)) }
             group.option(
                 option.controller(TickBoxControllerBuilder::create).binding(mod.booleanBinding)
                     .flag(OptionFlag.GAME_RESTART)
@@ -175,7 +175,7 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
 data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) : GroupRule {
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
-        rule.tooltip?.let { group.description(OptionDescription.of(it)) }
+        rule.description?.let { group.description(OptionDescription.of(it)) }
         for (currentRule in rules) {
             group.option((currentRule.controller as OptionRule<*>).get(rule))
         }
