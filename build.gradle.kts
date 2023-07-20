@@ -51,13 +51,14 @@ modrinth {
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    changelog.set("perf: remove useless bundled jar")
     gameVersions.addAll("1.19.2") // Must be an array, even with only one version
     loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
     dependencies {
-        required.version("Ha28R6CL", libs.versions.fabric.language.kotlin.get())
+        required.project("fabric-language-kotlin")
         // https://modrinth.com/mod/yacl
         required.version("yacl", "${libs.versions.yacl.get()}+1.19.2-fabric")
         // https://modrinth.com/mod/kinecraft-serialization
-        embedded.version("epmEbmF0", libs.versions.kinecraft.serialization.get())
+        embedded.version("kinecraft-serialization", libs.versions.kinecraft.serialization.get())
     }
 }
