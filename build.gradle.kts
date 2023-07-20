@@ -57,7 +57,7 @@ modrinth {
     dependencies {
         required.project("fabric-language-kotlin")
         // https://modrinth.com/mod/yacl
-        required.version("yacl", "${libs.versions.yacl.get()}+1.19.2-fabric")
+        required.version("yacl", libs.versions.yacl.get())
         // https://modrinth.com/mod/kinecraft-serialization
         embedded.version("kinecraft-serialization", libs.versions.kinecraft.serialization.get())
         optional.project("modmenu")
