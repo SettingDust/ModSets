@@ -1,7 +1,7 @@
 # Mod Sets
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/mod-sets?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/mod-sets) [![Modrinth Version](https://img.shields.io/modrinth/v/mod-sets?style=for-the-badge&logo=modrinth&label=Latest)](https://modrinth.com/mod/mod-sets/versions) [![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/mod-sets?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/mod-sets/versions)  
-[![](https://cf.way2muchnoise.eu/full_mod-sets_Downloads.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets) [![](https://cf.way2muchnoise.eu/versions/mod-sets.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets)  
+[![](https://cf.way2muchnoise.eu/full_890349_Downloads.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets) [![](https://cf.way2muchnoise.eu/versions/890349.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets)  
 [![GitHub](https://img.shields.io/github/license/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets) [![GitHub issues](https://img.shields.io/github/issues-raw/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets/issues)  
 [![Static Badge](https://img.shields.io/badge/kofi-Buy_a_coffee-ff5f5f?style=for-the-badge&logo=kofi)](https://ko-fi.com/settingdust)
 
