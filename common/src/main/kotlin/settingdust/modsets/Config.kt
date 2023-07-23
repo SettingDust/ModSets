@@ -21,6 +21,8 @@ object ModSetsConfig {
 
     private val json = Json {
         isLenient = true
+        ignoreUnknownKeys = true
+        prettyPrint = true
     }
 
     init {

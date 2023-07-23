@@ -2,6 +2,7 @@ package settingdust.modsets.fabric
 
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.metadata.ModOrigin
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
@@ -21,18 +22,21 @@ object Entrypoint : ModInitializer {
                 ModSet(
                     if (I18n.exists(nameKey)) Component.translatable(nameKey) else Component.literal(it.key),
                     Component.literal(gameDir.relativize(modsPath / it.key).toString()),
-                    it.value.toList(),
+                    it.value,
                 )
             }) {
             if (key in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with directory name: $key")
             ModSets.rules.modSets.putIfAbsent(key, value)
         }
 
-        for (mod in FabricLoader.getInstance().allMods.map { it.metadata }) {
-            if (mod.id in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${mod.id}")
-            val nameKey = "modmenu.nameTranslation.${mod.id}"
+        for (mod in FabricLoader.getInstance().allMods) {
+            if (mod.origin.kind.equals(ModOrigin.Kind.NESTED)) continue
+            val metadata = mod.metadata
+            if (metadata.type.equals("builtin")) continue
+            if (metadata.id in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${metadata.id}")
+            val nameKey = "modmenu.nameTranslation.${metadata.id}"
             ModSets.rules.modSets.putIfAbsent(
-                mod.id,
+                metadata.id,
                 ModSet(
                     if (try {
                             I18n.exists(nameKey)
@@ -42,10 +46,10 @@ object Entrypoint : ModInitializer {
                     ) {
                         Component.translatable(nameKey)
                     } else {
-                        Component.literal(mod.name)
+                        Component.literal(metadata.name)
                     },
-                    Component.literal("${mod.id}@${mod.version}"),
-                    listOf(mod.id),
+                    Component.literal("${metadata.id}@${metadata.version}"),
+                    mutableListOf(metadata.id),
                 ),
             )
         }

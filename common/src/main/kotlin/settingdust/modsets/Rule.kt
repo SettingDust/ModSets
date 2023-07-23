@@ -19,22 +19,22 @@ interface Described {
 @Serializable
 data class ModSet(
     override val text: @Contextual Component,
-    override val description: @Contextual Component?,
-    val mods: List<String>,
+    override val description: @Contextual Component? = null,
+    val mods: MutableList<String>,
 ) :
     Described
 
 @Serializable
 data class RuleSet(
     override val text: @Contextual Component,
-    override val description: @Contextual Component?,
+    override val description: @Contextual Component? = null,
     val rules: List<Rule>,
 ) : Described
 
 @Serializable
 data class Rule(
     override val text: @Contextual Component,
-    override val description: @Contextual Component?,
+    override val description: @Contextual Component? = null,
     val controller: RuleController,
 ) : Described
 
