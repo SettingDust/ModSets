@@ -69,7 +69,6 @@ dependencies {
     modApi(libs.yacl.fabric)
     modApi(libs.modmenu)
 
-    modImplementation(libs.fabric.loader)
     modApi(libs.kinecraft.serialization)
 }
 

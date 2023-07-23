@@ -51,7 +51,7 @@ modrinth {
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    changelog.set("perf: remove useless bundled jar")
+    changelog.set("feat: add config screen for mod sets")
     gameVersions.addAll(
         "1.19.4",
         "1.20",

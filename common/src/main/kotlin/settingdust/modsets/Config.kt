@@ -4,8 +4,11 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import net.fabricmc.loader.api.FabricLoader
-import kotlin.io.path.*
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.div
+import kotlin.io.path.inputStream
+import kotlin.io.path.outputStream
 
 @Suppress("DEPRECATION")
 val ModSets.config: ModSetsConfig
@@ -16,7 +19,7 @@ val ModSets.config: ModSetsConfig
 object ModSetsConfig {
     val disabledMods = mutableSetOf<String>()
 
-    private val configDir = FabricLoader.getInstance().configDir / "modsets"
+    private val configDir = PlatformHelper.configDir / "modsets"
     private val disabledModsPath = configDir / "disabled_mods.json"
 
     private val json = Json {

@@ -1,6 +1,10 @@
 package settingdust.modsets
 
-import dev.isxander.yacl3.api.*
+import dev.isxander.yacl3.api.Binding
+import dev.isxander.yacl3.api.ConfigCategory
+import dev.isxander.yacl3.api.ListOption
+import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.YetAnotherConfigLib
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -8,17 +12,24 @@ import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.kinecraft.serialization.GsonElementSerializer
-import kotlin.io.path.*
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.div
+import kotlin.io.path.inputStream
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
+import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.outputStream
+import kotlin.io.path.writeText
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
 object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
-    private val configDir = FabricLoader.getInstance().configDir / "modsets"
+    private val configDir = PlatformHelper.configDir / "modsets"
 
     val modSets = mutableMapOf<String, ModSet>()
 
