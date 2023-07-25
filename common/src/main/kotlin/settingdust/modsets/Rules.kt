@@ -48,6 +48,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         prettyPrint = true
     }
 
+    fun MutableMap<String, ModSet>.getOrThrow(name: String) = requireNotNull(get(name)) { "Mod sets $name not exist" }
+
     private val config: YetAnotherConfigLib
         get() {
             load()

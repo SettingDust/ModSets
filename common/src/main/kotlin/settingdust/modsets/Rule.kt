@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Style
+import settingdust.modsets.Rules.getOrThrow
 
 interface Described {
     val text: Component
@@ -73,7 +74,7 @@ object LabelRule : OptionRule<Component> {
 
 private val String.booleanBinding: Binding<Boolean>
     get() {
-        val mods = ModSets.rules.modSets[this]!!.mods.toSet()
+        val mods = ModSets.rules.modSets.getOrThrow(this).mods.toSet()
         return Binding.generic(
             true,
             { mods.any { it !in ModSets.config.disabledMods } },
@@ -96,7 +97,10 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
         Option.createBuilder<Boolean>()
             .name(rule.text)
             .apply {
-                (rule.description ?: ModSets.rules.modSets[mod]?.description)?.let { description(OptionDescription.of(it)) }
+                (
+                    rule.description
+                        ?: ModSets.rules.modSets[mod]?.description
+                    )?.let { description(OptionDescription.of(it)) }
             }
             .flag(OptionFlag.GAME_RESTART)
             .controller(TickBoxControllerBuilder::create)
@@ -110,6 +114,10 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
 data class CyclingRule(val mods: List<String>) : OptionRule<String> {
     private val firstMod = mods.first()
 
+    init {
+        require(mods.isNotEmpty()) { "mods of cycling can't be empty" }
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     override fun get(rule: Described): Option<String> {
         val option = Option.createBuilder<String>().name(rule.text)
@@ -117,7 +125,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
             CyclingListControllerBuilder.create(it)
                 .values(mods)
                 .valueFormatter { mod ->
-                    val modSet = ModSets.rules.modSets[mod]!!
+                    val modSet = ModSets.rules.modSets.getOrThrow(mod)
                     modSet.text.copy()
                         .withStyle(
                             Style.EMPTY.withHoverEvent(
@@ -138,7 +146,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                     firstMod,
                     {
                         val enabledModSet = mods.asSequence()
-                            .filter { modSet -> ModSets.rules.modSets[modSet]!!.mods.all { it !in ModSets.config.disabledMods } }
+                            .filter { modSet -> ModSets.rules.modSets.getOrThrow(modSet).mods.all { it !in ModSets.config.disabledMods } }
                             .toList()
                         if (enabledModSet.size > 1) {
                             ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
@@ -150,8 +158,8 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                         return@generic currentSelected
                     },
                 ) { value: String ->
-                    ModSets.config.disabledMods.addAll(mods.flatMap { ModSets.rules.modSets[it]!!.mods })
-                    ModSets.config.disabledMods.removeAll(ModSets.rules.modSets[value]!!.mods.toSet())
+                    ModSets.config.disabledMods.addAll(mods.flatMap { ModSets.rules.modSets.getOrThrow(it).mods })
+                    ModSets.config.disabledMods.removeAll(ModSets.rules.modSets.getOrThrow(value).mods.toSet())
                 },
             ).build()
     }
@@ -161,11 +169,16 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
 @Serializable
 @SerialName("mods_group")
 data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) : GroupRule {
+
+    init {
+        require(mods.isNotEmpty()) { "mods of mods_group can't be empty" }
+    }
+
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
         rule.description?.let { group.description(OptionDescription.of(it)) }
         for (mod in mods) {
-            val modSet = ModSets.rules.modSets[mod]!!
+            val modSet = ModSets.rules.modSets.getOrThrow(mod)
             val option = Option.createBuilder<Boolean>().name(modSet.text)
             modSet.description?.let { option.description(OptionDescription.of(it)) }
             group.option(
@@ -181,6 +194,11 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
 @Serializable
 @SerialName("rules_group")
 data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) : GroupRule {
+
+    init {
+        require(rules.isNotEmpty()) { "rules of rules_group can't be empty" }
+    }
+
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
         rule.description?.let { group.description(OptionDescription.of(it)) }
