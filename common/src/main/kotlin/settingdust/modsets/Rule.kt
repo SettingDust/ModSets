@@ -57,6 +57,7 @@ sealed interface GroupRule : RuleController {
     override fun get(rule: Described): OptionGroup
 }
 
+@Suppress("unused")
 @Serializable
 @SerialName("label")
 object LabelRule : OptionRule<Component> {
@@ -86,6 +87,7 @@ private val String.booleanBinding: Binding<Boolean>
         )
     }
 
+@Suppress("unused")
 @Serializable
 @SerialName("boolean")
 data class BooleanRule(val mod: String) : OptionRule<Boolean> {
@@ -102,6 +104,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
             .build()!!
 }
 
+@Suppress("unused")
 @Serializable
 @SerialName("cycling")
 data class CyclingRule(val mods: List<String>) : OptionRule<String> {
@@ -154,6 +157,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
     }
 }
 
+@Suppress("unused")
 @Serializable
 @SerialName("mods_group")
 data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) : GroupRule {

@@ -60,7 +60,7 @@ Example:
       "text": "text",
       "description": "description",
       "controller": {
-        "type": "type"
+        "type": "type" // Notice, this isn't valid type of controller. Take the type from controllers below
       }
     }
   ]
@@ -108,7 +108,7 @@ Example:
   "description": "Text Text",
   "controller": {
     "type": "cycling",
-    "mods": [
+    "mods": [ // Don't empty
       "sodium",
       "optifabric"
     ]
@@ -128,7 +128,7 @@ Example:
     "type": "mods_group",
     // Default is true
     "collapsed": false,
-    "mods": [
+    "mods": [ // Don't empty
       "sodium",
       "optifabric"
     ]
@@ -147,7 +147,7 @@ Example:
     "type": "rules_group",
     // Default is true
     "collapsed": true,
-    "rules": [
+    "rules": [ // Don't empty
       {
         "text": "text",
         "description": "description",

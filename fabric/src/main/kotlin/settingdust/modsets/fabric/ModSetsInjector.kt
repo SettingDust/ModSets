@@ -4,7 +4,11 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.LanguageAdapter
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.fabricmc.loader.impl.ModContainerImpl
-import net.fabricmc.loader.impl.discovery.*
+import net.fabricmc.loader.impl.discovery.ModCandidate
+import net.fabricmc.loader.impl.discovery.ModDiscoverer
+import net.fabricmc.loader.impl.discovery.ModResolutionException
+import net.fabricmc.loader.impl.discovery.ModResolver
+import net.fabricmc.loader.impl.discovery.RuntimeModRemapper
 import net.fabricmc.loader.impl.gui.FabricGuiEntry
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import net.fabricmc.loader.impl.metadata.DependencyOverrides
@@ -90,7 +94,7 @@ object ModSetsInjector {
             if (candidates.isEmpty()) {
                 ""
             } else {
-                ":\n ${candidates.joinToString("\n") { "\t- ${it.id}@${it.version.friendlyString}" }}"
+                ":\n ${candidates.joinToString("\n") { "\t- ${it.id} ${it.version.friendlyString}" }}"
             },
         )
         candidates.addMods()

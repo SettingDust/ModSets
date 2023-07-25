@@ -141,9 +141,9 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         }
     }
 
-    internal fun createScreen(parent: Screen) = config.generateScreen(parent)
+    fun createScreen(parent: Screen) = config.generateScreen(parent)
 }
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "UnusedReceiverParameter")
 val ModSets.rules: Rules
     get() = Rules

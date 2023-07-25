@@ -35,5 +35,5 @@ fun ModSet(mod: ModMetadata) = ModSet(
         Component.literal(mod.name())
     },
     Component.literal("${mod.id()}@${mod.version()}"),
-    listOf(mod.id()),
+    mutableListOf(mod.id()),
 )

@@ -10,7 +10,7 @@ import kotlin.io.path.div
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "UnusedReceiverParameter")
 val ModSets.config: ModSetsConfig
     get() = ModSetsConfig
 

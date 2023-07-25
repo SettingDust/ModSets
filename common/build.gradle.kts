@@ -6,27 +6,14 @@
     "UnstableApiUsage",
 )
 
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    java
-    `maven-publish`
-
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
-
-    alias(libs.plugins.fabric.loom)
 }
 
 val archives_name: String by rootProject
-val loom: LoomGradleExtensionAPI by extensions
-
-version = rootProject.version
-
-base {
-    archivesName = "$archives_name-common"
-}
 
 repositories {
     exclusiveContent {
@@ -50,23 +37,11 @@ repositories {
 }
 
 dependencies {
-    "minecraft"(libs.minecraft)
-    "mappings"(
-        loom.layered {
-            officialMojangMappings()
-            parchment(
-                variantOf(libs.parchment) {
-                    artifactType("zip")
-                },
-            )
-        },
-    )
-
     api(libs.kotlinx.serialization.core)
     api(libs.kotlinx.serialization.json)
     api(libs.kotlin.reflect)
 
-    modApi(libs.yacl.fabric)
+    modApi(libs.yacl.common)
     modApi(libs.modmenu)
 
     modApi(libs.kinecraft.serialization)

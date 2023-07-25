@@ -14,36 +14,43 @@ plugins {
 
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
-
-    alias(libs.plugins.quilt.loom)
 }
 
 val archives_name: String by rootProject
 val loom: LoomGradleExtensionAPI by extensions
 
-version = rootProject.version
-
-base {
-    archivesName = "$archives_name-quilt"
-}
-
 loom {
     runs {
         named("client") {
             vmArg("-Dloader.workaround.disable_strict_parsing=true")
+            var path = ""
+            val paths = arrayOf("resources/main", "classes/kotlin/main")
+            for (sub: String in paths) {
+                path = path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
+                path = path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
+            }
+            path = path.substring(0, path.length - 1)
+            vmArg("-Dloader.classPathGroups=$path")
         }
     }
 
     mods {
         register(archives_name) {
-            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
+            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
             sourceSet(sourceSets.main.get())
+            sourceSet(project(":common").sourceSets.main.get())
+            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
         }
     }
 }
 
 repositories {
     maven("https://maven.fabricmc.net/")
+
+    maven {
+        name = "Quilt"
+        url = uri("https://maven.quiltmc.org/repository/release")
+    }
 
     exclusiveContent {
         forRepository {
@@ -66,18 +73,6 @@ repositories {
 }
 
 dependencies {
-    "minecraft"(libs.minecraft)
-    "mappings"(
-        loom.layered {
-            officialMojangMappings()
-            parchment(
-                variantOf(libs.parchment) {
-                    artifactType("zip")
-                },
-            )
-        },
-    )
-
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.reflect)
@@ -94,9 +89,11 @@ dependencies {
         exclude(module = "fabric-loader")
     }
 
-    modRuntimeOnly(libs.yacl.fabric)
+    modRuntimeOnly(libs.yacl.fabric) {
+        isTransitive = false
+    }
     modRuntimeOnly(libs.modmenu) {
-        exclude(module = "fabric-loader")
+        isTransitive = false
     }
 
     modRuntimeOnly(libs.quilted.fabric.api) {
@@ -108,41 +105,6 @@ dependencies {
 }
 
 tasks {
-    processResources {
-        inputs.property("id", archives_name)
-        inputs.property("version", rootProject.version)
-        inputs.property("group", rootProject.group)
-        inputs.property("name", rootProject.property("mod_name").toString())
-        inputs.property("description", rootProject.property("mod_description").toString())
-        inputs.property("author", rootProject.property("mod_author").toString())
-        inputs.property("source", rootProject.property("mod_source").toString())
-        inputs.property("minecraft_version", libs.versions.minecraft.get())
-        inputs.property("quilt_loader_version", libs.versions.quilt.loader.get())
-        inputs.property("fabric_language_kotlin_version", libs.versions.fabric.language.kotlin.get())
-        inputs.property("yacl_version", libs.versions.yacl.get())
-        inputs.property("kinecraft_serialization_version", libs.versions.kinecraft.serialization.get())
-        inputs.property("mod_menu_version", libs.versions.modmenu.get())
-
-        filesMatching("quilt.mod.json") {
-            expand(
-                "id" to archives_name,
-                "version" to rootProject.version,
-                "group" to rootProject.group,
-                "name" to rootProject.property("mod_name").toString(),
-                "description" to rootProject.property("mod_description").toString(),
-                "author" to rootProject.property("mod_author").toString(),
-                "source" to rootProject.property("mod_source").toString(),
-                "minecraft_version" to libs.versions.minecraft.get(),
-                "quilt_loader_version" to libs.versions.quilt.loader.get(),
-                "fabric_language_kotlin_version" to libs.versions.fabric.language.kotlin.get(),
-                "yacl_version" to libs.versions.yacl.get(),
-                "kinecraft_serialization_version" to libs.versions.kinecraft.serialization.get(),
-                "mod_menu_version" to libs.versions.modmenu.get(),
-                "schema" to "\$schema",
-            )
-        }
-    }
-
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

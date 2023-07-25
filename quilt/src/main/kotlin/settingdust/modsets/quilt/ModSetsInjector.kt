@@ -1,5 +1,6 @@
 package settingdust.modsets.quilt
 
+import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.loader.api.plugin.ModContainerExt
 import org.quiltmc.loader.impl.QuiltLoaderImpl
 import org.quiltmc.loader.impl.util.log.Log
@@ -46,6 +47,6 @@ object ModSetsInjector {
     private fun setupModsInvoked() {
         modsProperty.setter.call(loader, mods)
         // TODO Remove jar in jar mods
-        mods.removeIf { it.metadata().id() in ModSets.config.disabledMods }
+        mods.removeIf { (it as ModContainer).metadata().id() in ModSets.config.disabledMods }
     }
 }
