@@ -112,6 +112,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                                         (currentOption as Option<Any>).requestSet(currentOption.binding().value)
                                     }
                                 }
+                                save() // The save won't be called with instant
                             }
                         }
                         category
