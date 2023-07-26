@@ -8,11 +8,6 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-}
-
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
@@ -35,47 +30,6 @@ loom {
             )
         }
     }
-}
-
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter {
-            includeGroup("maven.modrinth")
-        }
-    }
-
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
-}
-
-dependencies {
-    include(project(path = ":common", configuration = "namedElements"))
-    implementation(project(path = ":common", configuration = "namedElements")) {
-        exclude(module = "fabric-loader")
-    }
-
-    modImplementation(libs.fabric.loader)
-    modRuntimeOnly(libs.fabric.languageKotlin) {
-        exclude(module = "fabric-loader")
-    }
-
-    modRuntimeOnly(libs.yacl.fabric)
-    modRuntimeOnly(libs.modmenu) {
-        exclude(module = "fabric-loader")
-    }
-    modRuntimeOnly(libs.kinecraft.serialization)
-
-    include(libs.kinecraft.serialization)
 }
 
 tasks {
@@ -101,4 +55,46 @@ tasks {
     processResources {
         from(project(":common").sourceSets.main.get().resources)
     }
+}
+
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+
+    maven("https://maven.terraformersmc.com/releases")
+    maven("https://maven.isxander.dev/releases")
+    maven {
+        name = "ParchmentMC"
+        url = uri("https://maven.parchmentmc.org")
+    }
+}
+
+dependencies {
+    implementation(project(path = ":common", configuration = "namedElements")) {
+        exclude(module = "fabric-loader")
+    }
+    include(project(path = ":common", configuration = "namedElements"))
+
+    modImplementation(libs.fabric.loader)
+    modRuntimeOnly(libs.fabric.languageKotlin) {
+        exclude(module = "fabric-loader")
+    }
+
+    modRuntimeOnly(libs.yacl.fabric)
+    modRuntimeOnly(libs.modmenu) {
+        exclude(module = "fabric-loader")
+    }
+
+    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
+    modRuntimeOnly(kinecraft)
+    include(kinecraft)
 }

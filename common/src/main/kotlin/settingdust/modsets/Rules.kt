@@ -39,6 +39,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val rulesDir = configDir / "rules"
 
     private val json = Json {
+        encodeDefaults = true
         ignoreUnknownKeys = true
         isLenient = true
         serializersModule = SerializersModule {
@@ -54,34 +55,36 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         get() {
             load()
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
-            builder.category(
-                ConfigCategory.createBuilder().apply {
-                    name(Component.translatable("modsets.name"))
-                    tooltip(Component.translatable("modsets.description"))
-                    for (modSet in modSets) {
-                        option(
-                            ListOption.createBuilder<String>()
-                                .apply {
-                                    name(modSet.value.text)
-                                    modSet.value.description?.let { description(OptionDescription.of(it)) }
-                                    initial("")
-                                    collapsed(true)
-                                    controller { StringControllerBuilder.create(it) }
-                                    binding(
-                                        Binding.generic(modSet.value.mods, {
-                                            modSet.value.mods
-                                        }) {
-                                            modSet.value.mods.clear()
-                                            modSet.value.mods.addAll(it)
-                                            definedModSets[modSet.key] = modSet.value
-                                        },
-                                    )
-                                }
-                                .build(),
-                        )
-                    }
-                }.build(),
-            )
+            if (ModSets.config.common.displayModSetsScreen) {
+                builder.category(
+                    ConfigCategory.createBuilder().apply {
+                        name(Component.translatable("modsets.name"))
+                        tooltip(Component.translatable("modsets.description"))
+                        for (modSet in modSets) {
+                            option(
+                                ListOption.createBuilder<String>()
+                                    .apply {
+                                        name(modSet.value.text)
+                                        modSet.value.description?.let { description(OptionDescription.of(it)) }
+                                        initial("")
+                                        collapsed(true)
+                                        controller { StringControllerBuilder.create(it) }
+                                        binding(
+                                            Binding.generic(modSet.value.mods, {
+                                                modSet.value.mods
+                                            }) {
+                                                modSet.value.mods.clear()
+                                                modSet.value.mods.addAll(it)
+                                                definedModSets[modSet.key] = modSet.value
+                                            },
+                                        )
+                                    }
+                                    .build(),
+                            )
+                        }
+                    }.build(),
+                )
+            }
             if (this@Rules.isNotEmpty()) {
                 builder.categories(
                     this@Rules.map { (_, ruleSet) ->
@@ -111,6 +114,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     }
 
     private fun load() {
+        ModSets.config.load()
         try {
             configDir.createDirectories()
             rulesDir.createDirectories()

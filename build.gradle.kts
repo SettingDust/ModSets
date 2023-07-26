@@ -8,6 +8,7 @@
 
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -60,7 +61,11 @@ modrinth {
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    changelog.set("feat: add config screen for mod sets")
+    changelog.set(
+        """
+        fix: add more readable info for errors
+        """.trimIndent(),
+    )
     gameVersions.addAll(
         "1.19.4",
         "1.20",
@@ -79,6 +84,8 @@ modrinth {
 
 subprojects {
     apply(plugin = "java")
+    apply(plugin = "kotlin")
+    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "maven-publish")
 
@@ -113,6 +120,8 @@ subprojects {
                 )
             },
         )
+
+        implementation(rootProject.libs.kotlin.stdlib.jdk8)
     }
 
     tasks {
@@ -140,6 +149,25 @@ subprojects {
             inputs.properties(properties)
             filesMatching(listOf("fabric.mod.json", "quilt.mod.json", "META-INF/mods.toml", "*.mixins.json")) {
                 expand(properties)
+            }
+        }
+
+        java {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+
+            withSourcesJar()
+        }
+
+        withType<KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
+
+        jar {
+            from("LICENSE") {
+                rename { "${it}_${base.archivesName}" }
             }
         }
     }

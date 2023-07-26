@@ -6,13 +6,6 @@
     "UnstableApiUsage",
 )
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-}
-
 val archives_name: String by rootProject
 
 repositories {
@@ -44,26 +37,13 @@ dependencies {
     modApi(libs.yacl.common)
     modApi(libs.modmenu)
 
-    modApi(libs.kinecraft.serialization)
+    modApi("maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric")
 }
 
 tasks {
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-
-        withSourcesJar()
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
-
     jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
+        manifest.attributes(
+            "FMLModType" to "GAMELIBRARY",
+        )
     }
 }

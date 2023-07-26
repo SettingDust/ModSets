@@ -20,7 +20,7 @@ min_yacl = "3.0.3"
 modmenu = "7.1.0"
 min_modmenu = "3.0.0"
 
-kinecraft_serialization = "1.1.4"
+kinecraft_serialization = "1.1.8"
 minotaur = "2.+"
 
 forge = "1.20.1-47.1.0"
