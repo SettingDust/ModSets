@@ -3,7 +3,6 @@ package settingdust.modsets
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.OptionDescription
-import dev.isxander.yacl3.api.OptionFlag
 import dev.isxander.yacl3.api.OptionGroup
 import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
@@ -66,7 +65,6 @@ object LabelRule : OptionRule<Component> {
         Option.createBuilder<Component>()
             .name(rule.text)
             .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-            .flag(OptionFlag.GAME_RESTART)
             .customController(::LabelController)
             .binding(Binding.immutable(rule.text))
             .build()!!
@@ -98,11 +96,11 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
             .name(rule.text)
             .apply {
                 (
-                    rule.description
-                        ?: ModSets.rules.modSets[mod]?.description
-                    )?.let { description(OptionDescription.of(it)) }
+                        rule.description
+                            ?: ModSets.rules.modSets[mod]?.description
+                        )?.let { description(OptionDescription.of(it)) }
             }
-            .flag(OptionFlag.GAME_RESTART)
+            .instant(true)
             .controller(TickBoxControllerBuilder::create)
             .binding(mod.booleanBinding)
             .build()!!
@@ -118,7 +116,6 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
         require(mods.isNotEmpty()) { "mods of cycling can't be empty" }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun get(rule: Described): Option<String> {
         val option = Option.createBuilder<String>().name(rule.text)
         return option.controller {
@@ -140,21 +137,31 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                 }
         }
             .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-            .flag(OptionFlag.GAME_RESTART)
+            .instant(true)
             .binding(
                 Binding.generic(
                     firstMod,
                     {
+                        val modSets = ModSets.rules.modSets
                         val enabledModSet = mods.asSequence()
-                            .filter { modSet -> ModSets.rules.modSets.getOrThrow(modSet).mods.all { it !in ModSets.config.disabledMods } }
+                            .filter { modSet ->
+                                val mods = modSets.getOrThrow(modSet).mods
+                                mods.isNotEmpty() && mods.none { it in ModSets.config.disabledMods }
+                            }
                             .toList()
                         if (enabledModSet.size > 1) {
                             ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
-                            for (i in 1..<enabledModSet.size) ModSets.config.disabledMods.add(enabledModSet[i])
+                            ModSets.config.disabledMods.addAll(
+                                enabledModSet.drop(1).flatMap { modSets.getOrThrow(it).mods },
+                            )
+                            ModSets.config.disabledMods.removeAll(modSets.getOrThrow(enabledModSet.first()).mods.toSet())
                             return@generic enabledModSet.first()
                         }
-                        val currentSelected = enabledModSet.singleOrNull() ?: firstMod
-                        ModSets.config.disabledMods.remove(currentSelected)
+                        val currentSelected =
+                            enabledModSet.singleOrNull() ?: mods.firstOrNull { modSets.getOrThrow(it).mods.isEmpty() }
+                            ?: firstMod
+
+                        ModSets.config.disabledMods.removeAll(modSets.getOrThrow(currentSelected).mods.toSet())
                         return@generic currentSelected
                     },
                 ) { value: String ->
@@ -183,7 +190,7 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             modSet.description?.let { option.description(OptionDescription.of(it)) }
             group.option(
                 option.controller(TickBoxControllerBuilder::create).binding(mod.booleanBinding)
-                    .flag(OptionFlag.GAME_RESTART)
+                    .instant(true)
                     .build(),
             )
         }

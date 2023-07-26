@@ -27,6 +27,7 @@ loom {
                 libs.kotlin.reflect.get(),
                 libs.kotlinx.serialization.core.get(),
                 libs.kotlinx.serialization.json.get(),
+                libs.kotlinx.coroutines.get(),
             )
         }
     }

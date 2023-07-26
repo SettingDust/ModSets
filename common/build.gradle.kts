@@ -32,6 +32,7 @@ repositories {
 dependencies {
     api(libs.kotlinx.serialization.core)
     api(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.coroutines)
     api(libs.kotlin.reflect)
 
     modApi(libs.yacl.common)

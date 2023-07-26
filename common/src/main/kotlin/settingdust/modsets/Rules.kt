@@ -3,9 +3,12 @@ package settingdust.modsets
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.ConfigCategory
 import dev.isxander.yacl3.api.ListOption
+import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.YetAnotherConfigLib
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -32,6 +35,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
     val modSets = mutableMapOf<String, ModSet>()
+    private val _ModSetsRegisterCallback = MutableSharedFlow<Unit>()
+    val ModSetsRegisterCallback = _ModSetsRegisterCallback.asSharedFlow()
 
     private val definedModSets = mutableMapOf<String, ModSet>()
     private val modSetsPath = configDir / "modsets.json"
@@ -60,8 +65,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                     ConfigCategory.createBuilder().apply {
                         name(Component.translatable("modsets.name"))
                         tooltip(Component.translatable("modsets.description"))
-                        for (modSet in modSets) {
-                            option(
+                        groups(
+                            modSets.map { modSet ->
                                 ListOption.createBuilder<String>()
                                     .apply {
                                         name(modSet.value.text)
@@ -79,16 +84,16 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                                             },
                                         )
                                     }
-                                    .build(),
-                            )
-                        }
+                                    .build()
+                            },
+                        )
                     }.build(),
                 )
             }
             if (this@Rules.isNotEmpty()) {
                 builder.categories(
                     this@Rules.map { (_, ruleSet) ->
-                        ConfigCategory.createBuilder().apply {
+                        val category = ConfigCategory.createBuilder().apply {
                             name(ruleSet.text)
                             ruleSet.description?.let { tooltip(it) }
                             ruleSet.rules.forEach { rule ->
@@ -98,6 +103,18 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                                 }
                             }
                         }.build()
+                        // Since the options are instant and may be affected by the others. Update the changed options to correct value
+                        val options = category.groups().flatMap { it.options() }
+                        for (option in options) {
+                            option.addListener { _, _ ->
+                                for (currentOption in options) {
+                                    if (currentOption.changed()) {
+                                        (currentOption as Option<Any>).requestSet(currentOption.binding().value)
+                                    }
+                                }
+                            }
+                        }
+                        category
                     },
                 )
             } else {
@@ -110,7 +127,6 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
     init {
         load()
-        modSets.putAll(definedModSets)
     }
 
     private fun load() {
@@ -127,6 +143,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         modSetsPath.inputStream().use {
             definedModSets.putAll(json.decodeFromStream(it))
         }
+        modSets.putAll(definedModSets)
+        _ModSetsRegisterCallback.tryEmit(Unit)
 
         clear()
         rulesDir.listDirectoryEntries("*.json").forEach {

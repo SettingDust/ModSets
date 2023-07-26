@@ -63,7 +63,7 @@ modrinth {
     uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
     changelog.set(
         """
-        fix: add more readable info for errors
+        feat: add option to hide the mod sets config screen
         """.trimIndent(),
     )
     gameVersions.addAll(
@@ -77,7 +77,7 @@ modrinth {
         // https://modrinth.com/mod/yacl
         required.project("yacl")
         // https://modrinth.com/mod/kinecraft-serialization
-        embedded.version("kinecraft-serialization", libs.versions.kinecraft.serialization.get())
+        embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-fabric")
         optional.project("modmenu")
     }
 }

@@ -6,6 +6,7 @@ parchmentmc = "2023.07.16"
 
 kotlin = "1.8.22"
 kotlinx_serialization = "1.5.1"
+kotlinx_coroutines = "1.7.2"
 
 #fabric
 fabric_loader = "0.14.21"
@@ -50,7 +51,7 @@ kotlin_stdlib_jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", versi
 kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx_serialization_core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx_serialization" }
 kotlinx_serialization_json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx_serialization" }
-kotlinx_serialization_hocon = { module = "org.jetbrains.kotlinx:kotlinx-serialization-hocon", version.ref = "kotlinx_serialization" }
+kotlinx_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx_coroutines" }
 
 parchment = { module = "org.parchmentmc.data:parchment-1.20.1", version.ref = "parchmentmc" }
 
