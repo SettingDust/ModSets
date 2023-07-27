@@ -1,4 +1,5 @@
 {
+  "$schema": "https://github.com/SettingDust/ModSets/raw/main/rules.schema.json",
   "text": {
     "text": "My first rule set",
     "bold": true,
