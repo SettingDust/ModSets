@@ -24,10 +24,10 @@ min_modmenu = "3.0.0"
 kinecraft_serialization = "1.1.8"
 minotaur = "2.+"
 
+neoforge = "1.20.1-47.1.55"
 forge = "1.20.1-47.1.0"
-min_forge = "45.1.0"
+min_forge = "47.1.0"
 kotlin_forge = "4.4.0"
-mixin = "0.8.5-SNAPSHOT"
 
 [libraries]
 # common
@@ -58,15 +58,14 @@ parchment = { module = "org.parchmentmc.data:parchment-1.20.1", version.ref = "p
 kinecraft_serialization = { module = "maven.modrinth:kinecraft-serialization", version.ref = "kinecraft_serialization" }
 
 # Forge
+neoforge = { module = "net.neoforged:forge", version.ref = "neoforge" }
 forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
 kotlin_forge = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlin_forge" }
-mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 
 
 [plugins]
-fabric_loom = { id = "fabric-loom", version = "1.3-SNAPSHOT" }
-quilt_loom = { id = "org.quiltmc.loom", version = "1.2.+" }
 architectury_loom = { id = "dev.architectury.loom", version = "1.3.+" }
+architectury = { id = "architectury-plugin", version = "3.+" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -74,5 +73,6 @@ kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization"
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 
 curseforge = { id = "net.darkhax.curseforgegradle", version = "1.+" }
-forge_gradle = { id = "net.minecraftforge.gradle", version = "6.+" }
-mixin_gradle = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }
+cursegradle = { id = "io.github.CDAGaming.cursegradle", version = "1.+" }
+
+dotenv = { id = "co.uzzu.dotenv.gradle", version = "2.+" }

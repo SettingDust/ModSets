@@ -19,8 +19,8 @@ And useful for modpack developer
 ## Usage
 
 The rules files should be json in `config/modsets/rules`.  
-Add rule and enter the config screen through Mod Menu
-Full example: https://github.com/SettingDust/ModSets/raw/main/example_rules.json
+Add rule and enter the config screen through Mod Menu  
+Full example: https://github.com/SettingDust/ModSets/blob/main/example_rules.json
 
 ## Mod Set
 Mod set is entry defined in `config/modsets/modsets.json` that is string to set of mod id map.  

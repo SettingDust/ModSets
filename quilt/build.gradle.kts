@@ -8,16 +8,13 @@
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
-plugins {
-    java
-    `maven-publish`
-
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-}
-
 val archives_name: String by rootProject
 val loom: LoomGradleExtensionAPI by extensions
+
+architectury {
+    platformSetupLoomIde()
+    loader("quilt")
+}
 
 loom {
     runs {
@@ -77,10 +74,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.reflect)
 
-    include(project(path = ":common", configuration = "namedElements"))
     implementation(project(path = ":common", configuration = "namedElements")) {
         isTransitive = false
     }
+    include(project(path = ":common", configuration = "transformProductionQuilt"))
 
     modImplementation(libs.quilt.loader)
     modImplementation(libs.quilt.standard.libraries.core)
@@ -100,8 +97,9 @@ dependencies {
         exclude(module = "quilt-loader")
     }
 
-    modRuntimeOnly(libs.kinecraft.serialization)
-    include(libs.kinecraft.serialization)
+    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
+    modRuntimeOnly(kinecraft)
+    include(kinecraft)
 }
 
 tasks {

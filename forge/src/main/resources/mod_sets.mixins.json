@@ -9,6 +9,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "mixin.MixinModDiscoverer"
+    "MixinModDiscoverer"
   ]
 }

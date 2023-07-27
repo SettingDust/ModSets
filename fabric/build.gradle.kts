@@ -17,6 +17,11 @@ base {
     archivesName.set("$archives_name-fabric")
 }
 
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
 loom {
     mods {
         register(archives_name) {
@@ -83,7 +88,7 @@ dependencies {
     implementation(project(path = ":common", configuration = "namedElements")) {
         exclude(module = "fabric-loader")
     }
-    include(project(path = ":common", configuration = "namedElements"))
+    include(project(path = ":common", configuration = "transformProductionFabric"))
 
     modImplementation(libs.fabric.loader)
     modRuntimeOnly(libs.fabric.languageKotlin) {

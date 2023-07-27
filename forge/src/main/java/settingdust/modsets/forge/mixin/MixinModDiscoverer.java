@@ -1,4 +1,4 @@
-package settingdust.modsets.forge.mixin.mixin;
+package settingdust.modsets.forge.mixin;
 
 import net.minecraftforge.fml.loading.moddiscovery.ModDiscoverer;
 import net.minecraftforge.fml.loading.moddiscovery.ModValidator;

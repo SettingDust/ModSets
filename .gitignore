@@ -43,3 +43,5 @@ bin/
 
 */build
 */run
+
+.env

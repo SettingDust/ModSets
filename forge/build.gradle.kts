@@ -1,18 +1,28 @@
-plugins {
-    java
-    `maven-publish`
-
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-}
-
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
 loom {
+//    mods {
+//        register(archives_name) {
+//            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
+//            sourceSet(sourceSets.main.get())
+//        }
+//    }
     forge {
 //        mixinConfig("$archives_name-common.mixins.json")
-//        mixinConfig("$archives_name.mixins.json")
+        mixinConfig("$archives_name.mixins.json")
+    }
+
+    runs {
+        named("client") {
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
+        }
     }
 }
 
@@ -28,10 +38,6 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    maven {
-        name = "Sponge Snapshots"
-        url = uri("https://repo.spongepowered.org/repository/maven-public/")
-    }
 
     // Add KFF Maven repository
     maven {
@@ -41,23 +47,23 @@ repositories {
 
     maven("https://maven.terraformersmc.com/releases")
     maven("https://maven.isxander.dev/releases")
+    maven("https://maven.neoforged.net/releases")
 }
 
 dependencies {
     forge(libs.forge)
 
-    include(project(path = ":common", configuration = "namedElements"))
     implementation(project(path = ":common", configuration = "namedElements")) {
         isTransitive = false
     }
+    include(project(path = ":common", configuration = "transformProductionForge"))
 
     implementation(libs.kotlin.forge)
-    modRuntimeOnly(libs.yacl.forge.get())
+    modRuntimeOnly(libs.yacl.forge)
 
-    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-
-    include(libs.kinecraft.serialization)
-    modRuntimeOnly(libs.kinecraft.serialization)
+    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
+    include(kinecraft)
+    modRuntimeOnly(kinecraft)
 }
 
 tasks {

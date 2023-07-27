@@ -8,6 +8,10 @@
 
 val archives_name: String by rootProject
 
+architectury {
+    common(rootProject.property("enabled_platforms").toString().split(","))
+}
+
 repositories {
     exclusiveContent {
         forRepository {
