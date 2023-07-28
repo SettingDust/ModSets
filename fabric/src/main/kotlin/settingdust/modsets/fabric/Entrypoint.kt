@@ -1,8 +1,8 @@
 package settingdust.modsets.fabric
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.ModOrigin
@@ -19,15 +19,15 @@ object Entrypoint : ModInitializer {
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
-        runBlocking(Dispatchers.IO) {
-            ModSets.rules.ModSetsRegisterCallback.onEach {
-                for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets.filterKeys { it !in ModSets.rules.modSets }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            ModSets.rules.ModSetsRegisterCallback.collect {
+                for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets
                     .mapValues {
-                        val nameKey = "modmenu.nameTranslation.${it.key}"
                         ModSet(
-                            if (I18n.exists(nameKey)) Component.translatable(nameKey) else Component.literal(it.key),
+                            Component.literal(it.key),
                             Component.literal(gameDir.relativize(modsPath / it.key).toString()),
-                            it.value,
+                            it.value.toMutableSet(),
                         )
                     }) {
                     if (key in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with directory name: $key")
@@ -54,11 +54,11 @@ object Entrypoint : ModInitializer {
                                 Component.literal(metadata.name)
                             },
                             Component.literal("${metadata.id}@${metadata.version}"),
-                            mutableListOf(metadata.id),
+                            mutableSetOf(metadata.id),
                         ),
                     )
                 }
-            }.collect {}
+            }
         }
     }
 }

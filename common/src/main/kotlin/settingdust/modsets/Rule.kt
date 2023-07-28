@@ -24,7 +24,7 @@ interface Described {
 data class ModSet(
     override val text: @Contextual Component,
     override val description: @Contextual Component? = null,
-    val mods: MutableList<String>,
+    val mods: MutableSet<String>,
 ) :
     Described
 

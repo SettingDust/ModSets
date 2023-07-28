@@ -50,7 +50,7 @@
       },
       {
         "id": "kinecraft_serialization",
-        "versions": "${kinecraft_serialization_version}"
+        "versions": "${kinecraft_serialization_version}-fabric"
       },
       {
         "id": "modmenu",

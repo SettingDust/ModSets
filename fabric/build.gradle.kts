@@ -6,8 +6,6 @@
     "UnstableApiUsage",
 )
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
@@ -25,39 +23,20 @@ architectury {
 loom {
     mods {
         register(archives_name) {
-            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
             sourceSet(sourceSets.main.get())
-            dependency(
-                libs.kotlin.stdlib.jdk8.get(),
-                libs.kotlin.reflect.get(),
-                libs.kotlinx.serialization.core.get(),
-                libs.kotlinx.serialization.json.get(),
-                libs.kotlinx.coroutines.get(),
-            )
+            sourceSet(project(":common").sourceSets.main.get())
+        }
+    }
+
+    runs {
+        named("client") {
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
         }
     }
 }
 
 tasks {
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-
-        withSourcesJar()
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
-
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
-    }
-
     processResources {
         from(project(":common").sourceSets.main.get().resources)
     }

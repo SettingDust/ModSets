@@ -17,29 +17,45 @@ architectury {
 }
 
 loom {
-    runs {
-        named("client") {
-            vmArg("-Dloader.workaround.disable_strict_parsing=true")
-            var path = ""
-            val paths = arrayOf("resources/main", "classes/kotlin/main")
-            for (sub: String in paths) {
-                path = path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
-                path = path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
-            }
-            path = path.substring(0, path.length - 1)
-            vmArg("-Dloader.classPathGroups=$path")
+    mods {
+        register(archives_name) {
+            sourceSet(sourceSets.main.get())
+            sourceSet(project(":common").sourceSets.main.get())
         }
     }
 
-    mods {
-        register(archives_name) {
-            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
-            sourceSet(sourceSets.main.get())
-            sourceSet(project(":common").sourceSets.main.get())
-            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
+    runs {
+        named("client") {
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
         }
     }
 }
+
+//loom {
+//    runs {
+//        named("client") {
+//            vmArg("-Dloader.workaround.disable_strict_parsing=true")
+//            var path = ""
+//            val paths = arrayOf("resources/main", "classes/kotlin/main")
+//            for (sub: String in paths) {
+//                path = path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
+//                path = path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
+//            }
+//            path = path.substring(0, path.length - 1)
+//            vmArg("-Dloader.classPathGroups=$path")
+//        }
+//    }
+//
+//    mods {
+//        register(archives_name) {
+//            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
+//            sourceSet(sourceSets.main.get())
+//            sourceSet(project(":common").sourceSets.main.get())
+//            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
+//        }
+//    }
+//}
 
 repositories {
     maven("https://maven.fabricmc.net/")
@@ -72,6 +88,7 @@ repositories {
 dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlin.reflect)
 
     implementation(project(path = ":common", configuration = "namedElements")) {
@@ -93,9 +110,7 @@ dependencies {
         isTransitive = false
     }
 
-    modRuntimeOnly(libs.quilted.fabric.api) {
-        exclude(module = "quilt-loader")
-    }
+    modRuntimeOnly(libs.quilted.fabric.api)
 
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
     modRuntimeOnly(kinecraft)
@@ -103,16 +118,7 @@ dependencies {
 }
 
 tasks {
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-
-        withSourcesJar()
-    }
-
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
+    processResources {
+        from(project(":common").sourceSets.main.get().resources)
     }
 }

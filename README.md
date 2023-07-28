@@ -4,6 +4,7 @@
 [![](https://cf.way2muchnoise.eu/full_890349_Downloads.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets) [![](https://cf.way2muchnoise.eu/versions/890349.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets)  
 [![GitHub](https://img.shields.io/github/license/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets) [![GitHub issues](https://img.shields.io/github/issues-raw/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets/issues)  
 [![Static Badge](https://img.shields.io/badge/kofi-Buy_a_coffee-ff5f5f?style=for-the-badge&logo=kofi)](https://ko-fi.com/settingdust)
+[![Discord](https://img.shields.io/discord/1134045695020642334?style=for-the-badge&logo=discord&label=Discord)](https://discord.gg/exzXHb4aQj)
 
 
 This project heavily inspired by [ThatOrThis](https://github.com/EZForever/ThatOrThis)  

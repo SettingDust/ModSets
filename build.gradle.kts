@@ -39,6 +39,7 @@ project.group = maven_group
 
 architectury {
     minecraft = libs.versions.minecraft.get()
+    compileOnly()
 }
 
 subprojects {
@@ -59,6 +60,10 @@ subprojects {
 
     configure<LoomGradleExtensionAPI> {
         silentMojangMappingsLicense()
+    }
+
+    architectury {
+        compileOnly()
     }
 
     repositories {

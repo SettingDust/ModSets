@@ -1,12 +1,8 @@
 package settingdust.modsets
 
-import dev.isxander.yacl3.api.Binding
-import dev.isxander.yacl3.api.ConfigCategory
-import dev.isxander.yacl3.api.ListOption
-import dev.isxander.yacl3.api.Option
-import dev.isxander.yacl3.api.OptionDescription
-import dev.isxander.yacl3.api.YetAnotherConfigLib
+import dev.isxander.yacl3.api.*
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -19,15 +15,7 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.kinecraft.serialization.GsonElementSerializer
-import kotlin.io.path.createDirectories
-import kotlin.io.path.createFile
-import kotlin.io.path.div
-import kotlin.io.path.inputStream
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.name
-import kotlin.io.path.nameWithoutExtension
-import kotlin.io.path.outputStream
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
@@ -35,7 +23,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
     val modSets = mutableMapOf<String, ModSet>()
-    private val _ModSetsRegisterCallback = MutableSharedFlow<Unit>()
+    private val _ModSetsRegisterCallback =
+        MutableSharedFlow<Unit>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val ModSetsRegisterCallback = _ModSetsRegisterCallback.asSharedFlow()
 
     private val definedModSets = mutableMapOf<String, ModSet>()
@@ -75,8 +64,8 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                                         collapsed(true)
                                         controller { StringControllerBuilder.create(it) }
                                         binding(
-                                            Binding.generic(modSet.value.mods, {
-                                                modSet.value.mods
+                                            Binding.generic(modSet.value.mods.toMutableList(), {
+                                                modSet.value.mods.toMutableList()
                                             }) {
                                                 modSet.value.mods.clear()
                                                 modSet.value.mods.addAll(it)
@@ -107,12 +96,18 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                         val options = category.groups().flatMap { it.options() }
                         for (option in options) {
                             option.addListener { _, _ ->
-                                for (currentOption in options) {
+                                var needSave = false
+                                for (currentOption in options.filter { it != option }) {
                                     if (currentOption.changed()) {
+                                        needSave = true
                                         (currentOption as Option<Any>).requestSet(currentOption.binding().value)
                                     }
                                 }
-                                save() // The save won't be called with instant
+                                if (option.changed()) {
+                                    (option as Option<Any>).requestSet(option.binding().value)
+                                    ModSets.logger.warn("Rule ${option.name()} is conflicting with some other rule. Can't change")
+                                }
+                                if (needSave) save() // The save won't be called with instant
                             }
                         }
                         category
@@ -141,6 +136,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         }
 
         definedModSets.clear()
+        modSets.clear()
         modSetsPath.inputStream().use {
             definedModSets.putAll(json.decodeFromStream(it))
         }
