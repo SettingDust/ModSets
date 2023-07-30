@@ -6,6 +6,10 @@
     "UnstableApiUsage",
 )
 
+plugins {
+    alias(libs.plugins.minotaur)
+}
+
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
@@ -82,4 +86,34 @@ dependencies {
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
     modRuntimeOnly(kinecraft)
     include(kinecraft)
+}
+
+
+
+modrinth {
+    token.set(env.MODRINTH_TOKEN.value) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
+    projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
+    syncBodyFrom.set(rootProject.file("README.md").readText())
+    versionType.set("release") // This is the default -- can also be `beta` or `alpha`
+    uploadFile.set(rootProject.tasks.named("fabricIntermediaryJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    changelog.set(
+        """
+        fix(common): calling save correctly with instant
+        """.trimIndent(),
+    )
+    gameVersions.addAll(
+        "1.19.4",
+        "1.20",
+        "1.20.1",
+    ) // Must be an array, even with only one version
+    loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+    loaders.add("quilt")
+    dependencies {
+        required.project("fabric-language-kotlin")
+        // https://modrinth.com/mod/yacl
+        required.project("yacl")
+        // https://modrinth.com/mod/kinecraft-serialization
+        embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-fabric")
+        optional.project("modmenu")
+    }
 }

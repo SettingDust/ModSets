@@ -1,5 +1,6 @@
 package settingdust.modsets.quilt
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,10 +14,12 @@ import org.quiltmc.loader.impl.QuiltLoaderImpl
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
 import settingdust.modsets.ModSet
 import settingdust.modsets.ModSets
+import settingdust.modsets.config
 import settingdust.modsets.rules
 import kotlin.io.path.name
 
 class Entrypoint : ModInitializer {
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onInitialize(container: ModContainer) {
         val modSets = ModSets.rules.modSets
         val modDir = QuiltLoaderImpl.INSTANCE.modsDir
@@ -29,10 +32,11 @@ class Entrypoint : ModInitializer {
                     // I can't find the real case of muleiple quilt source paths. So, just use the first
                     val paths = mod.sourcePaths.singleOrNull() ?: continue
                     // Quilt will be writing the path like [path in system, path in jar] etc.
-                    val pathInSystem = paths.first()
-                    if (pathInSystem.startsWith(modDir)) {
+                    val pathInSystem = paths.singleOrNull() ?: continue
+                    if (pathInSystem.startsWith(modDir) && modDir != pathInSystem.parent) {
                         val subDir = pathInSystem.parent.name
-                        if (subDir in modSets) ModSets.logger.warn("Duplicate mod set with directory name:  $subDir")
+                        ModSets.logger.debug("Add {} to {}", pathInSystem, subDir)
+                        if (subDir in modSets) ModSets.logger.warn("Duplicate mod set with directory name: $subDir")
                         modSets.getOrPut(subDir) {
                             ModSet(
                                 Component.literal(subDir),
@@ -43,6 +47,23 @@ class Entrypoint : ModInitializer {
                     }
                     if (metadata.id() in modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${metadata.id()}")
                     modSets.putIfAbsent(metadata.id(), ModSet(metadata))
+                }
+
+                ModSets.config.disabledMods.forEach {
+                    modSets.putIfAbsent(it, ModSet(
+                        if (try {
+                                I18n.exists("modmenu.nameTranslation.$it")
+                            } catch (e: Exception) {
+                                false
+                            }
+                        ) {
+                            Component.translatable("modmenu.nameTranslation.$it")
+                        } else {
+                            Component.literal(it)
+                        },
+                        Component.literal("$it@disabled"),
+                        mutableSetOf(it),
+                    ))
                 }
             }
         }

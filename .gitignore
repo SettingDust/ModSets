@@ -45,3 +45,4 @@ bin/
 */run
 
 .env
+*.log

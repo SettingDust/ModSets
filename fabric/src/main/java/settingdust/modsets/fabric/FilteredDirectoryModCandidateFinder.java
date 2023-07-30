@@ -1,4 +1,4 @@
-package settingdust.modsets;
+package settingdust.modsets.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
@@ -7,6 +7,8 @@ import net.fabricmc.loader.impl.discovery.ModCandidate;
 import net.fabricmc.loader.impl.discovery.ModDiscoverer;
 import net.fabricmc.loader.impl.metadata.DependencyOverrides;
 import net.fabricmc.loader.impl.metadata.VersionOverrides;
+import settingdust.modsets.ConfigKt;
+import settingdust.modsets.ModSets;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

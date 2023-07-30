@@ -16,8 +16,6 @@ import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
 import net.fabricmc.loader.impl.util.log.LogCategory
-import settingdust.modsets.FilteredDirectoryModCandidateFinder
-import settingdust.modsets.ModContainerModCandidateFinder
 import settingdust.modsets.ModSets
 import settingdust.modsets.config
 import java.nio.file.Path
@@ -103,7 +101,9 @@ object ModSetsInjector {
 
     private fun discoverMods(): Collection<ModCandidate> {
         val discoverer = ModDiscoverer(VersionOverrides(), DependencyOverrides(loader.configDir))
-        addCandidateFinderFunction.call(discoverer, ModContainerModCandidateFinder(mods))
+        addCandidateFinderFunction.call(discoverer,
+            ModContainerModCandidateFinder(mods)
+        )
         val modsDir = loader.modsDirectory.toPath()
         modsDir
             .listDirectoryEntries()

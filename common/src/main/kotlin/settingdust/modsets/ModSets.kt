@@ -1,8 +1,8 @@
 package settingdust.modsets
 
-import com.mojang.logging.LogUtils
+import org.slf4j.LoggerFactory
 
 object ModSets {
-    val logger by lazy { LogUtils.getLogger()!! }
+    val logger by lazy { LoggerFactory.getLogger(javaClass)!! }
 }
 

@@ -5,6 +5,7 @@ import dev.isxander.yacl3.api.controller.StringControllerBuilder
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -24,7 +25,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
     val modSets = mutableMapOf<String, ModSet>()
     private val _ModSetsRegisterCallback =
-        MutableSharedFlow<Unit>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        MutableSharedFlow<Unit>()
     val ModSetsRegisterCallback = _ModSetsRegisterCallback.asSharedFlow()
 
     private val definedModSets = mutableMapOf<String, ModSet>()
@@ -47,9 +48,9 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
     private val config: YetAnotherConfigLib
         get() {
-            load()
+            runBlocking { load() }
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
-            if (ModSets.config.common.displayModSetsScreen) {
+            if (ModSets.config.common.displayModSetsScreen && modSets.isNotEmpty()) {
                 builder.category(
                     ConfigCategory.createBuilder().apply {
                         name(Component.translatable("modsets.name"))
@@ -122,10 +123,10 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         }
 
     init {
-        load()
+        runBlocking { load() }
     }
 
-    private fun load() {
+    private suspend fun load() {
         ModSets.config.load()
         try {
             configDir.createDirectories()
@@ -141,7 +142,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
             definedModSets.putAll(json.decodeFromStream(it))
         }
         modSets.putAll(definedModSets)
-        _ModSetsRegisterCallback.tryEmit(Unit)
+        _ModSetsRegisterCallback.emit(Unit)
 
         clear()
         rulesDir.listDirectoryEntries("*.json").forEach {

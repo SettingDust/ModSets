@@ -138,21 +138,23 @@ subprojects {
     }
 }
 
-
-val finalJar by tasks.registering(Jar::class) {
-    dependsOn(":fabric:remapJar")
+val fabricIntermediaryJar by tasks.registering(Jar::class) {
+    dependsOn(":fabric:remapJar", ":quilt:remapJar")
     from(zipTree(project(":fabric").tasks.named("remapJar").get().outputs.files.first()))
-//    from(project(":quilt").tasks.getByName("remapJar"))
+    from(zipTree(project(":quilt").tasks.named("remapJar").get().outputs.files.first()))
 
     archiveBaseName.set(archives_name)
     archiveVersion.set("${project.version}")
+    archiveClassifier.set("fabric-intermediary")
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 curseforge {
     apiKey = env.CURSEFORGE_TOKEN.value // This should really be in a gradle.properties file
     project {
         id = "890349"
-        mainArtifact(finalJar.get()) {
+        mainArtifact(fabricIntermediaryJar.get()) {
             releaseType = "release"
             addGameVersion("1.19.4")
             addGameVersion("1.20")
@@ -163,32 +165,5 @@ curseforge {
                 optionalDependency("modmenu")
             }
         }
-    }
-}
-
-modrinth {
-    token.set(env.MODRINTH_TOKEN.value) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
-    projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
-    syncBodyFrom.set(rootProject.file("README.md").readText())
-    versionType.set("release") // This is the default -- can also be `beta` or `alpha`
-    uploadFile.set(finalJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    changelog.set(
-        """
-        fix(common): calling save correctly with instant
-        """.trimIndent(),
-    )
-    gameVersions.addAll(
-        "1.19.4",
-        "1.20",
-        "1.20.1",
-    ) // Must be an array, even with only one version
-    loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-    dependencies {
-        required.project("fabric-language-kotlin")
-        // https://modrinth.com/mod/yacl
-        required.project("yacl")
-        // https://modrinth.com/mod/kinecraft-serialization
-        embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-fabric")
-        optional.project("modmenu")
     }
 }
