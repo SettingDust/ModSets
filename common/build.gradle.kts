@@ -48,7 +48,7 @@ dependencies {
 tasks {
     jar {
         manifest.attributes(
-            "FMLModType" to "GAMELIBRARY",
+            "FMLModType" to "LIBRARY",
         )
     }
 }

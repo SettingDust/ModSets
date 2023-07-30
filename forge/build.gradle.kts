@@ -14,6 +14,11 @@ sourceSets {
         compileClasspath += main.get().compileClasspath
         compileClasspath += main.get().output
     }
+
+    val language by registering {
+        compileClasspath += main.get().compileClasspath
+        compileClasspath += main.get().output
+    }
 }
 
 repositories {
@@ -47,6 +52,28 @@ val modJar by tasks.registering(Jar::class) {
     manifest {
         attributes(
             "MixinConfigs" to "$archives_name.mixins.json",
+        )
+    }
+}
+
+val languageJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("language")
+    from(sourceSets.named("language").get().output)
+    destinationDirectory.set(project.buildDir.resolve("devlibs"))
+    manifest {
+        attributes(
+            "FMLModType" to "LANGPROVIDER",
+        )
+    }
+}
+
+val commonCoreJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("common-core")
+    from(project(":common").sourceSets.main.get().output)
+    destinationDirectory.set(project.buildDir.resolve("devlibs"))
+    manifest {
+        attributes(
+            "FMLModType" to "LIB",
         )
     }
 }
@@ -102,6 +129,17 @@ tasks {
                 modJar.get().outputs.files.singleFile
             ),
         )
+        forgeNestedJars.add(
+            IncludedJarFactory.NestedFile(
+                IncludedJarFactory.Metadata(
+                    "settingdust.modsets.forge.language",
+                    "language",
+                    version.toString(),
+                    "language"
+                ),
+                languageJar.get().outputs.files.singleFile
+            ),
+        )
     }
 
     processResources {
@@ -115,8 +153,7 @@ tasks {
     afterEvaluate {
         withType<AbstractRunTask> {
             classpath = classpath.filter { it !in sourceSets.main.get().output }
-            classpath += files(jar)
-            classpath += files(modJar)
+            classpath += files(jar, modJar, languageJar)
         }
     }
 }
