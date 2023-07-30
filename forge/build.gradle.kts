@@ -1,3 +1,6 @@
+import net.fabricmc.loom.build.nesting.IncludedJarFactory
+import net.fabricmc.loom.task.AbstractRunTask
+
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
@@ -6,23 +9,10 @@ architectury {
     forge()
 }
 
-loom {
-//    mods {
-//        register(archives_name) {
-//            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
-//            sourceSet(sourceSets.main.get())
-//        }
-//    }
-    forge {
-//        mixinConfig("$archives_name-common.mixins.json")
-        mixinConfig("$archives_name.mixins.json")
-    }
-
-    runs {
-        named("client") {
-            property("mixin.debug.export", "true")
-            property("mixin.debug.verbose", "true")
-        }
+sourceSets {
+    val core by registering {
+        compileClasspath += main.get().compileClasspath
+        compileClasspath += main.get().output
     }
 }
 
@@ -50,13 +40,45 @@ repositories {
     maven("https://maven.neoforged.net/releases")
 }
 
+val modJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("core")
+    from(sourceSets.named("core").get().output)
+    destinationDirectory.set(project.buildDir.resolve("devlibs"))
+    manifest {
+        attributes(
+            "MixinConfigs" to "$archives_name.mixins.json",
+        )
+    }
+}
+
+loom {
+    mods {
+        named("main") {
+//            modFiles.from(modJar)
+//            sourceSet(project(":common").sourceSets.main.get())
+//            sourceSet(sourceSets.named("core").get())
+        }
+    }
+
+//    forge {
+//        mixinConfig("$archives_name-common.mixins.json")
+//        mixinConfig("$archives_name.mixins.json")
+//    }
+
+    runs {
+        named("client") {
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
+        }
+    }
+}
+
 dependencies {
-    forge(libs.forge)
+    forge(libs.neoforge)
 
     implementation(project(path = ":common", configuration = "namedElements")) {
         isTransitive = false
     }
-    include(project(path = ":common", configuration = "transformProductionForge"))
 
     implementation(libs.kotlin.forge)
     modRuntimeOnly(libs.yacl.forge)
@@ -67,7 +89,34 @@ dependencies {
 }
 
 tasks {
+    remapJar {
+        from(project(":common").sourceSets.main.get().output)
+        forgeNestedJars.add(
+            IncludedJarFactory.NestedFile(
+                IncludedJarFactory.Metadata(
+                    "settingdust.modsets.forge",
+                    "service",
+                    version.toString(),
+                    "service"
+                ),
+                modJar.get().outputs.files.singleFile
+            ),
+        )
+    }
+
     processResources {
+        exclude("META-INF/mods.toml")
+    }
+
+    named<ProcessResources>("processCoreResources") {
         from(project(":common").sourceSets.main.get().resources)
+    }
+
+    afterEvaluate {
+        withType<AbstractRunTask> {
+            classpath = classpath.filter { it !in sourceSets.main.get().output }
+            classpath += files(jar)
+            classpath += files(modJar)
+        }
     }
 }

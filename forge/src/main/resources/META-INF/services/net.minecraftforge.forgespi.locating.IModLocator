@@ -1,2 +1,1 @@
-settingdust.modsets.forge.DummyModSetsModLocator
-settingdust.modsets.forge.ModSetsModLocator
+settingdust.modsets.forge.service.ModSetsModLocator

@@ -1,10 +1,11 @@
-package settingdust.modsets.forge;
+package settingdust.modsets.forge.service;
 
 import com.google.common.collect.Streams;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.moddiscovery.AbstractJarFileModLocator;
 import net.minecraftforge.forgespi.language.IModInfo;
-import settingdust.modsets.ModSets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +17,9 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 // Inspired by https://github.com/Chaos02/SubFolderLoader/blob/main/src/main/java/com/chaos02/structuredmodloader/StructuredModLoader.java
-public class DummyModSetsModLocator extends AbstractJarFileModLocator {
-
+public class ModSetsModLocator extends AbstractJarFileModLocator {
     public static Map<String, List<String>> directoryModSet = new HashMap<>();
-
+    private static Logger logger = LoggerFactory.getLogger(ModSetsModLocator.class);
     private List<Path> mods = new ArrayList<>();
 
     @Override
@@ -37,8 +37,8 @@ public class DummyModSetsModLocator extends AbstractJarFileModLocator {
         var modsDir = FMLPaths.GAMEDIR.get().resolve(FMLPaths.MODSDIR.get());
         try (var dirs = Files.list(modsDir).filter(Files::isDirectory)) {
             var dirList = dirs.toList();
-            ModSets.INSTANCE.getLogger().info("Loading mods from {} sub dir in mods", dirList.size());
-            ModSets.INSTANCE.getLogger().debug(String.join(",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
+            logger.info("Loading mods from {} sub dir in mods", dirList.size());
+            logger.debug(String.join(",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
 
             return dirList.stream().flatMap(it -> {
                 try {

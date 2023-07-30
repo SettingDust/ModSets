@@ -3,7 +3,7 @@ package settingdust.modsets.forge
 import net.minecraftforge.fml.loading.FMLPaths
 import net.minecraftforge.fml.loading.moddiscovery.AbstractJarFileModLocator
 import net.minecraftforge.forgespi.locating.IModLocator
-import settingdust.modsets.ModSets
+import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.util.stream.Stream
 import kotlin.io.path.div
@@ -12,7 +12,9 @@ import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
 // Inspired by https://github.com/Chaos02/SubFolderLoader/blob/main/src/main/java/com/chaos02/structuredmodloader/StructuredModLoader.java
-class ModSetsModLocator : AbstractJarFileModLocator(), IModLocator {
+class DummyModSetsModLocator : AbstractJarFileModLocator(), IModLocator {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     companion object {
         val directoryModSet = mutableMapOf<String, MutableList<String>>()
     }
@@ -35,8 +37,8 @@ class ModSetsModLocator : AbstractJarFileModLocator(), IModLocator {
     override fun scanCandidates(): Stream<Path> {
         val modsDir = FMLPaths.GAMEDIR.get() / FMLPaths.MODSDIR.get()
         return modsDir.listDirectoryEntries().filter { it.isDirectory() }.also {
-            ModSets.logger.info("Loading mods from {} sub dir in mods", it.size)
-            ModSets.logger.debug(it.joinToString())
+            logger.info("Loading mods from {} sub dir in mods", it.size)
+            logger.debug(it.joinToString())
         }.flatMap {
             it.listDirectoryEntries("*.jar")
         }.stream()
