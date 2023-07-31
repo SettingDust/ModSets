@@ -6,6 +6,9 @@
     "UnstableApiUsage",
 )
 
+import net.fabricmc.loom.build.nesting.IncludedJarFactory
+import net.fabricmc.loom.task.RemapJarTask
+
 plugins {
     alias(libs.plugins.minotaur)
 }
@@ -73,6 +76,8 @@ dependencies {
     }
     include(project(path = ":common", configuration = "transformProductionFabric"))
 
+    implementation(project.project(":common").sourceSets.named("game").get().output)
+
     modImplementation(libs.fabric.loader)
     modRuntimeOnly(libs.fabric.languageKotlin) {
         exclude(module = "fabric-loader")
@@ -88,6 +93,31 @@ dependencies {
     include(kinecraft)
 }
 
+tasks {
+    remapJar {
+        val factory = IncludedJarFactory(project)
+        val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
+            "getNestableJar",
+            File::class.java,
+            IncludedJarFactory.Metadata::class.java
+        )
+        getNestableJar.isAccessible = true
+        val file = project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile
+        if (file.exists())
+            nestedJars.from(
+                getNestableJar.invoke(
+                    factory,
+                    project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile,
+                    IncludedJarFactory.Metadata(
+                        "settingdust.modsets.common",
+                        "game",
+                        version.toString(),
+                        "game"
+                    )
+                )
+            )
+    }
+}
 
 
 modrinth {
@@ -98,7 +128,7 @@ modrinth {
     uploadFile.set(rootProject.tasks.named("fabricIntermediaryJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
     changelog.set(
         """
-        fix(common): calling save correctly with instant
+        
         """.trimIndent(),
     )
     gameVersions.addAll(

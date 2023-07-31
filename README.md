@@ -8,7 +8,7 @@
 
 
 This project heavily inspired by [ThatOrThis](https://github.com/EZForever/ThatOrThis)  
-The mod is using for Minecraft Fabric/~~Quilt~~ for managing mod loading in game.   
+The mod is using for Minecraft Fabric/Quilt/Forge for managing mod loading in game.   
 And useful for modpack developer
 
 ## Feature

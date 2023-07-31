@@ -12,10 +12,10 @@ import org.quiltmc.loader.api.ModMetadata
 import org.quiltmc.loader.api.QuiltLoader
 import org.quiltmc.loader.impl.QuiltLoaderImpl
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
-import settingdust.modsets.ModSet
+import settingdust.modsets.game.ModSet
 import settingdust.modsets.ModSets
 import settingdust.modsets.config
-import settingdust.modsets.rules
+import settingdust.modsets.game.rules
 import kotlin.io.path.name
 
 class Entrypoint : ModInitializer {
@@ -63,7 +63,8 @@ class Entrypoint : ModInitializer {
                         },
                         Component.literal("$it@disabled"),
                         mutableSetOf(it),
-                    ))
+                    )
+                    )
                 }
             }
         }

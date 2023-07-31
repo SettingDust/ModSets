@@ -7,6 +7,8 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.build.nesting.IncludedJarFactory
+import net.fabricmc.loom.task.RemapJarTask
 
 val archives_name: String by rootProject
 val loom: LoomGradleExtensionAPI by extensions
@@ -96,6 +98,8 @@ dependencies {
     }
     include(project(path = ":common", configuration = "transformProductionQuilt"))
 
+    implementation(project.project(":common").sourceSets.named("game").get().output)
+
     modImplementation(libs.quilt.loader)
     modImplementation(libs.quilt.standard.libraries.core)
 
@@ -121,4 +125,28 @@ tasks {
     processResources {
         from(project(":common").sourceSets.main.get().resources)
     }
+}
+
+tasks.remapJar {
+    val factory = IncludedJarFactory(project)
+    val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
+        "getNestableJar",
+        File::class.java,
+        IncludedJarFactory.Metadata::class.java
+    )
+    getNestableJar.isAccessible = true
+    val file = project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile
+    if (file.exists())
+        nestedJars.from(
+            getNestableJar.invoke(
+                factory,
+                project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile,
+                IncludedJarFactory.Metadata(
+                    "settingdust.modsets.common",
+                    "game",
+                    version.toString(),
+                    "game"
+                )
+            )
+        )
 }

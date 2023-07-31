@@ -11,6 +11,8 @@ import net.minecraftforge.fml.loading.FMLPaths
 import net.minecraftforge.fml.loading.moddiscovery.*
 import settingdust.modsets.*
 import settingdust.modsets.forge.service.ModSetsModLocator
+import settingdust.modsets.game.ModSet
+import settingdust.modsets.game.rules
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import kotlin.io.path.div
 
@@ -19,20 +21,20 @@ class Entrypoint {
     init {
         // Take from https://github.com/isXander/YetAnotherConfigLib/blob/1.20.x/dev/test-forge/src/main/java/dev/isxander/yacl/test/forge/ForgeTest.java
         val gameClassLoader = javaClass.classLoader
-        val rulesClass = gameClassLoader.loadClass("settingdust.modsets.Rules")
-        val rules = rulesClass.getDeclaredField("INSTANCE")[null] as Rules
+//        val rulesClass = gameClassLoader.loadClass("settingdust.modsets.Rules")
+//        val rules = rulesClass.getDeclaredField("INSTANCE")[null] as Rules
         LOADING_CONTEXT.registerExtensionPoint(ConfigScreenFactory::class.java) {
             ConfigScreenFactory { _, parent ->
-                rules.createScreen(parent)
+                ModSets.rules.createScreen(parent)
             }
         }
 
         val gameDir = FMLPaths.GAMEDIR.get()
         val modsPath = FMLPaths.MODSDIR.get()
-        val modSets = rules.modSets
+        val modSets = ModSets.rules.modSets
 
         GlobalScope.launch(Dispatchers.IO) {
-            rules.ModSetsRegisterCallback.collect {
+            ModSets.rules.ModSetsRegisterCallback.collect {
                 for ((key, value) in ModSetsModLocator.directoryModSet.mapValues {
                     ModSet(
                         Component.literal(it.key),
@@ -46,7 +48,7 @@ class Entrypoint {
 
                 for (mod in ModList.get().mods) {
                     val provider = mod.owningFile.file.provider
-                    if (provider !is ModsFolderLocator) continue
+                    if (provider !is ModsFolderLocator && provider !is ModSetsModLocator) continue
                     if (mod.modId in modSets) ModSets.logger.warn("Duplicate mod set with directory name: ${mod.modId}")
                     modSets.putIfAbsent(
                         mod.modId, ModSet(

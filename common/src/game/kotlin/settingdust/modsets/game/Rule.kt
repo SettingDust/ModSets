@@ -1,4 +1,4 @@
-package settingdust.modsets
+package settingdust.modsets.game
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.Option
@@ -13,7 +13,9 @@ import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Style
-import settingdust.modsets.Rules.getOrThrow
+import settingdust.modsets.ModSets
+import settingdust.modsets.ModSetsConfig
+import settingdust.modsets.game.Rules.getOrThrow
 
 interface Described {
     val text: Component
@@ -72,15 +74,15 @@ object LabelRule : OptionRule<Component> {
 
 private val String.booleanBinding: Binding<Boolean>
     get() {
-        val mods = ModSets.rules.modSets.getOrThrow(this).mods.toSet()
+        val mods = Rules.modSets.getOrThrow(this).mods.toSet()
         return Binding.generic(
             true,
-            { mods.any { it !in ModSets.config.disabledMods } },
+            { mods.any { it !in ModSetsConfig.disabledMods } },
             {
                 if (it) {
-                    ModSets.config.disabledMods.removeAll(mods)
+                    ModSetsConfig.disabledMods.removeAll(mods)
                 } else {
-                    ModSets.config.disabledMods.addAll(mods)
+                    ModSetsConfig.disabledMods.addAll(mods)
                 }
             },
         )
@@ -97,7 +99,7 @@ data class BooleanRule(val mod: String) : OptionRule<Boolean> {
             .apply {
                 (
                         rule.description
-                            ?: ModSets.rules.modSets[mod]?.description
+                            ?: Rules.modSets[mod]?.description
                         )?.let { description(OptionDescription.of(it)) }
             }
             .instant(true)
@@ -122,7 +124,7 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
             CyclingListControllerBuilder.create(it)
                 .values(mods)
                 .valueFormatter { mod ->
-                    val modSet = ModSets.rules.modSets.getOrThrow(mod)
+                    val modSet = Rules.modSets.getOrThrow(mod)
                     modSet.text.copy()
                         .withStyle(
                             Style.EMPTY.withHoverEvent(
@@ -142,31 +144,31 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                 Binding.generic(
                     firstMod,
                     {
-                        val modSets = ModSets.rules.modSets
+                        val modSets = Rules.modSets
                         val enabledModSet = mods.asSequence()
                             .filter { modSet ->
                                 val mods = modSets.getOrThrow(modSet).mods
-                                mods.isNotEmpty() && mods.none { it in ModSets.config.disabledMods }
+                                mods.isNotEmpty() && mods.none { it in ModSetsConfig.disabledMods }
                             }
                             .toList()
                         if (enabledModSet.size > 1) {
                             ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
-                            ModSets.config.disabledMods.addAll(
+                            ModSetsConfig.disabledMods.addAll(
                                 enabledModSet.drop(1).flatMap { modSets.getOrThrow(it).mods },
                             )
-                            ModSets.config.disabledMods.removeAll(modSets.getOrThrow(enabledModSet.first()).mods.toSet())
+                            ModSetsConfig.disabledMods.removeAll(modSets.getOrThrow(enabledModSet.first()).mods.toSet())
                             return@generic enabledModSet.first()
                         }
                         val currentSelected =
                             enabledModSet.singleOrNull() ?: mods.firstOrNull { modSets.getOrThrow(it).mods.isEmpty() }
                             ?: firstMod
 
-                        ModSets.config.disabledMods.removeAll(modSets.getOrThrow(currentSelected).mods.toSet())
+                        ModSetsConfig.disabledMods.removeAll(modSets.getOrThrow(currentSelected).mods.toSet())
                         return@generic currentSelected
                     },
                 ) { value: String ->
-                    ModSets.config.disabledMods.addAll(mods.flatMap { ModSets.rules.modSets.getOrThrow(it).mods })
-                    ModSets.config.disabledMods.removeAll(ModSets.rules.modSets.getOrThrow(value).mods.toSet())
+                    ModSetsConfig.disabledMods.addAll(mods.flatMap { Rules.modSets.getOrThrow(it).mods })
+                    ModSetsConfig.disabledMods.removeAll(Rules.modSets.getOrThrow(value).mods.toSet())
                 },
             ).build()
     }
@@ -185,7 +187,7 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
         val group = OptionGroup.createBuilder().name(rule.text)
         rule.description?.let { group.description(OptionDescription.of(it)) }
         for (mod in mods) {
-            val modSet = ModSets.rules.modSets.getOrThrow(mod)
+            val modSet = Rules.modSets.getOrThrow(mod)
             val option = Option.createBuilder<Boolean>().name(modSet.text)
             modSet.description?.let { option.description(OptionDescription.of(it)) }
             group.option(

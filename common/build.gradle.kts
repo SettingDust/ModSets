@@ -6,10 +6,21 @@
     "UnstableApiUsage",
 )
 
+import dev.architectury.plugin.ModLoader
+import dev.architectury.plugin.TransformingTask
+import dev.architectury.plugin.loom.LoomInterface
+import net.fabricmc.loom.task.RemapJarTask
+
+
 val archives_name: String by rootProject
 
 architectury {
     common(rootProject.property("enabled_platforms").toString().split(","))
+}
+
+val game by sourceSets.registering {
+    compileClasspath += sourceSets.main.get().compileClasspath
+    compileClasspath += sourceSets.main.get().output
 }
 
 repositories {
@@ -50,5 +61,24 @@ tasks {
         manifest.attributes(
             "FMLModType" to "LIBRARY",
         )
+    }
+
+    val modJar by registering(Jar::class) {
+        archiveClassifier.set("game")
+        from(sourceSets.named("game").get().output)
+        destinationDirectory.set(project.buildDir.resolve("devlibs"))
+        manifest.attributes(
+            "FMLModType" to "GAMELIBRARY",
+        )
+    }
+
+    val remapModJar by registering(RemapJarTask::class) {
+        dependsOn(modJar)
+        archiveClassifier.set("game")
+        inputFile.convention(modJar.get().archiveFile)
+    }
+
+    named<ProcessResources>("processGameResources") {
+        exclude("META-INF/mods.toml")
     }
 }

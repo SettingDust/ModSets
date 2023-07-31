@@ -151,11 +151,16 @@ val fabricIntermediaryJar by tasks.registering(Jar::class) {
 }
 
 curseforge {
+    options {
+        debug = true
+    }
     apiKey = env.CURSEFORGE_TOKEN.value // This should really be in a gradle.properties file
     project {
         id = "890349"
         mainArtifact(fabricIntermediaryJar.get()) {
             releaseType = "release"
+            addGameVersion("fabric")
+            addGameVersion("quilt")
             addGameVersion("1.19.4")
             addGameVersion("1.20")
             addGameVersion("1.20.1")

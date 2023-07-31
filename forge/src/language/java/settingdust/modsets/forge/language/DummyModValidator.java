@@ -8,9 +8,7 @@ import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.fml.loading.moddiscovery.ModValidator;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.locating.IModFile;
-import settingdust.modsets.ConfigKt;
-import settingdust.modsets.ModSets;
-import settingdust.modsets.forge.platform.PlatformHelperForge;
+import settingdust.modsets.ModSetsConfig;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -63,8 +61,7 @@ public class DummyModValidator extends ModValidator {
 
     @Override
     public BackgroundScanHandler stage2Validation() {
-        new PlatformHelperForge().getConfigDir();
-        Set<String> disabledMods = ConfigKt.getConfig(ModSets.INSTANCE).getDisabledMods();
+        Set<String> disabledMods = ModSetsConfig.INSTANCE.getDisabledMods();
         try {
             DummyModLanguageProvider.resetModValidator();
             final var candidateMods = (List<ModFile>) fieldCandidateMods.get(validator);

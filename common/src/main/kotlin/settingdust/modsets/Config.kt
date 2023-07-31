@@ -38,7 +38,7 @@ object ModSetsConfig {
         load()
     }
 
-    internal fun load() {
+    fun load() {
         try {
             configDir.createDirectories()
         } catch (_: Exception) {
@@ -67,7 +67,7 @@ object ModSetsConfig {
         save()
     }
 
-    internal fun save() {
+    fun save() {
         commonConfigPath.outputStream().use {
             json.encodeToStream(common, it)
         }

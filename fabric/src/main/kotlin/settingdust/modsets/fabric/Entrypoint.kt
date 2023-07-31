@@ -10,11 +10,11 @@ import net.fabricmc.loader.api.metadata.ModOrigin
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
-import settingdust.modsets.ModSet
+import settingdust.modsets.game.ModSet
 import settingdust.modsets.ModSets
-import settingdust.modsets.Rules.ModSetsRegisterCallback
+import settingdust.modsets.game.Rules.ModSetsRegisterCallback
 import settingdust.modsets.config
-import settingdust.modsets.rules
+import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
 object Entrypoint : ModInitializer {

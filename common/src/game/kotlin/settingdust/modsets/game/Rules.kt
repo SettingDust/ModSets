@@ -1,8 +1,7 @@
-package settingdust.modsets
+package settingdust.modsets.game
 
 import dev.isxander.yacl3.api.*
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.runBlocking
@@ -16,6 +15,10 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.kinecraft.serialization.GsonElementSerializer
+import settingdust.modsets.ModSets
+import settingdust.modsets.ModSetsConfig
+import settingdust.modsets.PlatformHelper
+import settingdust.modsets.config
 import kotlin.io.path.*
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -50,7 +53,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         get() {
             runBlocking { load() }
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
-            if (ModSets.config.common.displayModSetsScreen && modSets.isNotEmpty()) {
+            if (ModSetsConfig.common.displayModSetsScreen && modSets.isNotEmpty()) {
                 builder.category(
                     ConfigCategory.createBuilder().apply {
                         name(Component.translatable("modsets.name"))
@@ -119,7 +122,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                     ConfigCategory.createBuilder().name(Component.translatable("modsets.no_rules")).build(),
                 )
             }
-            return builder.save(::save).build()
+            return builder.save(ModSets.rules::save).build()
         }
 
     init {

@@ -1,6 +1,7 @@
-modLoader = "javafml"
-loaderVersion = "[46,)"
+modLoader = "kotlinforforge"
+loaderVersion = "[4,]"
+license = "MIT"
 [[mods]]
-modId = "dummy"
-version = "0.0.0"
-displayName = "dummy"
+modId = "${id}_service"
+version = "$version"
+displayName = "$name"
