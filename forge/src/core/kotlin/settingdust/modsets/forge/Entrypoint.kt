@@ -2,16 +2,21 @@ package settingdust.modsets.forge
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
 import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.loading.FMLPaths
-import net.minecraftforge.fml.loading.moddiscovery.*
-import settingdust.modsets.*
+import net.minecraftforge.fml.loading.moddiscovery.ModsFolderLocator
+import settingdust.modsets.ModSets
+import settingdust.modsets.config
 import settingdust.modsets.forge.service.ModSetsModLocator
 import settingdust.modsets.game.ModSet
+import settingdust.modsets.game.Rules
 import settingdust.modsets.game.rules
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import kotlin.io.path.div
@@ -20,9 +25,6 @@ import kotlin.io.path.div
 class Entrypoint {
     init {
         // Take from https://github.com/isXander/YetAnotherConfigLib/blob/1.20.x/dev/test-forge/src/main/java/dev/isxander/yacl/test/forge/ForgeTest.java
-        val gameClassLoader = javaClass.classLoader
-//        val rulesClass = gameClassLoader.loadClass("settingdust.modsets.Rules")
-//        val rules = rulesClass.getDeclaredField("INSTANCE")[null] as Rules
         LOADING_CONTEXT.registerExtensionPoint(ConfigScreenFactory::class.java) {
             ConfigScreenFactory { _, parent ->
                 ModSets.rules.createScreen(parent)
@@ -34,7 +36,7 @@ class Entrypoint {
         val modSets = ModSets.rules.modSets
 
         GlobalScope.launch(Dispatchers.IO) {
-            ModSets.rules.ModSetsRegisterCallback.collect {
+            ModSets.rules.ModSetsRegisterCallback.subscribe {
                 for ((key, value) in ModSetsModLocator.directoryModSet.mapValues {
                     ModSet(
                         Component.literal(it.key),

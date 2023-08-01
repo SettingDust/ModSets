@@ -25,7 +25,7 @@
     "modmenu": [
       {
         "adapter": "kotlin",
-        "value": "${group}.ModSetsModMenu"
+        "value": "${group}.game.ModSetsModMenu"
       }
     ]
   },

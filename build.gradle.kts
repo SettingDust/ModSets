@@ -25,7 +25,7 @@ plugins {
 //    alias(libs.plugins.fabric.loom) apply false
 
     alias(libs.plugins.shadow) apply false
-    alias(libs.plugins.minotaur)
+    alias(libs.plugins.minotaur) apply false
     alias(libs.plugins.cursegradle)
 }
 
@@ -143,9 +143,8 @@ val fabricIntermediaryJar by tasks.registering(Jar::class) {
     from(zipTree(project(":fabric").tasks.named("remapJar").get().outputs.files.first()))
     from(zipTree(project(":quilt").tasks.named("remapJar").get().outputs.files.first()))
 
-    archiveBaseName.set(archives_name)
+    archiveBaseName.set("$archives_name-fabric-intermediary")
     archiveVersion.set("${project.version}")
-    archiveClassifier.set("fabric-intermediary")
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

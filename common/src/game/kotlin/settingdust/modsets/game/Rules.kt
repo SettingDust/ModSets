@@ -2,8 +2,8 @@ package settingdust.modsets.game
 
 import dev.isxander.yacl3.api.*
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -16,22 +16,19 @@ import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.kinecraft.serialization.GsonElementSerializer
 import settingdust.modsets.ModSets
-import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.PlatformHelper
 import settingdust.modsets.config
 import kotlin.io.path.*
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
-object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
+object Rules : MutableMap<String, RuleSet> by hashMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
-    val modSets = mutableMapOf<String, ModSet>()
-    private val _ModSetsRegisterCallback =
-        MutableSharedFlow<Unit>()
-    val ModSetsRegisterCallback = _ModSetsRegisterCallback.asSharedFlow()
+    val modSets = hashMapOf<String, ModSet>()
+    val ModSetsRegisterCallback = WaitedSharedFlow<Unit>()
 
-    private val definedModSets = mutableMapOf<String, ModSet>()
+    private val definedModSets = hashMapOf<String, ModSet>()
     private val modSetsPath = configDir / "modsets.json"
 
     private val rulesDir = configDir / "rules"
@@ -51,29 +48,29 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
 
     private val config: YetAnotherConfigLib
         get() {
-            runBlocking { load() }
+            load()
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
-            if (ModSetsConfig.common.displayModSetsScreen && modSets.isNotEmpty()) {
+            if (ModSets.config.common.displayModSetsScreen && modSets.isNotEmpty()) {
                 builder.category(
                     ConfigCategory.createBuilder().apply {
                         name(Component.translatable("modsets.name"))
                         tooltip(Component.translatable("modsets.description"))
                         groups(
-                            modSets.map { modSet ->
+                            modSets.map { (name, modSet) ->
                                 ListOption.createBuilder<String>()
                                     .apply {
-                                        name(modSet.value.text)
-                                        modSet.value.description?.let { description(OptionDescription.of(it)) }
+                                        name(modSet.text)
+                                        modSet.description?.let { description(OptionDescription.of(it)) }
                                         initial("")
                                         collapsed(true)
                                         controller { StringControllerBuilder.create(it) }
                                         binding(
-                                            Binding.generic(modSet.value.mods.toMutableList(), {
-                                                modSet.value.mods.toMutableList()
+                                            Binding.generic(modSet.mods.toMutableList(), {
+                                                modSet.mods.toMutableList()
                                             }) {
-                                                modSet.value.mods.clear()
-                                                modSet.value.mods.addAll(it)
-                                                definedModSets[modSet.key] = modSet.value
+                                                modSet.mods.clear()
+                                                modSet.mods.addAll(it)
+                                                definedModSets[name] = modSet
                                             },
                                         )
                                     }
@@ -101,11 +98,9 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                         for (option in options) {
                             option.addListener { _, _ ->
                                 var needSave = false
-                                for (currentOption in options.filter { it != option }) {
-                                    if (currentOption.changed()) {
-                                        needSave = true
-                                        (currentOption as Option<Any>).requestSet(currentOption.binding().value)
-                                    }
+                                options.filter { it != option && it.changed() }.forEach {
+                                    needSave = true
+                                    (it as Option<Any>).requestSet(it.binding().value)
                                 }
                                 if (option.changed()) {
                                     (option as Option<Any>).requestSet(option.binding().value)
@@ -126,10 +121,10 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         }
 
     init {
-        runBlocking { load() }
+        load()
     }
 
-    private suspend fun load() {
+    private fun load() {
         ModSets.config.load()
         try {
             configDir.createDirectories()
@@ -145,7 +140,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
             definedModSets.putAll(json.decodeFromStream(it))
         }
         modSets.putAll(definedModSets)
-        _ModSetsRegisterCallback.emit(Unit)
+        runBlocking { ModSetsRegisterCallback.emit(Unit)}
 
         clear()
         rulesDir.listDirectoryEntries("*.json").forEach {

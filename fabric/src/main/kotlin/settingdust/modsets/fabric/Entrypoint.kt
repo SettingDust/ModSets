@@ -3,6 +3,9 @@ package settingdust.modsets.fabric
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
@@ -10,10 +13,10 @@ import net.fabricmc.loader.api.metadata.ModOrigin
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
-import settingdust.modsets.game.ModSet
 import settingdust.modsets.ModSets
-import settingdust.modsets.game.Rules.ModSetsRegisterCallback
 import settingdust.modsets.config
+import settingdust.modsets.game.ModSet
+import settingdust.modsets.game.Rules.ModSetsRegisterCallback
 import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
@@ -25,7 +28,7 @@ object Entrypoint : ModInitializer {
         val modSets = ModSets.rules.modSets
 
         GlobalScope.launch(Dispatchers.IO) {
-            ModSetsRegisterCallback.collect {
+            ModSetsRegisterCallback.subscribe {
                 for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets
                     .mapValues {
                         ModSet(
