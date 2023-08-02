@@ -47,10 +47,10 @@ dependencies {
     api(libs.kotlinx.coroutines)
     api(libs.kotlin.reflect)
 
-    modApi(libs.yacl.common)
+    modApi(libs.yacl)
     modApi(libs.modmenu)
 
-    modApi("maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric")
+    modApi(libs.kinecraft.serialization.local)
 }
 
 tasks {

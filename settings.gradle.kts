@@ -3,7 +3,8 @@ rootProject.name = "ModSets"
 include("common")
 include("fabric")
 include("quilt")
-include("forge")
+// Yacl no 1.19.2 forge version. Just disable it
+//include("forge")
 
 pluginManagement {
     repositories {

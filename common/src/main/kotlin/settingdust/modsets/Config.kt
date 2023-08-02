@@ -20,11 +20,11 @@ val ModSets.config: ModSetsConfig
 @Deprecated("Use ModSets.config instead", ReplaceWith("ModSets.config"))
 object ModSetsConfig {
     val disabledMods = mutableSetOf<String>()
-    var common = CommonConfig()
-        private set
+//    var common = CommonConfig()
+//        private set
 
     private val configDir = PlatformHelper.configDir / "modsets"
-    private val commonConfigPath = configDir / "common.json"
+//    private val commonConfigPath = configDir / "common.json"
     private val disabledModsPath = configDir / "disabled_mods.json"
 
     private val json = Json {
@@ -50,7 +50,7 @@ object ModSetsConfig {
         }
 
         try {
-            commonConfigPath.createFile()
+//            commonConfigPath.createFile()
         } catch (_: Exception) {
         }
 
@@ -61,16 +61,16 @@ object ModSetsConfig {
         }
 
         try {
-            common = json.decodeFromStream(commonConfigPath.inputStream())
+//            common = json.decodeFromStream(commonConfigPath.inputStream())
         } catch (_: Exception) {
         }
         save()
     }
 
     fun save() {
-        commonConfigPath.outputStream().use {
-            json.encodeToStream(common, it)
-        }
+//        commonConfigPath.outputStream().use {
+//            json.encodeToStream(common, it)
+//        }
         disabledModsPath.outputStream().use {
             json.encodeToStream(
                 disabledMods,

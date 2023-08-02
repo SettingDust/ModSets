@@ -123,7 +123,7 @@ dependencies {
     implementation(project.project(":common").sourceSets.named("game").get().output)
 
     implementation(libs.kotlin.forge)
-    modRuntimeOnly(libs.yacl.forge)
+    modRuntimeOnly(libs.yacl)
 
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
     include(kinecraft)

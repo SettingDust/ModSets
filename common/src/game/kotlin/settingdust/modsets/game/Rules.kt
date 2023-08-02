@@ -1,7 +1,8 @@
 package settingdust.modsets.game
 
-import dev.isxander.yacl3.api.*
-import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import dev.isxander.yacl.api.ConfigCategory
+import dev.isxander.yacl.api.Option
+import dev.isxander.yacl.api.YetAnotherConfigLib
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -48,36 +49,36 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
         get() {
             load()
             val builder = YetAnotherConfigLib.createBuilder().title(Component.translatable("modsets.name"))
-            if (ModSets.config.common.displayModSetsScreen && modSets.isNotEmpty()) {
-                builder.category(
-                    ConfigCategory.createBuilder().apply {
-                        name(Component.translatable("modsets.name"))
-                        tooltip(Component.translatable("modsets.description"))
-                        groups(
-                            modSets.map { (name, modSet) ->
-                                ListOption.createBuilder<String>()
-                                    .apply {
-                                        name(modSet.text)
-                                        modSet.description?.let { description(OptionDescription.of(it)) }
-                                        initial("")
-                                        collapsed(true)
-                                        controller { StringControllerBuilder.create(it) }
-                                        binding(
-                                            Binding.generic(modSet.mods.toMutableList(), {
-                                                modSet.mods.toMutableList()
-                                            }) {
-                                                modSet.mods.clear()
-                                                modSet.mods.addAll(it)
-                                                definedModSets[name] = modSet
-                                            },
-                                        )
-                                    }
-                                    .build()
-                            },
-                        )
-                    }.build(),
-                )
-            }
+//            if (ModSets.config.common.displayModSetsScreen && modSets.isNotEmpty()) {
+//                builder.category(
+//                    ConfigCategory.createBuilder().apply {
+//                        name(Component.translatable("modsets.name"))
+//                        tooltip(Component.translatable("modsets.description"))
+//                        groups(
+//                            modSets.map { (name, modSet) ->
+//                                ListOption.createBuilder<String>()
+//                                    .apply {
+//                                        name(modSet.text)
+//                                        modSet.description?.let { description(OptionDescription.of(it)) }
+//                                        initial("")
+//                                        collapsed(true)
+//                                        controller { StringControllerBuilder.create(it) }
+//                                        binding(
+//                                            Binding.generic(modSet.mods.toMutableList(), {
+//                                                modSet.mods.toMutableList()
+//                                            }) {
+//                                                modSet.mods.clear()
+//                                                modSet.mods.addAll(it)
+//                                                definedModSets[name] = modSet
+//                                            },
+//                                        )
+//                                    }
+//                                    .build()
+//                            },
+//                        )
+//                    }.build(),
+//                )
+//            }
             if (this@Rules.isNotEmpty()) {
                 builder.categories(
                     this@Rules.map { (_, ruleSet) ->

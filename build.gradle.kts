@@ -9,8 +9,6 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-import net.darkhax.curseforgegradle.TaskPublishCurseForge
-
 plugins {
     java
     `maven-publish`
@@ -69,6 +67,7 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         maven {
             name = "ParchmentMC"
             url = uri("https://maven.parchmentmc.org")
@@ -106,7 +105,7 @@ subprojects {
             "forge_version" to rootProject.libs.versions.min.forge.get(),
             "fabric_language_kotlin_version" to rootProject.libs.versions.fabric.language.kotlin.get(),
             "kotlin_forge_version" to rootProject.libs.versions.kotlin.forge.get(),
-            "yacl_version" to rootProject.libs.versions.min.yacl.get(),
+            "yacl_version" to rootProject.libs.versions.yacl.get(),
             "kinecraft_serialization_version" to rootProject.libs.versions.kinecraft.serialization.get(),
             "mod_menu_version" to rootProject.libs.versions.min.modmenu.get(),
             "schema" to "\$schema",

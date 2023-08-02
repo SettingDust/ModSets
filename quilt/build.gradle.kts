@@ -107,14 +107,16 @@ dependencies {
         exclude(module = "fabric-loader")
     }
 
-    modRuntimeOnly(libs.yacl.fabric) {
+    modRuntimeOnly(libs.yacl) {
         isTransitive = false
     }
     modRuntimeOnly(libs.modmenu) {
         isTransitive = false
     }
 
-    modRuntimeOnly(libs.quilted.fabric.api)
+    modRuntimeOnly(libs.quilted.fabric.api) {
+        exclude(module = "quilt-loader")
+    }
 
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
     modRuntimeOnly(kinecraft)

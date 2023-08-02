@@ -15,7 +15,6 @@ import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
 object Entrypoint : ModInitializer {
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()

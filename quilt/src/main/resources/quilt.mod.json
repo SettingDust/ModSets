@@ -45,12 +45,12 @@
         "versions": ">=${fabric_language_kotlin_version}"
       },
       {
-        "id": "yet_another_config_lib_v3",
-        "versions": ">=${yacl_version}"
+        "id": "yet-another-config-lib",
+        "versions": "${yacl_version}"
       },
       {
         "id": "kinecraft_serialization",
-        "versions": "${kinecraft_serialization_version}-fabric"
+        "versions": "${kinecraft_serialization_version}"
       },
       {
         "id": "modmenu",

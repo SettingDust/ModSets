@@ -20,7 +20,7 @@ yacl = "1.7.1"
 modmenu = "4.1.2"
 min_modmenu = "3.0.0"
 
-kinecraft_serialization = "1.1.8"
+kinecraft_serialization = "1.2.2"
 minotaur = "2.+"
 
 neoforge = "1.20.1-47.1.55"
@@ -53,6 +53,7 @@ kotlinx_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",
 parchment = { module = "org.parchmentmc.data:parchment-1.19.2", version.ref = "parchmentmc" }
 
 kinecraft_serialization = { module = "maven.modrinth:kinecraft-serialization", version.ref = "kinecraft_serialization" }
+kinecraft_serialization_local = { module = "settingdust.kinecraft.serialization:kinecraft_serialization-fabric", version.ref = "kinecraft_serialization" }
 
 # Forge
 neoforge = { module = "net.neoforged:forge", version.ref = "neoforge" }

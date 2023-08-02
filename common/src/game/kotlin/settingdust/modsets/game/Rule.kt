@@ -1,12 +1,11 @@
 package settingdust.modsets.game
 
-import dev.isxander.yacl3.api.Binding
-import dev.isxander.yacl3.api.Option
-import dev.isxander.yacl3.api.OptionDescription
-import dev.isxander.yacl3.api.OptionGroup
-import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
-import dev.isxander.yacl3.gui.controllers.LabelController
+import dev.isxander.yacl.api.Binding
+import dev.isxander.yacl.api.Option
+import dev.isxander.yacl.api.OptionGroup
+import dev.isxander.yacl.gui.controllers.LabelController
+import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl.gui.controllers.cycling.CyclingListController
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -64,10 +63,10 @@ sealed interface GroupRule : RuleController {
 @SerialName("label")
 object LabelRule : OptionRule<Component> {
     override fun get(rule: Described) =
-        Option.createBuilder<Component>()
+        Option.createBuilder(Component::class.java)
             .name(rule.text)
-            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-            .customController(::LabelController)
+            .apply { rule.description?.let { tooltip(it) } }
+            .controller(::LabelController)
             .binding(Binding.immutable(rule.text))
             .build()!!
 }
@@ -94,16 +93,16 @@ private val String.booleanBinding: Binding<Boolean>
 data class BooleanRule(val mod: String) : OptionRule<Boolean> {
 
     override fun get(rule: Described) =
-        Option.createBuilder<Boolean>()
+        Option.createBuilder(Boolean::class.java)
             .name(rule.text)
             .apply {
                 (
                         rule.description
                             ?: ModSets.rules.modSets[mod]?.description
-                        )?.let { description(OptionDescription.of(it)) }
+                        )?.let { tooltip(it) }
             }
             .instant(true)
-            .controller(TickBoxControllerBuilder::create)
+            .controller(::TickBoxController)
             .binding(mod.booleanBinding)
             .build()!!
 }
@@ -119,26 +118,27 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
     }
 
     override fun get(rule: Described): Option<String> {
-        val option = Option.createBuilder<String>().name(rule.text)
+        val option = Option.createBuilder(String::class.java).name(rule.text)
         return option.controller {
-            CyclingListControllerBuilder.create(it)
-                .values(mods)
-                .valueFormatter { mod ->
-                    val modSet = ModSets.rules.modSets.getOrThrow(mod)
-                    modSet.text.copy()
-                        .withStyle(
-                            Style.EMPTY.withHoverEvent(
-                                modSet.description?.let { tooltip ->
-                                    HoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
-                                        tooltip,
-                                    )
-                                },
-                            ),
-                        )
-                }
+            CyclingListController(
+                it,
+                mods
+            ) { mod ->
+                val modSet = ModSets.rules.modSets.getOrThrow(mod)
+                modSet.text.copy()
+                    .withStyle(
+                        Style.EMPTY.withHoverEvent(
+                            modSet.description?.let { tooltip ->
+                                HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    tooltip,
+                                )
+                            },
+                        ),
+                    )
+            }
         }
-            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+            .apply { rule.description?.let { tooltip(it) } }
             .instant(true)
             .binding(
                 Binding.generic(
@@ -187,13 +187,13 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
 
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
-        rule.description?.let { group.description(OptionDescription.of(it)) }
+        rule.description?.let { group.tooltip(it) }
         for (mod in mods) {
             val modSet = ModSets.rules.modSets.getOrThrow(mod)
-            val option = Option.createBuilder<Boolean>().name(modSet.text)
-            modSet.description?.let { option.description(OptionDescription.of(it)) }
+            val option = Option.createBuilder(Boolean::class.java).name(modSet.text)
+            modSet.description?.let { option.tooltip(it) }
             group.option(
-                option.controller(TickBoxControllerBuilder::create).binding(mod.booleanBinding)
+                option.controller(::TickBoxController).binding(mod.booleanBinding)
                     .instant(true)
                     .build(),
             )
@@ -212,7 +212,7 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
 
     override fun get(rule: Described): OptionGroup {
         val group = OptionGroup.createBuilder().name(rule.text)
-        rule.description?.let { group.description(OptionDescription.of(it)) }
+        rule.description?.let { group.tooltip(it) }
         for (currentRule in rules) {
             group.option((currentRule.controller as OptionRule<*>).get(rule))
         }
