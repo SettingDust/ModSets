@@ -128,6 +128,7 @@ tasks {
 }
 
 tasks.remapJar {
+    dependsOn(":common:remapModJar")
     val factory = IncludedJarFactory(project)
     val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
         "getNestableJar",

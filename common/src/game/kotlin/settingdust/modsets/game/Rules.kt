@@ -2,8 +2,6 @@ package settingdust.modsets.game
 
 import dev.isxander.yacl3.api.*
 import dev.isxander.yacl3.api.controller.StringControllerBuilder
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -26,7 +24,7 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
     val modSets = hashMapOf<String, ModSet>()
-    val ModSetsRegisterCallback = WaitedSharedFlow<Unit>()
+    val ModSetsRegisterCallbacks = mutableSetOf<() -> Unit>()
 
     private val definedModSets = hashMapOf<String, ModSet>()
     private val modSetsPath = configDir / "modsets.json"
@@ -140,7 +138,7 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
             definedModSets.putAll(json.decodeFromStream(it))
         }
         modSets.putAll(definedModSets)
-        runBlocking { ModSetsRegisterCallback.emit(Unit)}
+        runBlocking { ModSetsRegisterCallbacks.forEach { it() } }
 
         clear()
         rulesDir.listDirectoryEntries("*.json").forEach {
