@@ -1,28 +1,32 @@
 [versions]
 # The latest Quilt versions are available at https://lambdaurora.dev/tools/import_quilt.html
 minecraft = "1.19.2"
+min_minecraft = "1.19.2"
 parchmentmc = "2022.11.27"
 
 kotlin = "1.8.22"
 kotlinx_serialization = "1.5.1"
+kotlinx_coroutines = "1.7.2"
 
 #fabric
 fabric_loader = "0.14.21"
 fabric_language_kotlin = "1.9.6+kotlin.1.8.22"
 # quilt
-quilt_loader = "0.20.0-beta.4"
-quilted_fabric_api = "4.0.0-beta.26+0.72.0-1.19.2"
+quilt_loader = "0.20.0-beta.5"
+quilted_fabric_api = "4.0.0-beta.30+0.76.0-1.19.2"
 qsl_version = "3.0.0-beta.29+1.19.2"
 
 yacl = "1.7.1"
-modmenu = "4.0.6"
+modmenu = "4.1.2"
+min_modmenu = "3.0.0"
 
-typesafe_config = "1.4.1"
-
-kinecraft_serialization = "1.0.2"
+kinecraft_serialization = "1.1.8"
 minotaur = "2.+"
 
-curseforge_gradle = "1.1.15"
+neoforge = "1.20.1-47.1.55"
+forge = "1.20.1-47.1.43"
+min_forge = "45"
+kotlin_forge = "4.4.0"
 
 [libraries]
 # common
@@ -44,18 +48,28 @@ kotlin_stdlib_jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", versi
 kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx_serialization_core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx_serialization" }
 kotlinx_serialization_json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx_serialization" }
-kotlinx_serialization_hocon = { module = "org.jetbrains.kotlinx:kotlinx-serialization-hocon", version.ref = "kotlinx_serialization" }
+kotlinx_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx_coroutines" }
 
 parchment = { module = "org.parchmentmc.data:parchment-1.19.2", version.ref = "parchmentmc" }
 
 kinecraft_serialization = { module = "maven.modrinth:kinecraft-serialization", version.ref = "kinecraft_serialization" }
 
+# Forge
+neoforge = { module = "net.neoforged:forge", version.ref = "neoforge" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
+kotlin_forge = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlin_forge" }
+
+
 [plugins]
-fabric_loom = { id = "fabric-loom", version = "1.3-SNAPSHOT" }
-quilt_loom = { id = "org.quiltmc.loom", version = "1.2.+" }
+architectury_loom = { id = "dev.architectury.loom", version = "1.3.+" }
+architectury = { id = "architectury-plugin", version = "3.+" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
-curseforge = { id = "net.darkhax.curseforgegradle", version.ref = "curseforge_gradle" }
+
+curseforge = { id = "net.darkhax.curseforgegradle", version = "1.+" }
+cursegradle = { id = "io.github.CDAGaming.cursegradle", version = "1.+" }
+
+dotenv = { id = "co.uzzu.dotenv.gradle", version = "2.+" }

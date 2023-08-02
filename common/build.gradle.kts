@@ -6,28 +6,18 @@
     "UnstableApiUsage",
 )
 
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import net.fabricmc.loom.task.RemapJarTask
 
-plugins {
-    java
-    `maven-publish`
-
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-
-    alias(libs.plugins.fabric.loom)
-
-    alias(libs.plugins.shadow)
-}
 
 val archives_name: String by rootProject
-val loom: LoomGradleExtensionAPI by extensions
 
-version = rootProject.version
+architectury {
+    common(rootProject.property("enabled_platforms").toString().split(","))
+}
 
-base {
-    archivesName = "$archives_name-common"
+val game by sourceSets.registering {
+    compileClasspath += sourceSets.main.get().compileClasspath
+    compileClasspath += sourceSets.main.get().output
 }
 
 repositories {
@@ -52,46 +42,45 @@ repositories {
 }
 
 dependencies {
-    "minecraft"(libs.minecraft)
-    "mappings"(
-        loom.layered {
-            officialMojangMappings()
-            parchment(
-                variantOf(libs.parchment) {
-                    artifactType("zip")
-                },
-            )
-        },
-    )
-
     api(libs.kotlinx.serialization.core)
     api(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.coroutines)
     api(libs.kotlin.reflect)
 
-    modApi(libs.yacl)
+    modApi(libs.yacl.common)
     modApi(libs.modmenu)
 
-    modImplementation(libs.fabric.loader)
-    modApi(libs.kinecraft.serialization)
+    modApi("maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric")
 }
 
 tasks {
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-
-        withSourcesJar()
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
-
     jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
+        manifest.attributes(
+            "FMLModType" to "LIBRARY",
+        )
+    }
+
+    val modJar by registering(Jar::class) {
+        archiveClassifier.set("game")
+        from(sourceSets.named("game").get().output)
+        destinationDirectory.set(project.buildDir.resolve("devlibs"))
+        manifest.attributes(
+            "FMLModType" to "GAMELIBRARY",
+        )
+    }
+
+    val remapModJar by registering(RemapJarTask::class) {
+        dependsOn(modJar)
+        archiveClassifier.set("game")
+        inputFile.convention(modJar.get().archiveFile)
+    }
+
+    afterEvaluate {
+        // For fabric and quilt nested
+        remapModJar.get().run()
+    }
+
+    named<ProcessResources>("processGameResources") {
+        exclude("META-INF/mods.toml")
     }
 }

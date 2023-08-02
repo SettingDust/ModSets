@@ -43,3 +43,6 @@ bin/
 
 */build
 */run
+
+.env
+*.log

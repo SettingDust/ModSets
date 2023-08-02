@@ -1,53 +1,82 @@
 package settingdust.modsets.fabric
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.metadata.ModOrigin
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
-import settingdust.modsets.FilteredDirectoryModCandidateFinder
-import settingdust.modsets.ModSet
 import settingdust.modsets.ModSets
-import settingdust.modsets.rules
+import settingdust.modsets.config
+import settingdust.modsets.game.ModSet
+import settingdust.modsets.game.Rules.ModSetsRegisterCallbacks
+import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
 object Entrypoint : ModInitializer {
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
-        for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets.filterKeys { it !in ModSets.rules.modSets }
-            .mapValues {
-                val nameKey = "modmenu.nameTranslation.${it.key}"
-                ModSet(
-                    if (I18n.exists(nameKey)) Component.translatable(nameKey) else Component.literal(it.key),
-                    Component.literal(gameDir.relativize(modsPath / it.key).toString()),
-                    it.value.toList(),
-                )
-            }) {
-            if (key in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with directory name: $key")
-            ModSets.rules.modSets.putIfAbsent(key, value)
-        }
+        val modSets = ModSets.rules.modSets
 
-        for (mod in FabricLoader.getInstance().allMods.map { it.metadata }) {
-            if (mod.id in ModSets.rules.modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${mod.id}")
-            val nameKey = "modmenu.nameTranslation.${mod.id}"
-            ModSets.rules.modSets.putIfAbsent(
-                mod.id,
-                ModSet(
-                    if (try {
-                            I18n.exists(nameKey)
-                        } catch (e: Exception) {
-                            false
-                        }
-                    ) {
-                        Component.translatable(nameKey)
-                    } else {
-                        Component.literal(mod.name)
-                    },
-                    Component.literal("${mod.id}@${mod.version}"),
-                    listOf(mod.id),
-                ),
-            )
+        ModSetsRegisterCallbacks += {
+            for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets
+                .mapValues {
+                    ModSet(
+                        Component.literal(it.key),
+                        Component.literal(gameDir.relativize(modsPath / it.key).toString()),
+                        it.value.toMutableSet(),
+                    )
+                }) {
+                if (key in modSets) ModSets.logger.warn("Duplicate mod set with directory name: $key")
+                modSets.putIfAbsent(key, value)
+            }
+
+            for (mod in FabricLoader.getInstance().allMods) {
+                if (mod.origin.kind.equals(ModOrigin.Kind.NESTED)) continue
+                val metadata = mod.metadata
+                if (metadata.type.equals("builtin")) continue
+                if (metadata.id in modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${metadata.id}")
+                val nameKey = "modmenu.nameTranslation.${metadata.id}"
+                modSets.putIfAbsent(
+                    metadata.id,
+                    ModSet(
+                        if (try {
+                                I18n.exists(nameKey)
+                            } catch (e: Exception) {
+                                false
+                            }
+                        ) {
+                            Component.translatable(nameKey)
+                        } else {
+                            Component.literal(metadata.name)
+                        },
+                        Component.literal("${metadata.id}@${metadata.version}"),
+                        mutableSetOf(metadata.id),
+                    ),
+                )
+            }
+
+            ModSets.config.disabledMods.forEach {
+                modSets.putIfAbsent(
+                    it, ModSet(
+                        if (try {
+                                I18n.exists("modmenu.nameTranslation.$it")
+                            } catch (e: Exception) {
+                                false
+                            }
+                        ) {
+                            Component.translatable("modmenu.nameTranslation.$it")
+                        } else {
+                            Component.literal(it)
+                        },
+                        Component.literal("$it@disabled"),
+                        mutableSetOf(it),
+                    )
+                )
+            }
         }
     }
 }

@@ -4,7 +4,11 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.LanguageAdapter
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.fabricmc.loader.impl.ModContainerImpl
-import net.fabricmc.loader.impl.discovery.*
+import net.fabricmc.loader.impl.discovery.ModCandidate
+import net.fabricmc.loader.impl.discovery.ModDiscoverer
+import net.fabricmc.loader.impl.discovery.ModResolutionException
+import net.fabricmc.loader.impl.discovery.ModResolver
+import net.fabricmc.loader.impl.discovery.RuntimeModRemapper
 import net.fabricmc.loader.impl.gui.FabricGuiEntry
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import net.fabricmc.loader.impl.metadata.DependencyOverrides
@@ -12,8 +16,6 @@ import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
 import net.fabricmc.loader.impl.util.log.LogCategory
-import settingdust.modsets.FilteredDirectoryModCandidateFinder
-import settingdust.modsets.ModContainerModCandidateFinder
 import settingdust.modsets.ModSets
 import settingdust.modsets.config
 import java.nio.file.Path
@@ -90,7 +92,7 @@ object ModSetsInjector {
             if (candidates.isEmpty()) {
                 ""
             } else {
-                ":\n ${candidates.joinToString("\n") { "\t- ${it.id}@${it.version.friendlyString}" }}"
+                ":\n ${candidates.joinToString("\n") { "\t- ${it.id} ${it.version.friendlyString}" }}"
             },
         )
         candidates.addMods()
@@ -99,7 +101,9 @@ object ModSetsInjector {
 
     private fun discoverMods(): Collection<ModCandidate> {
         val discoverer = ModDiscoverer(VersionOverrides(), DependencyOverrides(loader.configDir))
-        addCandidateFinderFunction.call(discoverer, ModContainerModCandidateFinder(mods))
+        addCandidateFinderFunction.call(discoverer,
+            ModContainerModCandidateFinder(mods)
+        )
         val modsDir = loader.modsDirectory.toPath()
         modsDir
             .listDirectoryEntries()

@@ -1,13 +1,14 @@
 # Mod Sets
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/mod-sets?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/mod-sets) [![Modrinth Version](https://img.shields.io/modrinth/v/mod-sets?style=for-the-badge&logo=modrinth&label=Latest)](https://modrinth.com/mod/mod-sets/versions) [![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/mod-sets?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/mod-sets/versions)  
-[![](https://cf.way2muchnoise.eu/full_mod-sets_Downloads.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets) [![](https://cf.way2muchnoise.eu/versions/mod-sets.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets)  
+[![](https://cf.way2muchnoise.eu/full_890349_Downloads.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets) [![](https://cf.way2muchnoise.eu/versions/890349.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/mod-sets)  
 [![GitHub](https://img.shields.io/github/license/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets) [![GitHub issues](https://img.shields.io/github/issues-raw/SettingDust/ModSets?style=for-the-badge&logo=github)](https://github.com/SettingDust/ModSets/issues)  
 [![Static Badge](https://img.shields.io/badge/kofi-Buy_a_coffee-ff5f5f?style=for-the-badge&logo=kofi)](https://ko-fi.com/settingdust)
+[![Discord](https://img.shields.io/discord/1134045695020642334?style=for-the-badge&logo=discord&label=Discord)](https://discord.gg/exzXHb4aQj)
 
 
 This project heavily inspired by [ThatOrThis](https://github.com/EZForever/ThatOrThis)  
-The mod is using for Minecraft Fabric/~~Quilt~~ for managing mod loading in game.   
+The mod is using for Minecraft Fabric/Quilt for managing mod loading in game.   
 And useful for modpack developer
 
 ## Feature
@@ -19,7 +20,8 @@ And useful for modpack developer
 ## Usage
 
 The rules files should be json in `config/modsets/rules`.  
-Add rule and enter the config screen through Mod Menu
+Add rule and enter the config screen through Mod Menu  
+Full example: https://github.com/SettingDust/ModSets/blob/main/example_rules.json
 
 ## Mod Set
 Mod set is entry defined in `config/modsets/modsets.json` that is string to set of mod id map.  
@@ -32,7 +34,7 @@ Example:
   // If disable this mod set, the mod in list won't load if it is exist
   "sodium": {
     "text": "Sodium",
-    "tooltip": "Performance: +++++",
+    "description": "Performance: +++++",
     "mods": [
       "sodium",
       "indium"
@@ -43,7 +45,7 @@ Example:
 
 ## Rule
 ![img.png](https://github.com/SettingDust/ModSets/raw/main/img.png)
-Every rule hold a text and tooltip for displaying the info you want.  
+Every rule hold a text and description for displaying the info you want.  
 And a controller for YACL user interface
 Example:
 
@@ -54,13 +56,13 @@ Example:
     "bold": true,
     "color": "green"
   },
-  "tooltip": "Awwww",
+  "description": "Awwww",
   "rules": [
     {
       "text": "text",
-      "tooltip": "tooltip",
+      "description": "description",
       "controller": {
-        "type": "type"
+        "type": "type" // Notice, this isn't valid type of controller. Take the type from controllers below
       }
     }
   ]
@@ -77,7 +79,7 @@ Example:
 ```json
 {
   "text": "The label",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "label"
   }
@@ -90,7 +92,7 @@ Example:
 ```json
 {
   "text": "The boolean",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "boolean",
     "mod": "sodium"
@@ -105,10 +107,10 @@ Example:
 ```json
 {
   "text": "The cycling",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "cycling",
-    "mods": [
+    "mods": [ // Don't empty
       "sodium",
       "optifabric"
     ]
@@ -123,12 +125,12 @@ Example:
 ```json
 {
   "text": "The mods group",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "mods_group",
     // Default is true
     "collapsed": false,
-    "mods": [
+    "mods": [ // Don't empty
       "sodium",
       "optifabric"
     ]
@@ -142,22 +144,22 @@ Example:
 ```json
 {
   "text": "The rules group",
-  "tooltip": "Text Text",
+  "description": "Text Text",
   "controller": {
     "type": "rules_group",
     // Default is true
     "collapsed": true,
-    "rules": [
+    "rules": [ // Don't empty
       {
         "text": "text",
-        "tooltip": "tooltip",
+        "description": "description",
         "controller": {
           "type": "label"
         }
       },
       {
         "text": "text",
-        "tooltip": "tooltip",
+        "description": "description",
         "controller": {
           "type": "boolean",
           "mod": "sodium"
@@ -168,5 +170,5 @@ Example:
 }
 ```
   
-Notice: Every text and tooltip is text raw json.
+Notice: Every text and description is text raw json.
 Using https://www.minecraftjson.com/ for generating text.

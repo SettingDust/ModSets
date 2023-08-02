@@ -7,36 +7,65 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-
-plugins {
-    java
-    `maven-publish`
-
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-
-    alias(libs.plugins.quilt.loom)
-}
+import net.fabricmc.loom.build.nesting.IncludedJarFactory
+import net.fabricmc.loom.task.RemapJarTask
 
 val archives_name: String by rootProject
 val loom: LoomGradleExtensionAPI by extensions
 
-version = rootProject.version
-
-base {
-    archivesName = "$archives_name-quilt"
+architectury {
+    platformSetupLoomIde()
+    loader("quilt")
 }
 
 loom {
+    mods {
+        register(archives_name) {
+            sourceSet(sourceSets.main.get())
+            sourceSet(project(":common").sourceSets.main.get())
+        }
+    }
+
     runs {
         named("client") {
-            vmArg("-Dloader.workaround.disable_strict_parsing=true")
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
         }
     }
 }
 
+//loom {
+//    runs {
+//        named("client") {
+//            vmArg("-Dloader.workaround.disable_strict_parsing=true")
+//            var path = ""
+//            val paths = arrayOf("resources/main", "classes/kotlin/main")
+//            for (sub: String in paths) {
+//                path = path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
+//                path = path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
+//            }
+//            path = path.substring(0, path.length - 1)
+//            vmArg("-Dloader.classPathGroups=$path")
+//        }
+//    }
+//
+//    mods {
+//        register(archives_name) {
+//            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
+//            sourceSet(sourceSets.main.get())
+//            sourceSet(project(":common").sourceSets.main.get())
+//            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
+//        }
+//    }
+//}
+
 repositories {
     maven("https://maven.fabricmc.net/")
+
+    maven {
+        name = "Quilt"
+        url = uri("https://maven.quiltmc.org/repository/release")
+    }
 
     exclusiveContent {
         forRepository {
@@ -59,26 +88,17 @@ repositories {
 }
 
 dependencies {
-    "minecraft"(libs.minecraft)
-    "mappings"(
-        loom.layered {
-            officialMojangMappings()
-            parchment(
-                variantOf(libs.parchment) {
-                    artifactType("zip")
-                },
-            )
-        },
-    )
-
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlin.reflect)
 
-    include(project(path = ":common", configuration = "namedElements"))
     implementation(project(path = ":common", configuration = "namedElements")) {
         isTransitive = false
     }
+    include(project(path = ":common", configuration = "transformProductionQuilt"))
+
+    implementation(project.project(":common").sourceSets.named("game").get().output)
 
     modImplementation(libs.quilt.loader)
     modImplementation(libs.quilt.standard.libraries.core)
@@ -87,67 +107,52 @@ dependencies {
         exclude(module = "fabric-loader")
     }
 
-    modRuntimeOnly(libs.yacl) {
-        exclude(module = "fabric-loader")
+    modRuntimeOnly(libs.yacl.fabric) {
+        isTransitive = false
     }
     modRuntimeOnly(libs.modmenu) {
-        exclude(module = "fabric-loader")
+        isTransitive = false
     }
 
-    modRuntimeOnly(libs.quilted.fabric.api) {
-        exclude(module = "quilt-loader")
-    }
+    modRuntimeOnly(libs.quilted.fabric.api)
 
-    modRuntimeOnly(libs.kinecraft.serialization)
-    include(libs.kinecraft.serialization)
+    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
+    modRuntimeOnly(kinecraft)
+    include(kinecraft)
 }
 
 tasks {
     processResources {
-        inputs.property("id", archives_name)
-        inputs.property("version", rootProject.version)
-        inputs.property("group", rootProject.group)
-        inputs.property("name", rootProject.property("mod_name").toString())
-        inputs.property("description", rootProject.property("mod_description").toString())
-        inputs.property("author", rootProject.property("mod_author").toString())
-        inputs.property("source", rootProject.property("mod_source").toString())
-        inputs.property("minecraft_version", libs.versions.minecraft.get())
-        inputs.property("quilt_loader_version", libs.versions.quilt.loader.get())
-        inputs.property("fabric_language_kotlin_version", libs.versions.fabric.language.kotlin.get())
-        inputs.property("yacl_version", libs.versions.yacl.get())
-        inputs.property("kinecraft_serialization_version", libs.versions.kinecraft.serialization.get())
-        inputs.property("mod_menu_version", libs.versions.modmenu.get())
+        from(project(":common").sourceSets.main.get().resources)
+    }
+}
 
-        filesMatching("quilt.mod.json") {
-            expand(
-                "id" to archives_name,
-                "version" to rootProject.version,
-                "group" to rootProject.group,
-                "name" to rootProject.property("mod_name").toString(),
-                "description" to rootProject.property("mod_description").toString(),
-                "author" to rootProject.property("mod_author").toString(),
-                "source" to rootProject.property("mod_source").toString(),
-                "minecraft_version" to libs.versions.minecraft.get(),
-                "quilt_loader_version" to libs.versions.quilt.loader.get(),
-                "fabric_language_kotlin_version" to libs.versions.fabric.language.kotlin.get(),
-                "yacl_version" to libs.versions.yacl.get(),
-                "kinecraft_serialization_version" to libs.versions.kinecraft.serialization.get(),
-                "mod_menu_version" to libs.versions.modmenu.get(),
-                "schema" to "\$schema",
+evaluationDependsOn(":common")
+
+tasks.remapJar {
+    val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
+    dependsOn(remapCommonModJar)
+    mustRunAfter(remapCommonModJar)
+    val factory = IncludedJarFactory(project)
+    val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
+        "getNestableJar",
+        File::class.java,
+        IncludedJarFactory.Metadata::class.java
+    )
+    getNestableJar.isAccessible = true
+
+    // TODO Need a gradle plugin to run the task before
+    if (remapCommonModJar.outputs.files.singleFile.exists())
+        nestedJars.from(
+            getNestableJar.invoke(
+                factory,
+                project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile,
+                IncludedJarFactory.Metadata(
+                    "settingdust.modsets.common",
+                    "game",
+                    version.toString(),
+                    "game"
+                )
             )
-        }
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-
-        withSourcesJar()
-    }
-
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
-    }
+        )
 }

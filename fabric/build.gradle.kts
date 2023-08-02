@@ -6,41 +6,46 @@
     "UnstableApiUsage",
 )
 
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import net.fabricmc.loom.build.nesting.IncludedJarFactory
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
-    java
-    `maven-publish`
-
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.plugin.serialization)
-
-    alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.minotaur)
 }
 
 val archives_name: String by rootProject
 val mod_name: String by rootProject
-val loom: LoomGradleExtensionAPI by extensions
 
 version = rootProject.version
 
 base {
-    archivesName = "$archives_name-fabric"
+    archivesName.set("$archives_name-fabric")
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
 }
 
 loom {
     mods {
         register(archives_name) {
-            modFiles.from("../common/build/devlibs/mod-sets-common-$version-dev.jar")
             sourceSet(sourceSets.main.get())
-            dependency(
-                libs.kotlin.stdlib.jdk8.get(),
-                libs.kotlin.reflect.get(),
-                libs.kotlinx.serialization.core.get(),
-                libs.kotlinx.serialization.json.get(),
-            )
+            sourceSet(project(":common").sourceSets.main.get())
         }
+    }
+
+    runs {
+        named("client") {
+            property("mixin.debug.export", "true")
+            property("mixin.debug.verbose", "true")
+        }
+    }
+}
+
+tasks {
+    processResources {
+        from(project(":common").sourceSets.main.get().resources)
     }
 }
 
@@ -66,90 +71,75 @@ repositories {
 }
 
 dependencies {
-    "minecraft"(libs.minecraft)
-    "mappings"(
-        loom.layered {
-            officialMojangMappings()
-            parchment(
-                variantOf(libs.parchment) {
-                    artifactType("zip")
-                },
-            )
-        },
-    )
-
-    include(project(path = ":common", configuration = "namedElements"))
     implementation(project(path = ":common", configuration = "namedElements")) {
         exclude(module = "fabric-loader")
     }
+    include(project(path = ":common", configuration = "transformProductionFabric"))
+
+    implementation(project.project(":common").sourceSets.named("game").get().output)
 
     modImplementation(libs.fabric.loader)
     modRuntimeOnly(libs.fabric.languageKotlin) {
         exclude(module = "fabric-loader")
     }
 
-    modRuntimeOnly(libs.yacl) {
-        exclude(module = "fabric-loader")
-    }
+    modRuntimeOnly(libs.yacl.fabric)
     modRuntimeOnly(libs.modmenu) {
         exclude(module = "fabric-loader")
     }
-    modRuntimeOnly(libs.kinecraft.serialization)
 
-    include(libs.kinecraft.serialization)
+    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
+    modRuntimeOnly(kinecraft)
+    include(kinecraft)
 }
 
 tasks {
-    processResources {
-        inputs.property("id", archives_name)
-        inputs.property("version", rootProject.version)
-        inputs.property("group", rootProject.group)
-        inputs.property("name", rootProject.property("mod_name").toString())
-        inputs.property("description", rootProject.property("mod_description").toString())
-        inputs.property("author", rootProject.property("mod_author").toString())
-        inputs.property("source", rootProject.property("mod_source").toString())
-        inputs.property("minecraft_version", libs.versions.minecraft.get())
-        inputs.property("fabric_loader_version", libs.versions.fabric.loader.get())
-        inputs.property("fabric_language_kotlin_version", libs.versions.fabric.language.kotlin.get())
-        inputs.property("yacl_version", libs.versions.yacl.get())
-        inputs.property("kinecraft_serialization_version", libs.versions.kinecraft.serialization.get())
-        inputs.property("mod_menu_version", libs.versions.modmenu.get())
+    remapJar {
+        val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
+        dependsOn(remapCommonModJar)
+        mustRunAfter(remapCommonModJar)
+        val factory = IncludedJarFactory(project)
+        val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
+            "getNestableJar",
+            File::class.java,
+            IncludedJarFactory.Metadata::class.java
+        )
+        getNestableJar.isAccessible = true
 
-        filesMatching("fabric.mod.json") {
-            expand(
-                "id" to archives_name,
-                "version" to rootProject.version,
-                "group" to rootProject.group,
-                "name" to mod_name,
-                "description" to rootProject.property("mod_description").toString(),
-                "author" to rootProject.property("mod_author").toString(),
-                "source" to rootProject.property("mod_source").toString(),
-                "minecraft_version" to libs.versions.minecraft.get(),
-                "fabric_loader_version" to libs.versions.fabric.loader.get(),
-                "fabric_language_kotlin_version" to libs.versions.fabric.language.kotlin.get(),
-                "yacl_version" to libs.versions.yacl.get(),
-                "kinecraft_serialization_version" to libs.versions.kinecraft.serialization.get(),
-                "mod_menu_version" to libs.versions.modmenu.get(),
+        if (remapCommonModJar.outputs.files.singleFile.exists())
+            nestedJars.from(
+                getNestableJar.invoke(
+                    factory,
+                    remapCommonModJar.outputs.files.singleFile,
+                    IncludedJarFactory.Metadata(
+                        "settingdust.modsets.common",
+                        "game",
+                        version.toString(),
+                        "game"
+                    )
+                )
             )
-        }
     }
+}
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
 
-        withSourcesJar()
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
-
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${base.archivesName}" }
-        }
+modrinth {
+    token.set(env.MODRINTH_TOKEN.value) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
+    projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
+    syncBodyFrom.set(rootProject.file("README.md").readText())
+    versionType.set("release") // This is the default -- can also be `beta` or `alpha`
+    uploadFile.set(rootProject.tasks.named("fabricIntermediaryJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    versionNumber.set("$version-fabric-intermediary")
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
+    gameVersions.addAll("1.19.2") // Must be an array, even with only one version
+    loaders.add("fabric") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+    loaders.add("quilt")
+    dependencies {
+        required.project("fabric-language-kotlin")
+        // https://modrinth.com/mod/yacl
+        required.project("yacl")
+        // https://modrinth.com/mod/kinecraft-serialization
+        embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-fabric")
+        optional.project("modmenu")
     }
 }
