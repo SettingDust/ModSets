@@ -127,8 +127,12 @@ tasks {
     }
 }
 
+evaluationDependsOn(":common")
+
 tasks.remapJar {
-    dependsOn(":common:remapModJar")
+    val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
+    dependsOn(remapCommonModJar)
+    mustRunAfter(remapCommonModJar)
     val factory = IncludedJarFactory(project)
     val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
         "getNestableJar",
@@ -136,8 +140,9 @@ tasks.remapJar {
         IncludedJarFactory.Metadata::class.java
     )
     getNestableJar.isAccessible = true
-    val file = project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile
-    if (file.exists())
+
+    // TODO Need a gradle plugin to run the task before
+    if (remapCommonModJar.outputs.files.singleFile.exists())
         nestedJars.from(
             getNestableJar.invoke(
                 factory,

@@ -6,9 +6,6 @@
     "UnstableApiUsage",
 )
 
-import dev.architectury.plugin.ModLoader
-import dev.architectury.plugin.TransformingTask
-import dev.architectury.plugin.loom.LoomInterface
 import net.fabricmc.loom.task.RemapJarTask
 
 
@@ -76,6 +73,11 @@ tasks {
         dependsOn(modJar)
         archiveClassifier.set("game")
         inputFile.convention(modJar.get().archiveFile)
+    }
+
+    afterEvaluate {
+        // For fabric and quilt nested
+        remapModJar.get().run()
     }
 
     named<ProcessResources>("processGameResources") {

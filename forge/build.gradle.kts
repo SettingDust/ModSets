@@ -195,11 +195,8 @@ modrinth {
     projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(tasks.remapJar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    changelog.set(
-        """
-        feat: add forge!!!!!!
-        """.trimIndent(),
-    )
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
+    versionNumber.set("$version-forge")
     gameVersions.addAll(
         "1.19.4",
         "1.20",

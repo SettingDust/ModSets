@@ -93,9 +93,13 @@ dependencies {
     include(kinecraft)
 }
 
+evaluationDependsOn(":common")
+
 tasks {
     remapJar {
-        dependsOn(":common:remapModJar")
+        val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
+        dependsOn(remapCommonModJar)
+        mustRunAfter(remapCommonModJar)
         val factory = IncludedJarFactory(project)
         val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
             "getNestableJar",
@@ -103,12 +107,12 @@ tasks {
             IncludedJarFactory.Metadata::class.java
         )
         getNestableJar.isAccessible = true
-        val file = project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile
-        if (file.exists())
+
+        if (remapCommonModJar.outputs.files.singleFile.exists())
             nestedJars.from(
                 getNestableJar.invoke(
                     factory,
-                    project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile,
+                    remapCommonModJar.outputs.files.singleFile,
                     IncludedJarFactory.Metadata(
                         "settingdust.modsets.common",
                         "game",
@@ -127,11 +131,8 @@ modrinth {
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(rootProject.tasks.named("fabricIntermediaryJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    changelog.set(
-        """
-        
-        """.trimIndent(),
-    )
+    versionNumber.set("$version-fabric-intermediary")
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
     gameVersions.addAll(
         "1.19.4",
         "1.20",
