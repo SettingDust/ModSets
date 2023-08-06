@@ -7,6 +7,7 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.task.RemapJarTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -24,7 +25,7 @@ plugins {
 //    alias(libs.plugins.quilt.loom) apply false
 //    alias(libs.plugins.fabric.loom) apply false
 
-    alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.shadow)
     alias(libs.plugins.minotaur) apply false
     alias(libs.plugins.cursegradle)
 }
@@ -39,7 +40,6 @@ project.group = maven_group
 
 architectury {
     minecraft = libs.versions.minecraft.get()
-    compileOnly()
 }
 
 subprojects {
@@ -106,6 +106,7 @@ subprojects {
             "kotlin_forge_version" to rootProject.libs.versions.kotlin.forge.get(),
             "yacl_version" to rootProject.libs.versions.min.yacl.get(),
             "kinecraft_serialization_version" to rootProject.libs.versions.kinecraft.serialization.get(),
+            "preloading_tricks_version" to rootProject.libs.versions.preloading.tricks.get(),
             "mod_menu_version" to rootProject.libs.versions.min.modmenu.get(),
             "schema" to "\$schema",
         )
@@ -138,15 +139,27 @@ subprojects {
     }
 }
 
-val fabricIntermediaryJar by tasks.registering(Jar::class) {
-    dependsOn(":fabric:remapJar", ":quilt:remapJar")
-    from(zipTree(project(":fabric").tasks.named("remapJar").get().outputs.files.first()))
-    from(zipTree(project(":quilt").tasks.named("remapJar").get().outputs.files.first()))
+tasks {
+    jar {
+        enabled = false
+    }
+    shadowJar {
+        val fabricJar = project(":fabric").tasks.named("remapJar")
+        val quiltJar = project(":quilt").tasks.named("remapJar")
 
-    archiveBaseName.set("$archives_name-fabric-intermediary")
-    archiveVersion.set("${project.version}")
+        from(fabricJar, quiltJar)
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        mergeServiceFiles()
+
+
+        archiveBaseName.set("$archives_name-fabric-intermediary")
+        archiveClassifier.set("")
+    }
+
+    build {
+        val forgeJar = project(":forge").tasks.named<RemapJarTask>("remapJar")
+        dependsOn(shadowJar, forgeJar)
+    }
 }
 
 curseforge {
@@ -156,7 +169,7 @@ curseforge {
     apiKey = env.CURSEFORGE_TOKEN.value // This should really be in a gradle.properties file
     project {
         id = "890349"
-        mainArtifact(fabricIntermediaryJar.get()) {
+        mainArtifact(tasks.shadowJar.get()) {
             releaseType = "release"
             addGameVersion("fabric")
             addGameVersion("quilt")

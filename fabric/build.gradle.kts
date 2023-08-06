@@ -27,25 +27,9 @@ architectury {
     fabric()
 }
 
-loom {
-    mods {
-        register(archives_name) {
-            sourceSet(sourceSets.main.get())
-            sourceSet(project(":common").sourceSets.main.get())
-        }
-    }
-
-    runs {
-        named("client") {
-            property("mixin.debug.export", "true")
-            property("mixin.debug.verbose", "true")
-        }
-    }
-}
-
 tasks {
     processResources {
-        from(project(":common").sourceSets.main.get().resources)
+        from(project(":ingame").sourceSets.main.get().resources)
     }
 }
 
@@ -68,15 +52,24 @@ repositories {
         name = "ParchmentMC"
         url = uri("https://maven.parchmentmc.org")
     }
+    mavenLocal()
 }
 
 dependencies {
-    implementation(project(path = ":common", configuration = "namedElements")) {
-        exclude(module = "fabric-loader")
-    }
-    include(project(path = ":common", configuration = "transformProductionFabric"))
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines)
+    implementation(libs.kotlin.reflect)
 
-    implementation(project.project(":common").sourceSets.named("game").get().output)
+    implementation(project(":config")) {
+        isTransitive = false
+    }
+    include(project(":config"))
+
+    implementation(project(":ingame")) {
+        isTransitive = false
+    }
+    include(project(":ingame"))
 
     modImplementation(libs.fabric.loader)
     modRuntimeOnly(libs.fabric.languageKotlin) {
@@ -91,46 +84,17 @@ dependencies {
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
     modRuntimeOnly(kinecraft)
     include(kinecraft)
+
+    implementation(libs.preloading.tricks.local)
+    include(libs.preloading.tricks.local)
 }
-
-evaluationDependsOn(":common")
-
-tasks {
-    remapJar {
-        val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
-        dependsOn(remapCommonModJar)
-        mustRunAfter(remapCommonModJar)
-        val factory = IncludedJarFactory(project)
-        val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
-            "getNestableJar",
-            File::class.java,
-            IncludedJarFactory.Metadata::class.java
-        )
-        getNestableJar.isAccessible = true
-
-        if (remapCommonModJar.outputs.files.singleFile.exists())
-            nestedJars.from(
-                getNestableJar.invoke(
-                    factory,
-                    remapCommonModJar.outputs.files.singleFile,
-                    IncludedJarFactory.Metadata(
-                        "settingdust.modsets.common",
-                        "game",
-                        version.toString(),
-                        "game"
-                    )
-                )
-            )
-    }
-}
-
 
 modrinth {
     token.set(env.MODRINTH_TOKEN.value) // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
     projectId.set("mod-sets") // This can be the project ID or the slug. Either will work!
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
-    uploadFile.set(rootProject.tasks.named("fabricIntermediaryJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    uploadFile.set(rootProject.tasks.named("shadowJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
     versionNumber.set("$version-fabric-intermediary")
     changelog.set(rootProject.file("CHANGELOG.md").readText())
     gameVersions.addAll(

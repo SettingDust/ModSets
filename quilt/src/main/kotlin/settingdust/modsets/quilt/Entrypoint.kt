@@ -16,7 +16,6 @@ import settingdust.modsets.game.rules
 import kotlin.io.path.name
 
 class Entrypoint : ModInitializer {
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onInitialize(container: ModContainer) {
         val modSets = ModSets.rules.modSets
         val modDir = QuiltLoaderImpl.INSTANCE.modsDir

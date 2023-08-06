@@ -1,9 +1,14 @@
 rootProject.name = "ModSets"
 
-include("common")
+include("config")
+include("ingame")
+include("ingame-forge")
 include("fabric")
 include("quilt")
 include("forge")
+include("forge-mod-locator")
+include("forge-setup-mod-hook")
+include("forge-ingame")
 
 pluginManagement {
     repositories {
@@ -31,5 +36,6 @@ pluginManagement {
             url = uri("https://repo.spongepowered.org/repository/maven-public/")
         }
         gradlePluginPortal()
+        mavenLocal()
     }
 }

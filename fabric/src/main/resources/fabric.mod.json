@@ -29,15 +29,13 @@
       }
     ]
   },
-  "languageAdapters": {
-    "modsets": "${group}.fabric.PreloadAdapter"
-  },
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": ">=${minecraft_version}",
     "fabric-language-kotlin": ">=${fabric_language_kotlin_version}",
     "yet_another_config_lib_v3": ">=${yacl_version}",
-    "kinecraft_serialization": "${kinecraft_serialization_version}-fabric"
+    "kinecraft_serialization": "${kinecraft_serialization_version}-fabric",
+    "preloading_tricks": "${preloading_tricks_version}"
   },
   "recommends": {
     "modmenu": ">=${mod_menu_version}"

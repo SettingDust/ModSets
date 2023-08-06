@@ -1,7 +1,0 @@
-modLoader = "kotlinforforge"
-loaderVersion = "[4,]"
-license = "MIT"
-[[mods]]
-modId = "${id}_service"
-version = "$version"
-displayName = "$name"

@@ -7,8 +7,6 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.build.nesting.IncludedJarFactory
-import net.fabricmc.loom.task.RemapJarTask
 
 val archives_name: String by rootProject
 val loom: LoomGradleExtensionAPI by extensions
@@ -18,33 +16,17 @@ architectury {
     loader("quilt")
 }
 
-loom {
-    mods {
-        register(archives_name) {
-            sourceSet(sourceSets.main.get())
-            sourceSet(project(":common").sourceSets.main.get())
-        }
-    }
-
-    runs {
-        named("client") {
-            property("mixin.debug.export", "true")
-            property("mixin.debug.verbose", "true")
-        }
-    }
-}
-
 //loom {
 //    runs {
 //        named("client") {
 //            vmArg("-Dloader.workaround.disable_strict_parsing=true")
-//            var path = ""
+//            var ""
 //            val paths = arrayOf("resources/main", "classes/kotlin/main")
 //            for (sub: String in paths) {
-//                path = path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
-//                path = path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
+//                path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
+//                path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
 //            }
-//            path = path.substring(0, path.length - 1)
+//            path.substring(0, path.length - 1)
 //            vmArg("-Dloader.classPathGroups=$path")
 //        }
 //    }
@@ -85,6 +67,7 @@ repositories {
         name = "ParchmentMC"
         url = uri("https://maven.parchmentmc.org")
     }
+    mavenLocal()
 }
 
 dependencies {
@@ -93,12 +76,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlin.reflect)
 
-    implementation(project(path = ":common", configuration = "namedElements")) {
+    implementation(project(":config")) {
         isTransitive = false
     }
-    include(project(path = ":common", configuration = "transformProductionQuilt"))
+    include(project(":config"))
 
-    implementation(project.project(":common").sourceSets.named("game").get().output)
+    implementation(project(":ingame")) {
+        isTransitive = false
+    }
+    include(project(":ingame"))
 
     modImplementation(libs.quilt.loader)
     modImplementation(libs.quilt.standard.libraries.core)
@@ -119,40 +105,13 @@ dependencies {
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
     modRuntimeOnly(kinecraft)
     include(kinecraft)
+
+    implementation(libs.preloading.tricks.local)
+    include(libs.preloading.tricks.local)
 }
 
 tasks {
     processResources {
-        from(project(":common").sourceSets.main.get().resources)
+        from(project(":ingame").sourceSets.main.get().resources)
     }
-}
-
-evaluationDependsOn(":common")
-
-tasks.remapJar {
-    val remapCommonModJar = project(":common").tasks.getByName<RemapJarTask>("remapModJar")
-    dependsOn(remapCommonModJar)
-    mustRunAfter(remapCommonModJar)
-    val factory = IncludedJarFactory(project)
-    val getNestableJar = IncludedJarFactory::class.java.getDeclaredMethod(
-        "getNestableJar",
-        File::class.java,
-        IncludedJarFactory.Metadata::class.java
-    )
-    getNestableJar.isAccessible = true
-
-    // TODO Need a gradle plugin to run the task before
-    if (remapCommonModJar.outputs.files.singleFile.exists())
-        nestedJars.from(
-            getNestableJar.invoke(
-                factory,
-                project.project(":common").tasks.named<RemapJarTask>("remapModJar").get().outputs.files.singleFile,
-                IncludedJarFactory.Metadata(
-                    "settingdust.modsets.common",
-                    "game",
-                    version.toString(),
-                    "game"
-                )
-            )
-        )
 }

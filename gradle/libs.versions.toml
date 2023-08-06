@@ -4,6 +4,8 @@ minecraft = "1.20.1"
 min_minecraft = "1.19.4"
 parchmentmc = "2023.07.16"
 
+yarn_mapping = "1.20.1+build.10"
+
 kotlin = "1.8.22"
 kotlinx_serialization = "1.5.1"
 kotlinx_coroutines = "1.7.2"
@@ -28,6 +30,8 @@ neoforge = "1.20.1-47.1.55"
 forge = "1.20.1-47.1.43"
 min_forge = "45"
 kotlin_forge = "4.4.0"
+
+preloading_tricks = "0.0.10"
 
 [libraries]
 # common
@@ -56,6 +60,8 @@ kotlinx_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",
 parchment = { module = "org.parchmentmc.data:parchment-1.20.1", version.ref = "parchmentmc" }
 
 kinecraft_serialization = { module = "maven.modrinth:kinecraft-serialization", version.ref = "kinecraft_serialization" }
+
+preloading_tricks_local = { module = "settingdust.preloadingtricks:preloading-tricks", version.ref = "preloading_tricks" }
 
 # Forge
 neoforge = { module = "net.neoforged:forge", version.ref = "neoforge" }

@@ -18,9 +18,6 @@
       }
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
-    "language_adapters": {
-      "modsets": "${group}.quilt.PreloadAdapter"
-    },
     "entrypoints": {
       "init": {
         "adapter": "kotlin",
@@ -56,6 +53,10 @@
         "id": "modmenu",
         "optional": true,
         "versions": ">=${mod_menu_version}"
+      },
+      {
+        "id": "preloading_tricks",
+        "versions": ">=${preloading_tricks_version}"
       }
     ]
   }
