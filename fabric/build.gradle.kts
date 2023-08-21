@@ -24,6 +24,16 @@ architectury {
     fabric()
 }
 
+loom {
+    mods {
+        create(archives_name) {
+            sourceSet("main")
+            sourceSet("main", project(":config"))
+            sourceSet("main", project(":ingame"))
+        }
+    }
+}
+
 tasks {
     processResources {
         from(project(":ingame").sourceSets.main.get().resources)

@@ -16,30 +16,15 @@ architectury {
     loader("quilt")
 }
 
-//loom {
-//    runs {
-//        named("client") {
-//            vmArg("-Dloader.workaround.disable_strict_parsing=true")
-//            var ""
-//            val paths = arrayOf("resources/main", "classes/kotlin/main")
-//            for (sub: String in paths) {
-//                path + rootProject.projectDir + "/common/build/" + sub + File.pathSeparator
-//                path + rootProject.projectDir + "/quilt/build/" + sub + File.pathSeparator
-//            }
-//            path.substring(0, path.length - 1)
-//            vmArg("-Dloader.classPathGroups=$path")
-//        }
-//    }
-//
-//    mods {
-//        register(archives_name) {
-//            modFiles.from("../common/build/devlibs/${project(":common").base.archivesName.get()}-$version-dev.jar")
-//            sourceSet(sourceSets.main.get())
-//            sourceSet(project(":common").sourceSets.main.get())
-//            modFiles.from("../common/build/classes/kotlin/main", "../common/build/resources/main")
-//        }
-//    }
-//}
+loom {
+    mods {
+        create(archives_name) {
+            sourceSet("main")
+            sourceSet("main", project(":config"))
+            sourceSet("main", project(":ingame"))
+        }
+    }
+}
 
 repositories {
     exclusiveContent {
@@ -76,12 +61,12 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlin.reflect)
 
-    implementation(project(":config")) {
+    implementation(project(path = ":config", configuration = "namedElements")) {
         isTransitive = false
     }
     include(project(":config"))
 
-    implementation(project(":ingame")) {
+    implementation(project(path = ":ingame", configuration = "namedElements")) {
         isTransitive = false
     }
     include(project(":ingame"))
