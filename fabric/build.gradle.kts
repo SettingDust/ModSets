@@ -6,9 +6,6 @@
     "UnstableApiUsage",
 )
 
-import net.fabricmc.loom.build.nesting.IncludedJarFactory
-import net.fabricmc.loom.task.RemapJarTask
-
 plugins {
     alias(libs.plugins.minotaur)
 }
@@ -61,12 +58,12 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlin.reflect)
 
-    implementation(project(":config")) {
+    implementation(project(path = ":config", configuration = "namedElements")) {
         isTransitive = false
     }
     include(project(":config"))
 
-    implementation(project(":ingame")) {
+    implementation(project(path = ":ingame", configuration = "namedElements")) {
         isTransitive = false
     }
     include(project(":ingame"))
@@ -85,8 +82,8 @@ dependencies {
     modRuntimeOnly(kinecraft)
     include(kinecraft)
 
-    implementation(libs.preloading.tricks.local)
-    include(libs.preloading.tricks.local)
+    implementation(libs.preloading.tricks)
+    include(libs.preloading.tricks)
 }
 
 modrinth {
@@ -111,5 +108,6 @@ modrinth {
         // https://modrinth.com/mod/kinecraft-serialization
         embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-fabric")
         optional.project("modmenu")
+        embedded.project("preloading-tricks")
     }
 }

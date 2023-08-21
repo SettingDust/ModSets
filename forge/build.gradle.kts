@@ -63,7 +63,7 @@ dependencies {
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
     include(kinecraft)
 
-    include(libs.preloading.tricks.local)
+    include(libs.preloading.tricks)
 }
 
 tasks {

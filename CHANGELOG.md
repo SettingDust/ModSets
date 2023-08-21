@@ -1,3 +1,3 @@
-fix(common): using sync way to calling callbacks
+fix: update preloading tricks avoiding crash
 
-fix #6
+`java.lang.UnsupportedOperationException: remove`

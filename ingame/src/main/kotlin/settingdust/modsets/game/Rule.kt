@@ -214,7 +214,7 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
         val group = OptionGroup.createBuilder().name(rule.text)
         rule.description?.let { group.description(OptionDescription.of(it)) }
         for (currentRule in rules) {
-            group.option((currentRule.controller as OptionRule<*>).get(rule))
+            group.option((currentRule.controller as OptionRule<*>).get(currentRule))
         }
         return group.collapsed(collapsed).build()
     }

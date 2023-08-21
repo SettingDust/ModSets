@@ -42,13 +42,6 @@ architectury {
 //}
 
 repositories {
-    maven("https://maven.fabricmc.net/")
-
-    maven {
-        name = "Quilt"
-        url = uri("https://maven.quiltmc.org/repository/release")
-    }
-
     exclusiveContent {
         forRepository {
             maven {
@@ -59,6 +52,13 @@ repositories {
         filter {
             includeGroup("maven.modrinth")
         }
+    }
+
+    maven("https://maven.fabricmc.net/")
+
+    maven {
+        name = "Quilt"
+        url = uri("https://maven.quiltmc.org/repository/release")
     }
 
     maven("https://maven.terraformersmc.com/releases")
@@ -106,8 +106,8 @@ dependencies {
     modRuntimeOnly(kinecraft)
     include(kinecraft)
 
-    implementation(libs.preloading.tricks.local)
-    include(libs.preloading.tricks.local)
+    implementation(libs.preloading.tricks)
+    include(libs.preloading.tricks)
 }
 
 tasks {
