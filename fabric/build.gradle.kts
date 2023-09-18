@@ -30,6 +30,12 @@ loom {
             sourceSet("main")
             sourceSet("main", project(":config"))
             sourceSet("main", project(":ingame"))
+            dependency(
+                libs.kotlinx.serialization.core.get(),
+                libs.kotlinx.serialization.json.get(),
+                libs.kotlinx.coroutines.get(),
+                libs.kotlin.reflect.get(),
+            )
         }
     }
 }

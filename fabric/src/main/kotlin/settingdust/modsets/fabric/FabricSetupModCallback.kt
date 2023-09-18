@@ -12,6 +12,7 @@ import net.fabricmc.loader.impl.util.SystemProperties
 import org.slf4j.LoggerFactory
 import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.fabric.FabricLanguageProviderCallback
+import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
@@ -65,7 +66,8 @@ class FabricSetupModCallback : SetupModCallback {
 
     private fun discoverMods(): Collection<ModCandidate> {
         val discoverer = ModDiscoverer(VersionOverrides(), DependencyOverrides(FabricLoaderImpl.INSTANCE.configDir))
-        addCandidateFinderFunction.call(discoverer,
+        addCandidateFinderFunction.call(
+            discoverer,
             ModContainerModCandidateFinder(service.all() as MutableList<ModContainerImpl>)
         )
         val modsDir = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
@@ -74,7 +76,8 @@ class FabricSetupModCallback : SetupModCallback {
             .filter { it.isDirectory() }
             .forEach {
                 logger.debug("Discovering mods from {}", it)
-                addCandidateFinderFunction.call(discoverer,
+                addCandidateFinderFunction.call(
+                    discoverer,
                     FilteredDirectoryModCandidateFinder(
                         it,
                         FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment,
@@ -86,12 +89,24 @@ class FabricSetupModCallback : SetupModCallback {
 
     private fun Collection<ModCandidate>.resolveMods(): Collection<ModCandidate> {
         val modId = service.all().asSequence().map { it.metadata.id }.toSet()
+        val cacheDir: Path = FabricLoaderImpl.INSTANCE.gameDir.resolve(FabricLoaderImpl.CACHE_DIR_NAME)
+        val processedModsDir = cacheDir.resolve("processedMods")
         val candidates =
             ModResolver.resolve(this, FabricLoaderImpl.INSTANCE.environmentType, envDisabledMods)
                 .filter { it.id !in modId }
         if (FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment && System.getProperty(SystemProperties.REMAP_CLASSPATH_FILE) != null) {
-            val cacheDir: Path = FabricLoaderImpl.INSTANCE.gameDir.resolve(FabricLoaderImpl.CACHE_DIR_NAME)
-            RuntimeModRemapper.remap(candidates, cacheDir.resolve("tmp"), cacheDir.resolve("processedMods"))
+            RuntimeModRemapper.remap(candidates, cacheDir.resolve("tmp"), processedModsDir)
+        }
+        
+        // https://github.com/FabricMC/fabric-loader/blob/0.14.22/src/main/java/net/fabricmc/loader/impl/FabricLoaderImpl.java#L267-L277
+        for (mod in candidates) {
+            if (!mod.hasPath() && !mod.isBuiltin) {
+                try {
+                    mod.setPaths(listOf<Path>(mod.copyToDir(processedModsDir, false)))
+                } catch (e: IOException) {
+                    throw RuntimeException("Error extracting mod $mod", e)
+                }
+            }
         }
         return candidates
     }
