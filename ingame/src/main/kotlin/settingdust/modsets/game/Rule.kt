@@ -152,12 +152,14 @@ data class CyclingRule(val mods: List<String>) : OptionRule<String> {
                             }
                             .toList()
                         if (enabledModSet.size > 1) {
-                            ModSets.logger.warn("More than one mod is enabled in cycling list: " + enabledModSet.joinToString() + ". Will take the first and disable the others")
+                            ModSets.logger.warn("More than one mod is enabled in cycling list: ${enabledModSet.joinToString()}. Will take the first and disable the others")
                             ModSets.config.disabledMods.addAll(
                                 enabledModSet.drop(1).flatMap { modSets.getOrThrow(it).mods },
                             )
                             ModSets.config.disabledMods.removeAll(modSets.getOrThrow(enabledModSet.first()).mods.toSet())
                             return@generic enabledModSet.first()
+                        } else if (enabledModSet.isEmpty()) {
+                            ModSets.logger.warn("None mod is enabled in cycling list: ${mods.joinToString()}. Will take the first and disable the others")
                         }
                         val currentSelected =
                             enabledModSet.singleOrNull { modSet ->

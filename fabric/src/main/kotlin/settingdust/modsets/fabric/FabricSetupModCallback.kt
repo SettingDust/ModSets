@@ -97,7 +97,7 @@ class FabricSetupModCallback : SetupModCallback {
         if (FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment && System.getProperty(SystemProperties.REMAP_CLASSPATH_FILE) != null) {
             RuntimeModRemapper.remap(candidates, cacheDir.resolve("tmp"), processedModsDir)
         }
-        
+
         // https://github.com/FabricMC/fabric-loader/blob/0.14.22/src/main/java/net/fabricmc/loader/impl/FabricLoaderImpl.java#L267-L277
         for (mod in candidates) {
             if (!mod.hasPath() && !mod.isBuiltin) {

@@ -92,19 +92,22 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
                             }
                         }.build()
                         // Since the options are instant and may be affected by the others. Update the changed options to correct value
-                        val options = category.groups().flatMap { it.options() }
+                        val options = category.groups().flatMap { it.options() as Iterable<Option<Any>> }
                         for (option in options) {
                             option.addListener { _, _ ->
-                                var needSave = false
-                                options.filter { it != option && it.changed() }.forEach {
-                                    needSave = true
-                                    (it as Option<Any>).requestSet(it.binding().value)
+                                var changed = false
+                                for (it in options.filter { it != option && it.changed() }) {
+                                    it.requestSet(it.binding().value)
+                                    if (!changed && option.changed()) {
+                                        ModSets.logger.warn("Option ${option.name()} is conflicting with ${it.name()}. Can't change")
+                                        changed = true
+                                    }
                                 }
                                 if (option.changed()) {
-                                    (option as Option<Any>).requestSet(option.binding().value)
-                                    ModSets.logger.warn("Rule ${option.name()} is conflicting with some other rule. Can't change")
+                                    ModSets.logger.warn("Option ${option.name()} is conflicting with unknown option. Can't change")
+                                    option.requestSet(option.binding().value)
                                 }
-                                if (needSave) save() // The save won't be called with instant
+                                save() // The save won't be called with instant
                             }
                         }
                         category

@@ -1,3 +1,1 @@
-fix: update preloading tricks avoiding crash
-
-`java.lang.UnsupportedOperationException: remove`
+fix(fabric): adding paths to mods without paths.
