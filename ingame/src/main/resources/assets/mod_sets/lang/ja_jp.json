@@ -1,0 +1,7 @@
+{
+  "modsets.name": "Mod Sets",
+  "modsets.description": "定義されたmodセット,ここで定義されたエントリはルールによって消費され,'config/modsets/common.json'のオプションで非表示にできます.",
+  "modsets.no_rules": "ルールなし",
+  "modmenu.nameTranslation.mod-sets": "Mod Sets",
+  "modmenu.descriptionTranslation.mod-sets": "コンフィグによるMODロードの切り替え"
+}
