@@ -1,1 +1,1 @@
-fix(fabric): adding paths to mods without paths.
+fix(ingame): conflicting option changes cross category works now

@@ -64,15 +64,17 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
                     .getPath();
             path = path.substring(1, path.lastIndexOf("/"));
             if (path.lastIndexOf("#") != -1) path = path.substring(0, path.lastIndexOf("#"));
+            ModFileOrException mod = createMod(Paths.get(path));
             final List<IModFile> dependenciesToLoad = JarSelector.detectAndSelect(
-                    Lists.newArrayList(createMod(Paths.get(path)).file()),
+                    Lists.newArrayList(mod.file()),
                     this::loadResourceFromModFile,
                     this::loadModFileFrom,
                     this::identifyMod,
                     this::exception);
-            result.addAll(dependenciesToLoad.stream()
-                    .map(it -> new ModFileOrException(it, null))
-                    .toList());
+            result.add(mod);
+//            result.addAll(dependenciesToLoad.stream()
+//                    .map(it -> new ModFileOrException(it, null))
+//                    .toList());
             return result;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

@@ -79,6 +79,7 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
                 )
             }
             if (this@Rules.isNotEmpty()) {
+                var options = mutableSetOf<Option<Any>>()
                 builder.categories(
                     this@Rules.map { (_, ruleSet) ->
                         val category = ConfigCategory.createBuilder().apply {
@@ -92,8 +93,9 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
                             }
                         }.build()
                         // Since the options are instant and may be affected by the others. Update the changed options to correct value
-                        val options = category.groups().flatMap { it.options() as Iterable<Option<Any>> }
-                        for (option in options) {
+                        val optionsInCategory = category.groups().flatMap { it.options() as Iterable<Option<Any>> }
+                        options.addAll(optionsInCategory)
+                        for (option in optionsInCategory) {
                             option.addListener { _, _ ->
                                 var changed = false
                                 for (it in options.filter { it != option && it.changed() }) {
