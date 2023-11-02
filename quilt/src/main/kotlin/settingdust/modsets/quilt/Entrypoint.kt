@@ -47,7 +47,7 @@ class Entrypoint : ModInitializer {
                 modSets.putIfAbsent(
                     it, ModSet(
                         Component.literal(it),
-                        Component.literal("${if (try {
+                        if (try {
                                 I18n.exists("modmenu.nameTranslation.$it")
                             } catch (e: Exception) {
                                 false
@@ -56,7 +56,11 @@ class Entrypoint : ModInitializer {
                             Component.translatable("modmenu.nameTranslation.$it")
                         } else {
                             Component.literal(it)
-                        }} $it@disabled"),
+                        }.append(" ").append(
+                            Component.literal(
+                                "$it@disabled"
+                            )
+                        ),
                         mutableSetOf(it),
                     )
                 )
@@ -67,7 +71,7 @@ class Entrypoint : ModInitializer {
 
 fun ModSet(mod: ModMetadata) = ModSet(
     Component.literal(mod.id()),
-    Component.literal("${if (try {
+    if (try {
             I18n.exists("modmenu.nameTranslation.${mod.id()}")
         } catch (e: Exception) {
             false
@@ -76,6 +80,10 @@ fun ModSet(mod: ModMetadata) = ModSet(
         Component.translatable("modmenu.nameTranslation.${mod.id()}")
     } else {
         Component.literal(mod.name())
-    }} ${mod.id()}@${mod.version()}"),
+    }.append(" ").append(
+        Component.literal(
+            "${mod.id()}@${mod.version()}"
+        )
+    ),
     mutableSetOf(mod.id()),
 )

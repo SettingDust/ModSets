@@ -42,7 +42,7 @@ object Entrypoint : ModInitializer {
                     metadata.id,
                     ModSet(
                         Component.literal(metadata.id),
-                        Component.literal("${if (try {
+                        if (try {
                                 I18n.exists(nameKey)
                             } catch (e: Exception) {
                                 false
@@ -51,7 +51,7 @@ object Entrypoint : ModInitializer {
                             Component.translatable(nameKey)
                         } else {
                             Component.literal(metadata.name)
-                        }} ${metadata.id}@${metadata.version}"),
+                        }.append(" ").append(Component.literal("${metadata.id}@${metadata.version}")),
                         mutableSetOf(metadata.id),
                     ),
                 )
@@ -61,7 +61,7 @@ object Entrypoint : ModInitializer {
                 modSets.putIfAbsent(
                     it, ModSet(
                         Component.literal(it),
-                        Component.literal("${if (try {
+                        if (try {
                                 I18n.exists("modmenu.nameTranslation.$it")
                             } catch (e: Exception) {
                                 false
@@ -70,7 +70,7 @@ object Entrypoint : ModInitializer {
                             Component.translatable("modmenu.nameTranslation.$it")
                         } else {
                             Component.literal(it)
-                        }} $it@disabled"),
+                        }.append(" ").append(Component.literal("$it@disabled")),
                         mutableSetOf(it),
                     )
                 )
