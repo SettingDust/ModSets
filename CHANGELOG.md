@@ -1,1 +1,1 @@
-fix(ingame): wrongly using component in component
+feat(ingame): using linked map for order

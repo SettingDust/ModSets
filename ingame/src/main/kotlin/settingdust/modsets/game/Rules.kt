@@ -20,13 +20,13 @@ import kotlin.io.path.*
 
 @OptIn(ExperimentalSerializationApi::class)
 @Deprecated("Use ModSets.rules instead", ReplaceWith("ModSets.rules"))
-object Rules : MutableMap<String, RuleSet> by hashMapOf() {
+object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
-    val modSets = hashMapOf<String, ModSet>()
+    val modSets = mutableMapOf<String, ModSet>()
     val ModSetsRegisterCallbacks = mutableSetOf<() -> Unit>()
 
-    private val definedModSets = hashMapOf<String, ModSet>()
+    private val definedModSets = mutableMapOf<String, ModSet>()
     private val modSetsPath = configDir / "modsets.json"
 
     private val rulesDir = configDir / "rules"
@@ -79,7 +79,7 @@ object Rules : MutableMap<String, RuleSet> by hashMapOf() {
                 )
             }
             if (this@Rules.isNotEmpty()) {
-                var options = mutableSetOf<Option<Any>>()
+                val options = mutableSetOf<Option<Any>>()
                 builder.categories(
                     this@Rules.map { (_, ruleSet) ->
                         val category = ConfigCategory.createBuilder().apply {
