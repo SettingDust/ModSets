@@ -46,8 +46,8 @@ class Entrypoint {
                 if (mod.modId in modSets) ModSets.logger.warn("Duplicate mod set with directory name: ${mod.modId}")
                 modSets.putIfAbsent(
                     mod.modId, ModSet(
-                        Component.literal(mod.displayName),
-                        Component.literal("${mod.modId}@${mod.version}"),
+                        Component.literal(mod.modId),
+                        Component.literal("${mod.displayName} ${mod.modId}@${mod.version}"),
                         mutableSetOf(mod.modId),
                     )
                 )

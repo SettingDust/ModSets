@@ -1,6 +1,5 @@
 package settingdust.modsets.fabric
 
-import kotlinx.coroutines.DelicateCoroutinesApi
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.ModOrigin
@@ -15,7 +14,6 @@ import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
 object Entrypoint : ModInitializer {
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
@@ -43,7 +41,8 @@ object Entrypoint : ModInitializer {
                 modSets.putIfAbsent(
                     metadata.id,
                     ModSet(
-                        if (try {
+                        Component.literal(metadata.id),
+                        Component.literal("${if (try {
                                 I18n.exists(nameKey)
                             } catch (e: Exception) {
                                 false
@@ -52,8 +51,7 @@ object Entrypoint : ModInitializer {
                             Component.translatable(nameKey)
                         } else {
                             Component.literal(metadata.name)
-                        },
-                        Component.literal("${metadata.id}@${metadata.version}"),
+                        }} ${metadata.id}@${metadata.version}"),
                         mutableSetOf(metadata.id),
                     ),
                 )
@@ -62,7 +60,8 @@ object Entrypoint : ModInitializer {
             ModSets.config.disabledMods.forEach {
                 modSets.putIfAbsent(
                     it, ModSet(
-                        if (try {
+                        Component.literal(it),
+                        Component.literal("${if (try {
                                 I18n.exists("modmenu.nameTranslation.$it")
                             } catch (e: Exception) {
                                 false
@@ -71,8 +70,7 @@ object Entrypoint : ModInitializer {
                             Component.translatable("modmenu.nameTranslation.$it")
                         } else {
                             Component.literal(it)
-                        },
-                        Component.literal("$it@disabled"),
+                        }} $it@disabled"),
                         mutableSetOf(it),
                     )
                 )

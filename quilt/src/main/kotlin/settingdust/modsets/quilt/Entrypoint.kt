@@ -1,6 +1,5 @@
 package settingdust.modsets.quilt
 
-import kotlinx.coroutines.DelicateCoroutinesApi
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
 import org.quiltmc.loader.api.ModContainer
@@ -47,7 +46,8 @@ class Entrypoint : ModInitializer {
             ModSets.config.disabledMods.forEach {
                 modSets.putIfAbsent(
                     it, ModSet(
-                        if (try {
+                        Component.literal(it),
+                        Component.literal("${if (try {
                                 I18n.exists("modmenu.nameTranslation.$it")
                             } catch (e: Exception) {
                                 false
@@ -56,8 +56,7 @@ class Entrypoint : ModInitializer {
                             Component.translatable("modmenu.nameTranslation.$it")
                         } else {
                             Component.literal(it)
-                        },
-                        Component.literal("$it@disabled"),
+                        }} $it@disabled"),
                         mutableSetOf(it),
                     )
                 )
@@ -67,7 +66,8 @@ class Entrypoint : ModInitializer {
 }
 
 fun ModSet(mod: ModMetadata) = ModSet(
-    if (try {
+    Component.literal(mod.id()),
+    Component.literal("${if (try {
             I18n.exists("modmenu.nameTranslation.${mod.id()}")
         } catch (e: Exception) {
             false
@@ -76,7 +76,6 @@ fun ModSet(mod: ModMetadata) = ModSet(
         Component.translatable("modmenu.nameTranslation.${mod.id()}")
     } else {
         Component.literal(mod.name())
-    },
-    Component.literal("${mod.id()}@${mod.version()}"),
+    }} ${mod.id()}@${mod.version()}"),
     mutableSetOf(mod.id()),
 )
