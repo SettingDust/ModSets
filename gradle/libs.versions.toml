@@ -31,7 +31,7 @@ forge = "1.20.1-47.1.43"
 min_forge = "45"
 kotlin_forge = "4.4.0"
 
-preloading_tricks = "0.0.14"
+preloading_tricks = "1.0.4"
 
 [libraries]
 # common

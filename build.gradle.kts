@@ -152,7 +152,7 @@ tasks {
         mergeServiceFiles()
 
 
-        archiveBaseName.set("$archives_name-fabric-intermediary")
+        archiveBaseName.set("$archives_name-intermediary")
         archiveClassifier.set("")
     }
 

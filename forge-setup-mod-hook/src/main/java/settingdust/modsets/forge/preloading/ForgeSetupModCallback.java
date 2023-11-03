@@ -6,7 +6,7 @@ import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 import settingdust.modsets.ModSetsConfig;
 import settingdust.preloadingtricks.SetupModCallback;
-import settingdust.preloadingtricks.forge.ForgeLanguageProviderCallback;
+import settingdust.preloadingtricks.forge.FMLModSetupService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class ForgeSetupModCallback implements SetupModCallback {
         fieldMods.setAccessible(true);
 
         final var disabledMods = ModSetsConfig.INSTANCE.getDisabledMods();
-        final var service = ForgeLanguageProviderCallback.ForgeModSetupService.INSTANCE;
+        final var service = FMLModSetupService.INSTANCE;
         final var toRemove = Lists.<ModFile>newArrayList();
         for (ModFile modFile : service.all()) {
             if (modFile.getModFileInfo() instanceof ModFileInfo info) {

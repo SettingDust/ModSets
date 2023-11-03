@@ -108,7 +108,7 @@ modrinth {
     syncBodyFrom.set(rootProject.file("README.md").readText())
     versionType.set("release") // This is the default -- can also be `beta` or `alpha`
     uploadFile.set(rootProject.tasks.named("shadowJar")) // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    versionNumber.set("$version-fabric-intermediary")
+    versionNumber.set("$version-intermediary")
     changelog.set(rootProject.file("CHANGELOG.md").readText())
     gameVersions.addAll(
         "1.19.4",

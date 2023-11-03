@@ -11,7 +11,7 @@ import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import org.slf4j.LoggerFactory
 import settingdust.preloadingtricks.SetupModCallback
-import settingdust.preloadingtricks.fabric.FabricLanguageProviderCallback
+import settingdust.preloadingtricks.fabric.FabricModSetupService
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
@@ -24,7 +24,7 @@ import kotlin.reflect.jvm.isAccessible
 
 class FabricSetupModCallback : SetupModCallback {
     private val logger = LoggerFactory.getLogger("ModSets/SetupMod")
-    private val service = FabricLanguageProviderCallback.FabricModSetupService.INSTANCE
+    private val service = FabricModSetupService.INSTANCE
     private var envDisabledMods = mutableMapOf<String, Set<ModCandidate>>()
 
     @Suppress("UNCHECKED_CAST")

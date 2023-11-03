@@ -85,12 +85,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                         val category = ConfigCategory.createBuilder().apply {
                             name(ruleSet.text)
                             ruleSet.description?.let { tooltip(it) }
-                            ruleSet.rules.forEach { rule ->
-                                when (val controller = rule.controller) {
-                                    is OptionRule<*> -> option(controller.get(rule))
-                                    is GroupRule -> group(controller.get(rule))
-                                }
-                            }
+                            ruleSet.rules.forEach { it.controller.build(this, it) }
                         }.build()
                         // Since the options are instant and may be affected by the others. Update the changed options to correct value
                         val optionsInCategory = category.groups().flatMap { it.options() as Iterable<Option<Any>> }
