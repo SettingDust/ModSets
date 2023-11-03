@@ -172,8 +172,10 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             for (mod in mods) {
                 val modSet = ModSets.rules.modSets.getOrThrow(mod)
                 val option =
-                    Option.createBuilder<Boolean>().name(modSet.text).controller(TickBoxControllerBuilder::create)
+                    Option.createBuilder<Boolean>().name(modSet.text)
+                        .controller(TickBoxControllerBuilder::create)
                         .binding(mod.booleanBinding)
+                        .instant(true)
                 modSet.description?.let { option.description(OptionDescription.of(it)) }
                 group.option(option.build())
                 for (innerMod in modSet.mods) {
@@ -181,7 +183,8 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
                     val innerOption =
                         Option.createBuilder<Boolean>().name(innerModSet.text)
                             .controller(TickBoxControllerBuilder::create)
-                            .binding(mod.booleanBinding)
+                            .binding(innerMod.booleanBinding)
+                            .instant(true)
                     innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
                     group.option(innerOption.build())
                 }
@@ -194,15 +197,18 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             for (mod in mods) {
                 val modSet = ModSets.rules.modSets.getOrThrow(mod)
                 val option =
-                    Option.createBuilder<Boolean>().name(modSet.text).controller(TickBoxControllerBuilder::create)
+                    Option.createBuilder<Boolean>().name(modSet.text)
+                        .controller(TickBoxControllerBuilder::create)
                         .binding(mod.booleanBinding)
+                        .instant(true)
                 modSet.description?.let { option.description(OptionDescription.of(it)) }
                 builder.option(option.build())
                 for (innerMod in modSet.mods) {
                     val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
                     val innerOption = Option.createBuilder<Boolean>().name(innerModSet.text)
                         .controller(TickBoxControllerBuilder::create)
-                        .binding(mod.booleanBinding)
+                        .binding(innerMod.booleanBinding)
+                        .instant(true)
                     innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
                     builder.option(innerOption.build())
                 }
