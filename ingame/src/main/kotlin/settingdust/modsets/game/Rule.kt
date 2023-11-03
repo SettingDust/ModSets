@@ -166,10 +166,6 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
     }
 
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T {
-        builder.option(Option.createBuilder<Component>().name(rule.text)
-            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-            .customController(::LabelController).binding(Binding.immutable(rule.text)).build()!!)
-
         if (builder is ConfigCategory.Builder) {
             val group = OptionGroup.createBuilder().name(rule.text)
             rule.description?.let { group.description(OptionDescription.of(it)) }
@@ -183,7 +179,8 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
                 for (innerMod in modSet.mods) {
                     val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
                     val innerOption =
-                        Option.createBuilder<Boolean>().name(modSet.text).controller(TickBoxControllerBuilder::create)
+                        Option.createBuilder<Boolean>().name(innerModSet.text)
+                            .controller(TickBoxControllerBuilder::create)
                             .binding(mod.booleanBinding)
                     innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
                     group.option(innerOption.build())
@@ -191,6 +188,9 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
             }
             builder.group(group.collapsed(collapsed).build())
         } else {
+            builder.option(Option.createBuilder<Component>().name(rule.text)
+                .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+                .customController(::LabelController).binding(Binding.immutable(rule.text)).build()!!)
             for (mod in mods) {
                 val modSet = ModSets.rules.modSets.getOrThrow(mod)
                 val option =
@@ -201,6 +201,8 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
                 for (innerMod in modSet.mods) {
                     val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
                     val innerOption = Option.createBuilder<Boolean>().name(innerModSet.text)
+                        .controller(TickBoxControllerBuilder::create)
+                        .binding(mod.booleanBinding)
                     innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
                     builder.option(innerOption.build())
                 }
