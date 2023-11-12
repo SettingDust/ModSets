@@ -34,17 +34,12 @@ class FabricSetupModCallback : SetupModCallback {
         FabricLoaderImpl::class.memberProperties.single { it.name == "adapterMap" } as KProperty<MutableMap<String, LanguageAdapter>>
 
     @Suppress("UNCHECKED_CAST")
-    private val addModFunction =
-        FabricLoaderImpl::class.functions.single { it.name == "addMod" } as KFunction<Void>
-
-    @Suppress("UNCHECKED_CAST")
     private val addCandidateFinderFunction =
         ModDiscoverer::class.functions.single { it.name == "addCandidateFinder" } as KFunction<Void>
 
 
     init {
         adapterMapProperty.isAccessible = true
-        addModFunction.isAccessible = true
 
         val candidates = try {
             discoverMods().resolveMods()
