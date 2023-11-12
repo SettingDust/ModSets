@@ -10,6 +10,8 @@ import net.fabricmc.loader.impl.metadata.DependencyOverrides
 import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
 import org.slf4j.LoggerFactory
+import settingdust.modsets.ModSets
+import settingdust.modsets.config
 import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.fabric.FabricModSetupService
 import java.io.IOException
@@ -62,6 +64,8 @@ class FabricSetupModCallback : SetupModCallback {
         )
         candidates.addMods()
         candidates.setupLanguageAdapter()
+
+        service.removeIf { it.metadata.id in ModSets.config.disabledMods }
     }
 
     private fun discoverMods(): Collection<ModCandidate> {
@@ -113,7 +117,7 @@ class FabricSetupModCallback : SetupModCallback {
 
     private fun Collection<ModCandidate>.addMods() {
         for (candidate in this) {
-            addModFunction.call(FabricLoaderImpl.INSTANCE, candidate)
+            service.add(candidate)
             candidate.paths.forEach { FabricLauncherBase.getLauncher().addToClassPath(it) }
         }
     }

@@ -1,1 +1,1 @@
-fix(ingame): a problem causing mods group conflicting
+fix(fabric): removing disabled mod correctly
