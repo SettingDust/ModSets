@@ -9,6 +9,8 @@ import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import net.fabricmc.loader.impl.metadata.DependencyOverrides
 import net.fabricmc.loader.impl.metadata.VersionOverrides
 import net.fabricmc.loader.impl.util.SystemProperties
+import net.fabricmc.loader.impl.util.log.Log
+import net.fabricmc.loader.impl.util.log.LogCategory
 import org.slf4j.LoggerFactory
 import settingdust.modsets.ModSets
 import settingdust.modsets.config
@@ -16,6 +18,7 @@ import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.fabric.FabricModSetupService
 import java.io.IOException
 import java.nio.file.Path
+import java.util.stream.Collectors
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.reflect.KFunction
@@ -47,16 +50,7 @@ class FabricSetupModCallback : SetupModCallback {
             FabricGuiEntry.displayCriticalError(e, true)
             emptyList() // unreachable
         }
-        logger.info(
-            "Loading {} additional mod{}{}",
-            candidates.size,
-            if (candidates.size > 1) "s" else "",
-            if (candidates.isEmpty()) {
-                ""
-            } else {
-                ":\n ${candidates.joinToString("\n") { "\t- ${it.id} ${it.version.friendlyString}" }}"
-            },
-        )
+        candidates.dumpModList()
         candidates.addMods()
         candidates.setupLanguageAdapter()
 
@@ -70,11 +64,15 @@ class FabricSetupModCallback : SetupModCallback {
             ModContainerModCandidateFinder(service.all() as MutableList<ModContainerImpl>)
         )
         val modsDir = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
-        modsDir
+        val subDirs = modsDir
             .listDirectoryEntries()
             .filter { it.isDirectory() }
+
+        logger.info("Loading mods from {} sub folders in mods", subDirs.size)
+        logger.debug(subDirs.joinToString { it.fileName.toString() })
+
+        subDirs
             .forEach {
-                logger.debug("Discovering mods from {}", it)
                 addCandidateFinderFunction.call(
                     discoverer,
                     FilteredDirectoryModCandidateFinder(
@@ -132,6 +130,55 @@ class FabricSetupModCallback : SetupModCallback {
                     .firstOrNull { it.parameters.isEmpty() }!!
                     .call() as LanguageAdapter
                 adapterMap[id] = adapter
+            }
+        }
+    }
+
+    private fun Collection<ModCandidate>.dumpModList() {
+        val modListText = StringBuilder()
+        val lastItemOfNestLevel = BooleanArray(size)
+        val topLevelMods = stream()
+            .filter { mod: ModCandidate -> mod.parentMods.isEmpty() }
+            .collect(Collectors.toList())
+        val topLevelModsCount = topLevelMods.size
+        for (i in 0 until topLevelModsCount) {
+            val lastItem = i == topLevelModsCount - 1
+            if (lastItem) lastItemOfNestLevel[0] = true
+            topLevelMods[i].dumpModList0(modListText, 0, lastItemOfNestLevel)
+        }
+        val modsCount = size
+        Log.info(
+            LogCategory.GENERAL,
+            "Loading %d additional mod%s:%n%s",
+            modsCount,
+            if (modsCount != 1) "s" else "",
+            modListText
+        )
+    }
+
+    private fun ModCandidate.dumpModList0(log: StringBuilder, nestLevel: Int, lastItemOfNestLevel: BooleanArray) {
+        if (log.isNotEmpty()) log.append('\n')
+        for (depth in 0 until nestLevel) {
+            log.append(if (depth == 0) "\t" else if (lastItemOfNestLevel[depth]) "     " else "   | ")
+        }
+        log.append(if (nestLevel == 0) "\t" else "  ")
+        log.append(if (nestLevel == 0) "-" else if (lastItemOfNestLevel[nestLevel]) " \\--" else " |--")
+        log.append(' ')
+        log.append(id)
+        log.append(' ')
+        log.append(version.friendlyString)
+        val nestedMods: List<ModCandidate> = ArrayList(nestedMods)
+        nestedMods.sortedBy { it.metadata.id }
+        if (nestedMods.isNotEmpty()) {
+            val iterator = nestedMods.iterator()
+            var nestedMod: ModCandidate
+            var lastItem: Boolean
+            while (iterator.hasNext()) {
+                nestedMod = iterator.next()
+                lastItem = !iterator.hasNext()
+                if (lastItem) lastItemOfNestLevel[nestLevel + 1] = true
+                nestedMod.dumpModList0(log, nestLevel + 1, lastItemOfNestLevel)
+                if (lastItem) lastItemOfNestLevel[nestLevel + 1] = false
             }
         }
     }

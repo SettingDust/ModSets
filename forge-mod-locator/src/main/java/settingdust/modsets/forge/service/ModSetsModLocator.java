@@ -54,7 +54,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     @Override
     public List<ModFileOrException> scanMods() {
         final var result = Lists.newArrayList(super.scanMods());
-        String path = null;
+        String path;
         try {
             path = getClass()
                     .getProtectionDomain()
@@ -86,7 +86,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
         var modsDir = FMLPaths.GAMEDIR.get().resolve(FMLPaths.MODSDIR.get());
         try (var dirs = Files.list(modsDir).filter(Files::isDirectory)) {
             var dirList = dirs.toList();
-            logger.info("Loading mods from {} sub dir in mods", dirList.size());
+            logger.info("Loading mods from {} sub folders in mods", dirList.size());
             logger.debug(String.join(
                     ",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
 

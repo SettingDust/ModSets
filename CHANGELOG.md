@@ -1,1 +1,1 @@
-fix(fabric): removing disabled mod correctly
+feat(fabric): better mod list logging
