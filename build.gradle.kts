@@ -15,8 +15,6 @@ plugins {
     `maven-publish`
     idea
 
-    alias(libs.plugins.dotenv)
-
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.plugin.serialization) apply false
 
@@ -26,8 +24,7 @@ plugins {
 //    alias(libs.plugins.fabric.loom) apply false
 
     alias(libs.plugins.shadow)
-    alias(libs.plugins.minotaur) apply false
-    alias(libs.plugins.cursegradle)
+    alias(libs.plugins.gitSemverPlugin)
 }
 
 val mod_version: String by project
@@ -35,7 +32,7 @@ val maven_group: String by project
 val archives_name: String by project
 val mod_name: String by rootProject
 
-project.version = "$mod_version+${libs.versions.minecraft.get()}"
+project.version = "${semver.version}+${libs.versions.minecraft.get()}"
 project.group = maven_group
 
 architectury {
@@ -159,28 +156,5 @@ tasks {
     build {
         val forgeJar = project(":forge").tasks.named<RemapJarTask>("remapJar")
         dependsOn(shadowJar, forgeJar)
-    }
-}
-
-curseforge {
-    options {
-        debug = true
-    }
-    apiKey = env.CURSEFORGE_TOKEN.value // This should really be in a gradle.properties file
-    project {
-        id = "890349"
-        mainArtifact(tasks.shadowJar.get()) {
-            releaseType = "release"
-            addGameVersion("fabric")
-            addGameVersion("quilt")
-            addGameVersion("1.19.4")
-            addGameVersion("1.20")
-            addGameVersion("1.20.1")
-            relations {
-                requiredDependency("yacl")
-                requiredDependency("fabric-language-kotlin")
-                optionalDependency("modmenu")
-            }
-        }
     }
 }

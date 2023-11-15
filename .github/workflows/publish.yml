@@ -49,6 +49,8 @@ jobs:
           files: |
             build/libs/mod_sets-intermediary-*.jar
 
+          version: ${{ github.ref_name }}-intermediary
+
           loaders: |
             fabric
             quilt
@@ -62,6 +64,8 @@ jobs:
             fabric-language-kotlin
             yacl
             modmenu(recommended)
+            kinecraft-serialization(embedded)#(ignore:curseforge)
+            preloading-tricks(embedded)#(ignore:curseforge)
 
           java: |
             17
@@ -84,6 +88,8 @@ jobs:
             !build/libs/mod_sets-forge-*-sources.jar
             build/libs/mod_sets-forge-*.jar
 
+          version: ${{ github.ref_name }}-forge
+
           loaders: |
             forge
 
@@ -96,6 +102,8 @@ jobs:
             fabric-language-kotlin
             yacl
             modmenu(recommended)
+            kinecraft-serialization(embedded)#(ignore:curseforge)
+            preloading-tricks(embedded)#(ignore:curseforge)
 
           java: |
             17

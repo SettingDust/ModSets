@@ -24,7 +24,6 @@ modmenu = "7.1.0"
 min_modmenu = "3.0.0"
 
 kinecraft_serialization = "1.1.8"
-minotaur = "2.+"
 
 neoforge = "1.20.1-47.1.55"
 forge = "1.20.1-47.1.43"
@@ -77,9 +76,5 @@ shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 
-curseforge = { id = "net.darkhax.curseforgegradle", version = "1.+" }
-cursegradle = { id = "io.github.CDAGaming.cursegradle", version = "1.+" }
-
-dotenv = { id = "co.uzzu.dotenv.gradle", version = "2.+" }
+gitSemverPlugin = { id = "com.github.jmongard.git-semver-plugin", version = "0.10.+" }
