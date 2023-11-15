@@ -1,0 +1,102 @@
+on:
+  push:
+    tags:
+      - [0-9]+.[0-9]+.[0-9]+
+jobs:
+  build:
+    runs-on:
+    # ...
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: main
+          commit_message: 'docs: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
+          file_pattern: CHANGELOG.md
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Execute Gradle build
+        run: ./gradlew build
+
+      - name: Upload intermediary
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: b313lC4Y
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 890349
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            build/libs/mod_sets-intermediary-*.jar
+
+          loaders: |
+            fabric
+            quilt
+
+          game-versions: |
+            1.20.1
+            1.20
+            1.19.4
+
+          dependencies: |
+            fabric-language-kotlin
+            yacl
+            modmenu(recommended)
+
+          java: |
+            17
+            18
+
+      - name: Upload forge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: b313lC4Y
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 890349
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            !build/libs/mod_sets-forge-*-sources.jar
+            build/libs/mod_sets-forge-*.jar
+
+          loaders: |
+            forge
+
+          game-versions: |
+            1.20.1
+            1.20
+            1.19.4
+
+          dependencies: |
+            fabric-language-kotlin
+            yacl
+            modmenu(recommended)
+
+          java: |
+            17
+            18

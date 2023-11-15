@@ -6,6 +6,7 @@ val mod_name: String by rootProject
 plugins {
     alias(libs.plugins.minotaur)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.cursegradle)
 }
 
 loom {
@@ -100,5 +101,27 @@ modrinth {
         required.project("yacl")
         // https://modrinth.com/mod/kinecraft-serialization
         embedded.version("kinecraft-serialization", "${libs.versions.kinecraft.serialization.get()}-forge")
+    }
+}
+
+curseforge {
+    options {
+        debug = true
+    }
+    apiKey = env.CURSEFORGE_TOKEN.value // This should really be in a gradle.properties file
+    project {
+        id = "890349"
+        mainArtifact(tasks.remapJar.get()) {
+            releaseType = "release"
+            addGameVersion("forge")
+            addGameVersion("1.19.4")
+            addGameVersion("1.20")
+            addGameVersion("1.20.1")
+            relations {
+                requiredDependency("yacl")
+                requiredDependency("fabric-language-kotlin")
+                optionalDependency("modmenu")
+            }
+        }
     }
 }
