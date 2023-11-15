@@ -1,5 +1,3 @@
-feat(fabric): better mod list logging
-
 ## [1.4.6] - 2023-11-15
 ### :sparkles: New Features
 - [`73e761a`](https://github.com/SettingDust/ModSets/commit/73e761a500418ac8663cb0d3a6f5dd34aff4b5ba) - **fabric**: better mod list logging *(commit by [@SettingDust](https://github.com/SettingDust))*
