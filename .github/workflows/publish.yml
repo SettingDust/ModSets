@@ -83,8 +83,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            !build/libs/mod_sets-forge-*-sources.jar
-            build/libs/mod_sets-forge-*.jar
+            !forge/build/libs/mod_sets-forge-*-sources.jar
+            forge/build/libs/mod_sets-forge-*.jar
 
           version: ${{ github.ref_name }}-forge
 
