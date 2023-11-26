@@ -71,10 +71,10 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
                     this::loadModFileFrom,
                     this::identifyMod,
                     this::exception);
-            result.add(mod);
-//            result.addAll(dependenciesToLoad.stream()
-//                    .map(it -> new ModFileOrException(it, null))
-//                    .toList());
+//            result.add(mod);
+            result.addAll(dependenciesToLoad.stream()
+                    .map(it -> new ModFileOrException(it, null))
+                    .toList());
             return result;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

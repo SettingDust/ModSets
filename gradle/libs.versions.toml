@@ -2,23 +2,23 @@
 # The latest Quilt versions are available at https://lambdaurora.dev/tools/import_quilt.html
 minecraft = "1.20.1"
 min_minecraft = "1.19.4"
-parchmentmc = "2023.07.16"
+parchmentmc = "2023.09.03"
 
 yarn_mapping = "1.20.1+build.10"
 
-kotlin = "1.8.22"
-kotlinx_serialization = "1.5.1"
-kotlinx_coroutines = "1.7.2"
+kotlin = "1.9.20"
+kotlinx_serialization = "1.6.1"
+kotlinx_coroutines = "1.7.3"
 
 #fabric
-fabric_loader = "0.14.21"
-fabric_language_kotlin = "1.9.6+kotlin.1.8.22"
+fabric_loader = "0.14.24"
+fabric_language_kotlin = "1.10.14+kotlin.1.9.20"
 # quilt
-quilt_loader = "0.20.0-beta.4"
-quilted_fabric_api = "7.0.6+0.85.0-1.20.1"
-qsl_version = "6.0.4+1.20.1"
+quilt_loader = "0.22.0-beta.1"
+quilted_fabric_api = "7.4.0+0.90.0-1.20.1"
+qsl_version = "6.1.2+1.20.1"
 
-yacl = "3.0.3+1.20"
+yacl = "3.2.1+1.20"
 min_yacl = "3.0.3"
 modmenu = "7.1.0"
 min_modmenu = "3.0.0"
@@ -26,9 +26,9 @@ min_modmenu = "3.0.0"
 kinecraft_serialization = "1.1.8"
 
 neoforge = "1.20.1-47.1.55"
-forge = "1.20.1-47.1.43"
+forge = "1.20.1-47.2.6"
 min_forge = "45"
-kotlin_forge = "4.4.0"
+kotlin_forge = "4.7.0"
 
 preloading_tricks = "1.0.6"
 

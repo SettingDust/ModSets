@@ -93,9 +93,7 @@ jobs:
             forge
 
           game-versions: |
-            1.20.1
-            1.20
-            1.19.4
+            [1.19.4, 1.20.1]
 
           dependencies: |
             fabric-language-kotlin

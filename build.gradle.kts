@@ -32,7 +32,7 @@ val maven_group: String by project
 val archives_name: String by project
 val mod_name: String by rootProject
 
-project.version = "${semver.version}+${libs.versions.minecraft.get()}"
+project.version = "${semver.semVersion}+${libs.versions.minecraft.get()}"
 project.group = maven_group
 
 architectury {

@@ -19,7 +19,9 @@ repositories {
 }
 
 dependencies {
-    modApi(libs.yacl.common)
+    modApi(libs.yacl.common) {
+        isTransitive = false
+    }
     modApi(libs.modmenu)
 
     modApi("maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric")

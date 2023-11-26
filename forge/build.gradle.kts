@@ -11,8 +11,6 @@ loom {
     mods {
         named("main") {
             modSourceSets.empty()
-            // ClasspathLocator will scan the mod locator that is loaded as SERVICE
-            modFiles.setFrom(tasks.remapJar)
         }
     }
 }
@@ -56,8 +54,12 @@ dependencies {
     include(project(":forge-ingame"))
     include(project(":forge-setup-mod-hook"))
 
-    modRuntimeOnly(libs.kotlin.forge)
-    modRuntimeOnly(libs.yacl.forge)
+    runtimeOnly(project(":forge-mod-locator"))
+
+    runtimeOnly(libs.kotlin.forge)
+    modRuntimeOnly(libs.yacl.forge) {
+        isTransitive = false
+    }
 
     val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
     include(kinecraft)
