@@ -29,6 +29,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           changelog-file: CHANGELOG.md
+          game-versions: |
+            [1.19.4, 1.20.2)
 
           # Only include this section if you wish to publish
           # your assets on Modrinth.
@@ -41,16 +43,13 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            build/libs/mod_sets-intermediary-*.jar
+            build/libs/mod_sets-intermediary-${{ github.ref_name }}*.jar
 
           version: ${{ github.ref_name }}-intermediary
 
           loaders: |
             fabric
             quilt
-
-          game-versions: |
-            >=1.19.4 <=1.20.1
 
           dependencies: |
             fabric-language-kotlin
@@ -67,6 +66,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           changelog-file: CHANGELOG.md
+          game-versions: |
+            [1.19.4, 1.20.2)
           # Only include this section if you wish to publish
           # your assets on Modrinth.
           modrinth-id: b313lC4Y
@@ -78,16 +79,12 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            !forge/build/libs/!(*-@(dev\|sources\|javadoc)).jar
-            forge/build/libs/mod_sets-forge-*.jar
+            forge/build/libs/mod_sets-forge-${{ github.ref_name }}*.jar
 
           version: ${{ github.ref_name }}-forge
 
           loaders: |
             forge
-
-          game-versions: |
-            >=1.19.4 <=1.20.1
 
           dependencies: |
             fabric-language-kotlin
