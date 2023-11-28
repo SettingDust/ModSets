@@ -1,4 +1,5 @@
 import net.fabricmc.loom.task.AbstractRunTask
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.libsDirectory
 
 val archives_name: String by rootProject
 val mod_name: String by rootProject
@@ -73,6 +74,7 @@ tasks {
         dependsOn(modLocatorRemapJar)
         inputFile.set(modLocatorRemapJar.get().outputs.files.singleFile)
         archiveClassifier.set("")
+        destinationDirectory.set(rootProject.libsDirectory)
     }
 
     afterEvaluate {

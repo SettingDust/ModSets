@@ -148,7 +148,6 @@ tasks {
 
         mergeServiceFiles()
 
-
         archiveBaseName.set("$archives_name-intermediary")
         archiveClassifier.set("")
     }

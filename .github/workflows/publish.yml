@@ -44,8 +44,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            build/libs/!(*-@(dev|sources|javadoc)).jar
-            build/libs/*-@(dev|sources|javadoc).jar
+            build/libs/*-intermediary*!(-@(dev|sources|javadoc)).jar
+            build/libs/*-intermediary*-@(dev|sources|javadoc).jar
 
           version: ${{ github.ref_name }}-intermediary
 
@@ -82,8 +82,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            forge/build/libs/!(*-@(dev|sources|javadoc)).jar
-            forge/build/libs/*-@(dev|sources|javadoc).jar
+            build/libs/*-forge*!(-@(dev|sources|javadoc)).jar
+            build/libs/*-forge*-@(dev|sources|javadoc).jar
 
           version: ${{ github.ref_name }}-forge
 
