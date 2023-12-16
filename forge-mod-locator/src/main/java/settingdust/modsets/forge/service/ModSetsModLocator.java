@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.jar.Attributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,10 +43,10 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
         final var dirName = filePath.getParent().getFileName().toString();
         directoryModSet.putIfAbsent(dirName, new ArrayList<>());
         directoryModSet
-                .get(dirName)
-                .addAll(result.file().getModInfos().stream()
-                        .map(IModInfo::getModId)
-                        .toList());
+            .get(dirName)
+            .addAll(result.file().getModInfos().stream()
+                          .map(IModInfo::getModId)
+                          .toList());
         return super.createMod(path);
     }
 
@@ -57,24 +56,25 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
         String path;
         try {
             path = getClass()
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .toURI()
-                    .getPath();
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .toURI()
+                .getPath();
             path = path.substring(1, path.lastIndexOf("/"));
             if (path.lastIndexOf("#") != -1) path = path.substring(0, path.lastIndexOf("#"));
             ModFileOrException mod = createMod(Paths.get(path));
             final List<IModFile> dependenciesToLoad = JarSelector.detectAndSelect(
-                    Lists.newArrayList(mod.file()),
-                    this::loadResourceFromModFile,
-                    this::loadModFileFrom,
-                    this::identifyMod,
-                    this::exception);
-//            result.add(mod);
+                Lists.newArrayList(mod.file()),
+                this::loadResourceFromModFile,
+                this::loadModFileFrom,
+                this::identifyMod,
+                this::exception
+            );
+            //            result.add(mod);
             result.addAll(dependenciesToLoad.stream()
-                    .map(it -> new ModFileOrException(it, null))
-                    .toList());
+                                            .map(it -> new ModFileOrException(it, null))
+                                            .toList());
             return result;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -84,11 +84,13 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     @Override
     public Stream<Path> scanCandidates() {
         var modsDir = FMLPaths.GAMEDIR.get().resolve(FMLPaths.MODSDIR.get());
-        try (var dirs = Files.list(modsDir).filter(Files::isDirectory)) {
+        try (var dirs = Files.list(modsDir)
+                             .filter(Files::isDirectory)
+                             .filter(it -> it.getFileName().toString().charAt(0) != '.')) {
             var dirList = dirs.toList();
             logger.info("Loading mods from {} sub folders in mods", dirList.size());
             logger.debug(String.join(
-                    ",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
+                ",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
 
             return dirList.stream().flatMap(it -> {
                 try {
@@ -108,16 +110,18 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     }
 
     @Override
-    public void initArguments(Map<String, ?> arguments) {}
+    public void initArguments(Map<String, ?> arguments) {
+    }
 
     protected Optional<InputStream> loadResourceFromModFile(final IModFile modFile, final Path path) {
         try {
             return Optional.of(Files.newInputStream(modFile.findResource(path.toString())));
         } catch (final FileNotFoundException e) {
             logger.debug(
-                    "Failed to load resource {} from {}, it does not contain dependency information.",
-                    path,
-                    modFile.getFileName());
+                "Failed to load resource {} from {}, it does not contain dependency information.",
+                path,
+                modFile.getFileName()
+            );
             return Optional.empty();
         } catch (final Exception e) {
             logger.error("Failed to load resource {} from mod {}, cause {}", path, modFile.getFileName(), e);
@@ -129,7 +133,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
         try {
             final Path pathInModFile = file.findResource(path.toString());
             final URI filePathUri =
-                    new URI("jij:" + (pathInModFile.toAbsolutePath().toUri().getRawSchemeSpecificPart())).normalize();
+                new URI("jij:" + (pathInModFile.toAbsolutePath().toUri().getRawSchemeSpecificPart())).normalize();
             final Map<String, ?> outerFsArgs = ImmutableMap.of("packagePath", pathInModFile);
             final FileSystem zipFS = FileSystems.newFileSystem(filePathUri, outerFsArgs);
             final Path pathInFS = zipFS.getPath("/");
@@ -137,7 +141,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
         } catch (Exception e) {
             logger.error("Failed to load mod file {} from {}", path, file.getFileName());
             final RuntimeException exception =
-                    new ModFileLoadingException("Failed to load mod file " + file.getFileName());
+                new ModFileLoadingException("Failed to load mod file " + file.getFileName());
             exception.initCause(e);
 
             throw exception;
@@ -153,50 +157,60 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     }
 
     protected EarlyLoadingException exception(
-            Collection<JarSelector.ResolutionFailureInformation<IModFile>> failedDependencies) {
+        Collection<JarSelector.ResolutionFailureInformation<IModFile>> failedDependencies
+    ) {
 
         final List<EarlyLoadingException.ExceptionData> errors = failedDependencies.stream()
-                .filter(entry -> !entry.sources().isEmpty()) // Should never be the case, but just to be sure
-                .map(this::buildExceptionData)
-                .toList();
+                                                                                   .filter(entry -> !entry.sources()
+                                                                                                          .isEmpty()) // Should never be the case, but just to be sure
+                                                                                   .map(this::buildExceptionData)
+                                                                                   .toList();
 
         return new EarlyLoadingException(
-                failedDependencies.size() + " Dependency restrictions were not met.", null, errors);
+            failedDependencies.size() + " Dependency restrictions were not met.", null, errors);
     }
 
     @NotNull
     private EarlyLoadingException.ExceptionData buildExceptionData(
-            final JarSelector.ResolutionFailureInformation<IModFile> entry) {
+        final JarSelector.ResolutionFailureInformation<IModFile> entry
+    ) {
         return new EarlyLoadingException.ExceptionData(
-                getErrorTranslationKey(entry),
-                entry.identifier().group() + ":" + entry.identifier().artifact(),
-                entry.sources().stream()
-                        .flatMap(this::getModWithVersionRangeStream)
-                        .map(this::formatError)
-                        .collect(Collectors.joining(", ")));
+            getErrorTranslationKey(entry),
+            entry.identifier().group() + ":" + entry.identifier().artifact(),
+            entry.sources().stream()
+                 .flatMap(this::getModWithVersionRangeStream)
+                 .map(this::formatError)
+                 .collect(Collectors.joining(", "))
+        );
     }
 
     private String getErrorTranslationKey(final JarSelector.ResolutionFailureInformation<IModFile> entry) {
         return entry.failureReason() == JarSelector.FailureReason.VERSION_RESOLUTION_FAILED
-                ? "fml.dependencyloading.conflictingdependencies"
-                : "fml.dependencyloading.mismatchedcontaineddependencies";
+               ? "fml.dependencyloading.conflictingdependencies"
+               : "fml.dependencyloading.mismatchedcontaineddependencies";
     }
 
     @NotNull
     private Stream<ModWithVersionRange> getModWithVersionRangeStream(
-            final JarSelector.SourceWithRequestedVersionRange<IModFile> file) {
+        final JarSelector.SourceWithRequestedVersionRange<IModFile> file
+    ) {
         return file.sources().stream()
-                .map(IModFile::getModFileInfo)
-                .flatMap(modFileInfo -> modFileInfo.getMods().stream())
-                .map(modInfo -> new ModWithVersionRange(modInfo, file.requestedVersionRange(), file.includedVersion()));
+                   .map(IModFile::getModFileInfo)
+                   .flatMap(modFileInfo -> modFileInfo.getMods().stream())
+                   .map(modInfo -> new ModWithVersionRange(
+                       modInfo,
+                       file.requestedVersionRange(),
+                       file.includedVersion()
+                   ));
     }
 
     @NotNull
     private String formatError(final ModWithVersionRange modWithVersionRange) {
         return "\u00a7e" + modWithVersionRange.modInfo().getModId() + "\u00a7r - \u00a74"
-                + modWithVersionRange.versionRange().toString() + "\u00a74 - \u00a72"
-                + modWithVersionRange.artifactVersion().toString() + "\u00a72";
+               + modWithVersionRange.versionRange().toString() + "\u00a74 - \u00a72"
+               + modWithVersionRange.artifactVersion().toString() + "\u00a72";
     }
 
-    private record ModWithVersionRange(IModInfo modInfo, VersionRange versionRange, ArtifactVersion artifactVersion) {}
+    private record ModWithVersionRange(IModInfo modInfo, VersionRange versionRange, ArtifactVersion artifactVersion) {
+    }
 }

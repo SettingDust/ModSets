@@ -5,7 +5,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import kotlin.io.path.*
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.div
+import kotlin.io.path.inputStream
+import kotlin.io.path.outputStream
 
 @Suppress("DEPRECATION", "UnusedReceiverParameter")
 val ModSets.config: ModSetsConfig
@@ -76,4 +80,6 @@ object ModSetsConfig {
 }
 
 @Serializable
-data class CommonConfig(val displayModSetsScreen: Boolean = true, val nestedInModMenu: Boolean = true)
+data class CommonConfig(
+    val displayModSetsScreen: Boolean = true, /*val nestedInModMenu: Boolean = true,*/
+)

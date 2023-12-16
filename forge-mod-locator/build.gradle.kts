@@ -4,6 +4,8 @@ architectury {
 
 dependencies {
     forge(libs.forge)
+
+    api(project(":config"))
 }
 
 tasks {
