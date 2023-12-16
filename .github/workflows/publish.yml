@@ -28,7 +28,7 @@ jobs:
       - name: Upload intermediary
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          changelog-file: CHANGELOG.md
+          changelog: ${{ steps.changelog.outputs.changes }}
           game-versions: |
             [1.19.4, 1.20.2)
           game-version-filter: releases
@@ -67,7 +67,7 @@ jobs:
       - name: Upload forge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          changelog-file: CHANGELOG.md
+          changelog: ${{ steps.changelog.outputs.changes }}
           game-versions: |
             [1.19.4, 1.20.2)
           game-version-filter: releases
