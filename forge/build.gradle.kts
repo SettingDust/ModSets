@@ -55,7 +55,9 @@ dependencies {
     include(project(":forge-ingame"))
     include(project(":forge-setup-mod-hook"))
 
-    runtimeOnly(project(":forge-mod-locator"))
+    shadow(project(path = ":forge-mod-locator", configuration = "namedElements")) {
+        isTransitive = false
+    }
 
     runtimeOnly(libs.kotlin.forge)
     modRuntimeOnly(libs.yacl.forge) {
@@ -69,17 +71,25 @@ dependencies {
 }
 
 tasks {
+    jar {
+        enabled = false
+    }
+
+    shadowJar {
+        configurations = listOf(project.configurations.getByName("shadow"))
+        destinationDirectory.set(project.buildDir.resolve("devlibs"))
+        archiveClassifier.set("dev")
+    }
+
     remapJar {
-        val modLocatorRemapJar = project(":forge-mod-locator").tasks.remapJar
-        dependsOn(modLocatorRemapJar)
-        inputFile.set(modLocatorRemapJar.get().outputs.files.singleFile)
-        archiveClassifier.set("")
+        dependsOn(shadowJar)
+        inputFile.set(shadowJar.get().archiveFile)
         destinationDirectory.set(rootProject.libsDirectory)
     }
 
     afterEvaluate {
         withType<AbstractRunTask> {
-            dependsOn(remapJar)
+            dependsOn(shadowJar)
         }
     }
 }
