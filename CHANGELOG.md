@@ -1,3 +1,8 @@
+## [1.4.8] - 2023-12-16
+### :sparkles: New Features
+- [`a847472`](https://github.com/SettingDust/ModSets/commit/a847472f835513904f5b6a0783cbe9f7317aac8d) - add a blacklist avoid loading mods in that *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.4.7] - 2023-11-26
 ### :bug: Bug Fixes
 - [`6fc2f9f`](https://github.com/SettingDust/ModSets/commit/6fc2f9f7f4f3d1ac4f37cf3356baedbc85c676fa) - can't run on forge *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -15,3 +20,4 @@
 [1.4.6]: https://github.com/SettingDust/ModSets/compare/1.4.5...1.4.6
 
 [1.4.7]: https://github.com/SettingDust/ModSets/compare/1.4.6...1.4.7
+[1.4.8]: https://github.com/SettingDust/ModSets/compare/1.4.7...1.4.8
