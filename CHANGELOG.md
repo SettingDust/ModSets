@@ -1,3 +1,8 @@
+## [1.5.0] - 2024-01-15
+### :sparkles: New Features
+- [`a17d09c`](https://github.com/SettingDust/ModSets/commit/a17d09c3d3a69d7d255939bd386ed5a626e564c6) - support non windows & log error of rules instead of crash *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.4.8] - 2023-12-16
 ### :sparkles: New Features
 - [`a847472`](https://github.com/SettingDust/ModSets/commit/a847472f835513904f5b6a0783cbe9f7317aac8d) - add a blacklist avoid loading mods in that *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -21,3 +26,4 @@
 
 [1.4.7]: https://github.com/SettingDust/ModSets/compare/1.4.6...1.4.7
 [1.4.8]: https://github.com/SettingDust/ModSets/compare/1.4.7...1.4.8
+[1.5.0]: https://github.com/SettingDust/ModSets/compare/1.4.8...1.5.0
