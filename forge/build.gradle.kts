@@ -11,6 +11,7 @@ plugins {
 loom {
     mods {
         named("main") {
+            modFiles.setFrom(tasks.shadowJar.get().archiveFile)
             modSourceSets.empty()
         }
     }

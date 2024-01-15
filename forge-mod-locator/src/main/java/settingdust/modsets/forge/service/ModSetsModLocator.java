@@ -10,6 +10,7 @@ import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.locating.IModFile;
 import net.minecraftforge.forgespi.locating.ModFileLoadingException;
 import net.minecraftforge.jarjar.selection.JarSelector;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
                 .getLocation()
                 .toURI()
                 .getPath();
-            path = path.substring(1, path.lastIndexOf("/"));
+            if (SystemUtils.IS_OS_WINDOWS) path = path.substring(1, path.lastIndexOf("/"));
             if (path.lastIndexOf("#") != -1) path = path.substring(0, path.lastIndexOf("#"));
             ModFileOrException mod = createMod(Paths.get(path));
             final List<IModFile> dependenciesToLoad = JarSelector.detectAndSelect(

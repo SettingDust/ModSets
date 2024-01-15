@@ -147,7 +147,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
                     this[it.nameWithoutExtension] = json.decodeFromStream(stream)
                 }
             } catch (e: Exception) {
-                throw RuntimeException("Failed to load rule ${it.name}", e)
+                ModSets.logger.error("Failed to load rule ${it.name}", e)
             }
         }
     }
