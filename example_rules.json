@@ -39,6 +39,7 @@
       "controller": {
         "type": "mods_group",
         "collapsed": false,
+        "show_mods": true,
         "mods": [
           "sodium",
           "optifabric"

@@ -1,6 +1,11 @@
 package settingdust.modsets.game
 
-import dev.isxander.yacl3.api.*
+import dev.isxander.yacl3.api.Binding
+import dev.isxander.yacl3.api.ConfigCategory
+import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.api.OptionAddable
+import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.OptionGroup
 import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.isxander.yacl3.gui.controllers.LabelController
@@ -60,9 +65,14 @@ sealed interface GroupRule : RuleController {
 @SerialName("label")
 object LabelRule : RuleController {
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T {
-        return builder.option(Option.createBuilder<Component>().name(rule.text)
-            .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-            .customController(::LabelController).binding(Binding.immutable(rule.text)).build()!!) as T
+        return builder.option(
+            Option.createBuilder<Component>()
+                .name(rule.text)
+                .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+                .customController(::LabelController)
+                .binding(Binding.immutable(rule.text))
+                .build()!!
+        ) as T
     }
 }
 
@@ -89,10 +99,19 @@ data class BooleanRule(val mod: String) : RuleController {
 
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T {
         if (mod in ModSets.rules.modSets)
-            builder.option(Option.createBuilder<Boolean>().name(rule.text).apply {
-                (rule.description
-                    ?: ModSets.rules.modSets[mod]?.description)?.let { description(OptionDescription.of(it)) }
-            }.instant(true).controller(TickBoxControllerBuilder::create).binding(mod.booleanBinding).build()!!) as T
+            builder.option(
+                Option.createBuilder<Boolean>()
+                    .name(rule.text)
+                    .apply {
+                        (rule.description ?: ModSets.rules.modSets[mod]?.description)?.let {
+                            description(OptionDescription.of(it))
+                        }
+                    }
+                    .instant(true)
+                    .controller(TickBoxControllerBuilder::create)
+                    .binding(mod.booleanBinding)
+                    .build()!!
+            ) as T
         return builder
     }
 }
@@ -109,53 +128,86 @@ data class CyclingRule(val mods: List<String>) : RuleController {
 
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T {
         val option = Option.createBuilder<String>().name(rule.text)
-        return builder.option(option.controller {
-            CyclingListControllerBuilder.create(it).values(mods).valueFormatter { mod ->
-                val modSet = ModSets.rules.modSets.getOrThrow(mod)
-                modSet.text.copy().withStyle(
-                    Style.EMPTY.withHoverEvent(
-                        modSet.description?.let { tooltip ->
-                            HoverEvent(
-                                HoverEvent.Action.SHOW_TEXT,
-                                tooltip,
+        return builder.option(
+            option
+                .controller {
+                    CyclingListControllerBuilder.create(it).values(mods).valueFormatter { mod ->
+                        val modSet = ModSets.rules.modSets.getOrThrow(mod)
+                        modSet.text
+                            .copy()
+                            .withStyle(
+                                Style.EMPTY.withHoverEvent(
+                                    modSet.description?.let { tooltip ->
+                                        HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            tooltip,
+                                        )
+                                    },
+                                ),
                             )
-                        },
-                    ),
-                )
-            }
-        }.apply { rule.description?.let { description(OptionDescription.of(it)) } }.instant(true).binding(
-            Binding.generic(
-                firstMod,
-                {
-                    val modSets = ModSets.rules.modSets
-                    val enabledModSet = mods.asSequence().filter { modSet ->
-                        if (modSet !in modSets) return@filter false
-                        val mods = modSets.getOrThrow(modSet).mods
-                        mods.isNotEmpty() && mods.none { it in ModSets.config.disabledMods }
-                    }.toList()
-                    if (enabledModSet.size > 1) {
-                        ModSets.logger.warn("More than one mod is enabled in cycling list: ${enabledModSet.joinToString()}. Will take the first and disable the others")
-                        ModSets.config.disabledMods.addAll(
-                            enabledModSet.drop(1).flatMap { modSets.getOrThrow(it).mods },
-                        )
-                        ModSets.config.disabledMods.removeAll(modSets.getOrThrow(enabledModSet.first()).mods.toSet())
-                        return@generic enabledModSet.first()
-                    } else if (enabledModSet.isEmpty()) {
-                        ModSets.logger.warn("None mod is enabled in cycling list: ${mods.joinToString()}. Will take the first and disable the others")
                     }
-                    val currentSelected = enabledModSet.singleOrNull { modSet ->
-                        modSets.getOrThrow(modSet).mods.none { it in ModSets.config.disabledMods }
-                    } ?: mods.firstOrNull { it in modSets && modSets.getOrThrow(it).mods.isNotEmpty() } ?: firstMod
+                }
+                .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+                .instant(true)
+                .binding(
+                    Binding.generic(
+                        firstMod,
+                        {
+                            val modSets = ModSets.rules.modSets
+                            val enabledModSet =
+                                mods
+                                    .asSequence()
+                                    .filter { modSet ->
+                                        if (modSet !in modSets) return@filter false
+                                        val mods = modSets.getOrThrow(modSet).mods
+                                        mods.isNotEmpty() &&
+                                            mods.none { it in ModSets.config.disabledMods }
+                                    }
+                                    .toList()
+                            if (enabledModSet.size > 1) {
+                                ModSets.logger.warn(
+                                    "More than one mod is enabled in cycling list: ${enabledModSet.joinToString()}. Will take the first and disable the others"
+                                )
+                                ModSets.config.disabledMods.addAll(
+                                    enabledModSet.drop(1).flatMap { modSets.getOrThrow(it).mods },
+                                )
+                                ModSets.config.disabledMods.removeAll(
+                                    modSets.getOrThrow(enabledModSet.first()).mods.toSet()
+                                )
+                                return@generic enabledModSet.first()
+                            } else if (enabledModSet.isEmpty()) {
+                                ModSets.logger.warn(
+                                    "None mod is enabled in cycling list: ${mods.joinToString()}. Will take the first and disable the others"
+                                )
+                            }
+                            val currentSelected =
+                                enabledModSet.singleOrNull { modSet ->
+                                    modSets.getOrThrow(modSet).mods.none {
+                                        it in ModSets.config.disabledMods
+                                    }
+                                }
+                                    ?: mods.firstOrNull {
+                                        it in modSets && modSets.getOrThrow(it).mods.isNotEmpty()
+                                    }
+                                    ?: firstMod
 
-                    ModSets.config.disabledMods.removeAll(modSets.getOrThrow(currentSelected).mods.toSet())
-                    return@generic currentSelected
-                },
-            ) { value: String ->
-                ModSets.config.disabledMods.addAll(mods.filter { it in ModSets.rules.modSets }
-                    .flatMap { ModSets.rules.modSets.getOrThrow(it).mods })
-                ModSets.config.disabledMods.removeAll(ModSets.rules.modSets.getOrThrow(value).mods.toSet())
-            },
-        ).build()
+                            ModSets.config.disabledMods.removeAll(
+                                modSets.getOrThrow(currentSelected).mods.toSet()
+                            )
+                            return@generic currentSelected
+                        },
+                    ) { value: String ->
+                        ModSets.config.disabledMods.addAll(
+                            mods
+                                .filter { it in ModSets.rules.modSets }
+                                .flatMap { ModSets.rules.modSets.getOrThrow(it).mods }
+                        )
+                        ModSets.config.disabledMods.removeAll(
+                            ModSets.rules.modSets.getOrThrow(value).mods.toSet()
+                        )
+                    },
+                )
+                .build()
         ) as T
     }
 }
@@ -163,7 +215,11 @@ data class CyclingRule(val mods: List<String>) : RuleController {
 @Suppress("unused")
 @Serializable
 @SerialName("mods_group")
-data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) : RuleController {
+data class ModsGroupRule(
+    val mods: List<String>,
+    val collapsed: Boolean = true,
+    val showMods: Boolean = true
+) : RuleController {
 
     init {
         require(mods.isNotEmpty()) { "mods of mods_group can't be empty" }
@@ -177,49 +233,65 @@ data class ModsGroupRule(val mods: List<String>, val collapsed: Boolean = true) 
                 if (mod !in ModSets.rules.modSets) continue
                 val modSet = ModSets.rules.modSets.getOrThrow(mod)
                 val option =
-                    Option.createBuilder<Boolean>().name(modSet.text)
+                    Option.createBuilder<Boolean>()
+                        .name(modSet.text)
                         .controller(TickBoxControllerBuilder::create)
                         .binding(mod.booleanBinding)
                         .instant(true)
                 modSet.description?.let { option.description(OptionDescription.of(it)) }
                 group.option(option.build())
-                for (innerMod in modSet.mods) {
-                    if (innerMod !in ModSets.rules.modSets) continue
-                    val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
-                    val innerOption =
-                        Option.createBuilder<Boolean>().name(innerModSet.text)
-                            .controller(TickBoxControllerBuilder::create)
-                            .binding(innerMod.booleanBinding)
-                            .instant(true)
-                    innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
-                    group.option(innerOption.build())
-                }
+                if (showMods)
+                    for (innerMod in modSet.mods.filter { it != mod }) {
+                        if (innerMod !in ModSets.rules.modSets) continue
+                        val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
+                        val innerOption =
+                            Option.createBuilder<Boolean>()
+                                .name(innerModSet.text)
+                                .controller(TickBoxControllerBuilder::create)
+                                .binding(innerMod.booleanBinding)
+                                .instant(true)
+                        innerModSet.description?.let {
+                            innerOption.description(OptionDescription.of(it))
+                        }
+                        group.option(innerOption.build())
+                    }
             }
             builder.group(group.collapsed(collapsed).build())
         } else {
-            builder.option(Option.createBuilder<Component>().name(rule.text)
-                .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-                .customController(::LabelController).binding(Binding.immutable(rule.text)).build()!!)
+            builder.option(
+                Option.createBuilder<Component>()
+                    .name(rule.text)
+                    .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+                    .customController(::LabelController)
+                    .binding(Binding.immutable(rule.text))
+                    .build()!!
+            )
             for (mod in mods) {
                 if (mod !in ModSets.rules.modSets) continue
                 val modSet = ModSets.rules.modSets.getOrThrow(mod)
                 val option =
-                    Option.createBuilder<Boolean>().name(modSet.text)
+                    Option.createBuilder<Boolean>()
+                        .name(modSet.text)
                         .controller(TickBoxControllerBuilder::create)
                         .binding(mod.booleanBinding)
                         .instant(true)
                 modSet.description?.let { option.description(OptionDescription.of(it)) }
                 builder.option(option.build())
-                for (innerMod in modSet.mods) {
-                    if (innerMod !in ModSets.rules.modSets) continue
-                    val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
-                    val innerOption = Option.createBuilder<Boolean>().name(innerModSet.text)
-                        .controller(TickBoxControllerBuilder::create)
-                        .binding(innerMod.booleanBinding)
-                        .instant(true)
-                    innerModSet.description?.let { innerOption.description(OptionDescription.of(it)) }
-                    builder.option(innerOption.build())
-                }
+                if (showMods)
+                    for (innerMod in modSet.mods.filter { it != mod }) {
+                        if (innerMod !in ModSets.rules.modSets) continue
+                        val innerModSet = ModSets.rules.modSets.getOrThrow(innerMod)
+                        val innerOption =
+                            Option.createBuilder<Boolean>()
+                                .name(innerModSet.text)
+                                .controller(TickBoxControllerBuilder::create)
+                                .binding(innerMod.booleanBinding)
+                                .instant(true)
+                        innerModSet.description?.let {
+                            innerOption.description(OptionDescription.of(it))
+                        }
+                        builder.option(innerOption.build())
+                    }
             }
         }
         return builder
@@ -243,9 +315,14 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
             }
             builder.group(group.collapsed(collapsed).build())
         } else {
-            builder.option(Option.createBuilder<Component>().name(rule.text)
-                .apply { rule.description?.let { description(OptionDescription.of(it)) } }
-                .customController(::LabelController).binding(Binding.immutable(rule.text)).build()!!)
+            builder.option(
+                Option.createBuilder<Component>()
+                    .name(rule.text)
+                    .apply { rule.description?.let { description(OptionDescription.of(it)) } }
+                    .customController(::LabelController)
+                    .binding(Binding.immutable(rule.text))
+                    .build()!!
+            )
             for (currentRule in rules) {
                 currentRule.controller.build(builder, currentRule)
             }

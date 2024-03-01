@@ -264,6 +264,11 @@
                       "items": {
                         "type": "string"
                       }
+                    },
+                    "show_mods": {
+                      "description": "For hiding mods of mod set in the mods",
+                      "type": "boolean",
+                      "default": true
                     }
                   }
                 },
