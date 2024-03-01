@@ -1,3 +1,11 @@
+## [1.6.0] - 2024-03-01
+### :bug: Bug Fixes
+- [`7d9de3c`](https://github.com/SettingDust/ModSets/commit/7d9de3cdeeaac29856a8ed3269c3a7cdc1f9deb6) - **rule**: fix the duplicate entries in mods group *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`23bf300`](https://github.com/SettingDust/ModSets/commit/23bf3001c4b8a9d93ceff2655fe6ed2efe99d97c) - **deps**: bump dependencies *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.5.0] - 2024-01-15
 ### :sparkles: New Features
 - [`a17d09c`](https://github.com/SettingDust/ModSets/commit/a17d09c3d3a69d7d255939bd386ed5a626e564c6) - support non windows & log error of rules instead of crash *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -27,3 +35,4 @@
 [1.4.7]: https://github.com/SettingDust/ModSets/compare/1.4.6...1.4.7
 [1.4.8]: https://github.com/SettingDust/ModSets/compare/1.4.7...1.4.8
 [1.5.0]: https://github.com/SettingDust/ModSets/compare/1.4.8...1.5.0
+[1.6.0]: https://github.com/SettingDust/ModSets/compare/1.5.0...1.6.0
