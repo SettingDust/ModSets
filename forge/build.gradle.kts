@@ -78,14 +78,14 @@ tasks {
 
     shadowJar {
         configurations = listOf(project.configurations.getByName("shadow"))
-        destinationDirectory.set(project.buildDir.resolve("devlibs"))
-        archiveClassifier.set("dev")
+        destinationDirectory = project.layout.buildDirectory.dir("devlibs")
+        archiveClassifier = "dev"
     }
 
     remapJar {
         dependsOn(shadowJar)
-        inputFile.set(shadowJar.get().archiveFile)
-        destinationDirectory.set(rootProject.libsDirectory)
+        inputFile = shadowJar.get().archiveFile
+        destinationDirectory = rootProject.libsDirectory
     }
 
     afterEvaluate {

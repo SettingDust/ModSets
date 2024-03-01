@@ -1,5 +1,4 @@
 [versions]
-# The latest Quilt versions are available at https://lambdaurora.dev/tools/import_quilt.html
 minecraft = "1.20.1"
 min_minecraft = "1.19.4"
 parchmentmc = "2023.09.03"
@@ -14,11 +13,12 @@ kotlinx_coroutines = "1.7.3"
 fabric_loader = "0.14.24"
 fabric_language_kotlin = "1.10.14+kotlin.1.9.20"
 # quilt
+# The latest Quilt versions are available at https://lambdaurora.dev/tools/import_quilt.html
 quilt_loader = "0.22.0-beta.1"
 quilted_fabric_api = "7.4.0+0.90.0-1.20.1"
 qsl_version = "6.1.2+1.20.1"
 
-yacl = "3.2.1+1.20"
+yacl = "3.2.2+1.20"
 min_yacl = "3.0.3"
 modmenu = "7.1.0"
 min_modmenu = "3.0.0"
@@ -70,11 +70,12 @@ kotlin_forge = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlin_
 
 
 [plugins]
-architectury_loom = { id = "dev.architectury.loom", version = "1.3.+" }
+architectury_loom = { id = "dev.architectury.loom", version = "1.5.+" }
 architectury = { id = "architectury-plugin", version = "3.+" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_plugin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
-gitSemverPlugin = { id = "com.github.jmongard.git-semver-plugin", version = "0.10.+" }
+# https://github.com/jmongard/Git.SemVersioning.Gradle/releases
+gitSemverPlugin = { id = "com.github.jmongard.git-semver-plugin", version = "0.12.+" }
