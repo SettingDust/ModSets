@@ -4,9 +4,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.libsDirectory
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
-plugins {
-    alias(libs.plugins.shadow)
-}
+plugins { alias(libs.plugins.shadow) }
 
 loom {
     mods {
@@ -30,9 +28,7 @@ repositories {
                 url = uri("https://api.modrinth.com/maven")
             }
         }
-        filter {
-            includeGroup("maven.modrinth")
-        }
+        filter { includeGroup("maven.modrinth") }
     }
 
     // Add KFF Maven repository
@@ -61,25 +57,28 @@ dependencies {
     }
 
     runtimeOnly(libs.kotlin.forge)
-    modRuntimeOnly(libs.yacl.forge) {
-        isTransitive = false
-    }
+    modRuntimeOnly(libs.yacl.forge) { isTransitive = false }
 
-    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
+    val kinecraft =
+        "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
     include(kinecraft)
 
     include(libs.preloading.tricks)
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
+    jar { enabled = false }
 
     shadowJar {
         configurations = listOf(project.configurations.getByName("shadow"))
         destinationDirectory = project.layout.buildDirectory.dir("devlibs")
         archiveClassifier = "dev"
+
+        manifest {
+            attributes(
+                "FMLModType" to "LIBRARY",
+            )
+        }
     }
 
     remapJar {
@@ -88,9 +87,5 @@ tasks {
         destinationDirectory = rootProject.libsDirectory
     }
 
-    afterEvaluate {
-        withType<AbstractRunTask> {
-            dependsOn(shadowJar)
-        }
-    }
+    afterEvaluate { withType<AbstractRunTask> { dependsOn(shadowJar) } }
 }
