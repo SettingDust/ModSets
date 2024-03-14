@@ -1,3 +1,8 @@
+## [1.6.1] - 2024-03-14
+### :bug: Bug Fixes
+- [`78e2e9c`](https://github.com/SettingDust/ModSets/commit/78e2e9c30233eb71dc960ac1bc107650610de5e6) - **forge**: crashing when loading on forge *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.6.0] - 2024-03-01
 ### :bug: Bug Fixes
 - [`7d9de3c`](https://github.com/SettingDust/ModSets/commit/7d9de3cdeeaac29856a8ed3269c3a7cdc1f9deb6) - **rule**: fix the duplicate entries in mods group *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -36,3 +41,4 @@
 [1.4.8]: https://github.com/SettingDust/ModSets/compare/1.4.7...1.4.8
 [1.5.0]: https://github.com/SettingDust/ModSets/compare/1.4.8...1.5.0
 [1.6.0]: https://github.com/SettingDust/ModSets/compare/1.5.0...1.6.0
+[1.6.1]: https://github.com/SettingDust/ModSets/compare/1.6.0...1.6.1
