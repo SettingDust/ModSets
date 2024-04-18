@@ -1,6 +1,9 @@
 {
   "$schema": "https://github.com/QuiltMC/quilt-json-schemas/raw/main/quilt.mod.json/schemas/main.json",
   "schema_version": 1,
+  "mixin": [
+    "${id}.quilt.mixins.json"
+  ],
   "quilt_loader": {
     "group": "${group}",
     "id": "${id}",
@@ -43,7 +46,7 @@
       },
       {
         "id": "kinecraft_serialization",
-        "versions": "${kinecraft_serialization_version}-fabric"
+        "versions": ">=${kinecraft_serialization_version}"
       },
       {
         "id": "modmenu",

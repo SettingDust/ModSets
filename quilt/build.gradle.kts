@@ -17,6 +17,8 @@ architectury {
 }
 
 loom {
+    mixin {}
+
     mods {
         create(archives_name) {
             sourceSet("main")
@@ -75,7 +77,7 @@ dependencies {
     modRuntimeOnly(catalog.fabric.kotlin) { exclude(module = "fabric-loader") }
 
     modRuntimeOnly(catalog.yacl.fabric) { isTransitive = false }
-    modRuntimeOnly(catalog.modmenu) { isTransitive = false }
+    modImplementation(catalog.modmenu) { isTransitive = false }
 
     modRuntimeOnly(catalog.quilt.fabric.api)
 

@@ -45,8 +45,7 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
 
     // https://modrinth.com/mod/preloading-tricks/versions
     library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.0.6")
-    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization")
-        .version("1.3.0-fabric")
+    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.3.0")
 
     library("parchment", "org.parchmentmc.data", "parchment-1.20.1").version("2023.09.03")
 

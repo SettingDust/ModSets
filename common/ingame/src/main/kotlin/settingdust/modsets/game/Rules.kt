@@ -37,6 +37,7 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
     private val configDir = PlatformHelper.configDir / "modsets"
 
     val modSets = mutableMapOf<String, ModSet>()
+    val modIdToModSets = mutableMapOf<String, Set<ModSet>>()
     val ModSetsRegisterCallbacks = mutableSetOf<() -> Unit>()
 
     private val definedModSets = mutableMapOf<String, ModSet>()
@@ -169,6 +170,17 @@ object Rules : MutableMap<String, RuleSet> by mutableMapOf() {
         modSetsPath.inputStream().use { definedModSets.putAll(json.decodeFromStream(it)) }
         modSets.putAll(definedModSets)
         runBlocking { ModSetsRegisterCallbacks.forEach { it() } }
+        modIdToModSets.clear()
+        modIdToModSets.putAll(
+            modSets.entries.fold(mutableMapOf()) { map, curr ->
+                for (mod in curr.value.mods) {
+                    if (mod == curr.key) continue
+                    val set = map.getOrPut(mod, ::mutableSetOf) as MutableSet
+                    set += curr.value
+                }
+                map
+            }
+        )
 
         clear()
         rulesDir.listDirectoryEntries("*.json").forEach {

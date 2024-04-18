@@ -76,7 +76,7 @@ dependencies {
     modRuntimeOnly(catalog.fabric.kotlin) { exclude(module = "fabric-loader") }
 
     modRuntimeOnly(catalog.yacl.fabric) { isTransitive = false }
-    modRuntimeOnly(catalog.modmenu) { exclude(module = "fabric-loader") }
+    modImplementation(catalog.modmenu) { exclude(module = "fabric-loader") }
 
     catalog.kinecraft.serialization.get().copy().let {
         it.version { require("$requiredVersion-fabric") }

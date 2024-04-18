@@ -74,5 +74,6 @@ object ModSetsConfig {
 
 @Serializable
 data class CommonConfig(
-    val displayModSetsScreen: Boolean = true, /*val nestedInModMenu: Boolean = true,*/
+    val displayModSetsScreen: Boolean = true,
+    val badgeInModMenu: Boolean = true
 )
