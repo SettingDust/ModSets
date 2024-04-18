@@ -29,38 +29,43 @@ class Entrypoint : ModInitializer {
                 val pathInSystem = paths.singleOrNull() ?: continue
                 if (pathInSystem.startsWith(modDir) && modDir != pathInSystem.parent) {
                     val subDir = pathInSystem.parent.name
-                    ModSets.logger.debug("Add {} to {}", pathInSystem, subDir)
-                    if (subDir in modSets) ModSets.logger.warn("Duplicate mod set with directory name: $subDir")
-                    modSets.getOrPut(subDir) {
-                        ModSet(
-                            Component.literal(subDir),
-                            Component.literal(pathInSystem.toString()),
-                            mutableSetOf()
-                        )
-                    }.mods.add(metadata.id())
+                    ModSets.LOGGER.debug("Add {} to {}", pathInSystem, subDir)
+                    if (subDir in modSets)
+                        ModSets.LOGGER.warn("Duplicate mod set with directory name: $subDir")
+                    modSets
+                        .getOrPut(subDir) {
+                            ModSet(
+                                Component.literal(subDir),
+                                Component.literal(pathInSystem.toString()),
+                                mutableSetOf()
+                            )
+                        }
+                        .mods
+                        .add(metadata.id())
                 }
-                if (metadata.id() in modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${metadata.id()}")
+                if (metadata.id() in modSets)
+                    ModSets.LOGGER.warn("Duplicate mod set with mod id: ${metadata.id()}")
                 modSets.putIfAbsent(metadata.id(), ModSet(metadata))
             }
 
             ModSets.config.disabledMods.forEach {
                 modSets.putIfAbsent(
-                    it, ModSet(
+                    it,
+                    ModSet(
                         Component.literal(it),
-                        if (try {
-                                I18n.exists("modmenu.nameTranslation.$it")
-                            } catch (e: Exception) {
-                                false
+                        if (
+                                try {
+                                    I18n.exists("modmenu.nameTranslation.$it")
+                                } catch (e: Exception) {
+                                    false
+                                }
+                            ) {
+                                Component.translatable("modmenu.nameTranslation.$it")
+                            } else {
+                                Component.literal(it)
                             }
-                        ) {
-                            Component.translatable("modmenu.nameTranslation.$it")
-                        } else {
-                            Component.literal(it)
-                        }.append(" ").append(
-                            Component.literal(
-                                "$it@disabled"
-                            )
-                        ),
+                            .append(" ")
+                            .append(Component.literal("$it@disabled")),
                         mutableSetOf(it),
                     )
                 )
@@ -69,21 +74,21 @@ class Entrypoint : ModInitializer {
     }
 }
 
-fun ModSet(mod: ModMetadata) = ModSet(
-    Component.literal(mod.id()),
-    if (try {
-            I18n.exists("modmenu.nameTranslation.${mod.id()}")
-        } catch (e: Exception) {
-            false
-        }
-    ) {
-        Component.translatable("modmenu.nameTranslation.${mod.id()}")
-    } else {
-        Component.literal(mod.name())
-    }.append(" ").append(
-        Component.literal(
-            "${mod.id()}@${mod.version()}"
-        )
-    ),
-    mutableSetOf(mod.id()),
-)
+fun ModSet(mod: ModMetadata) =
+    ModSet(
+        Component.literal(mod.id()),
+        if (
+                try {
+                    I18n.exists("modmenu.nameTranslation.${mod.id()}")
+                } catch (e: Exception) {
+                    false
+                }
+            ) {
+                Component.translatable("modmenu.nameTranslation.${mod.id()}")
+            } else {
+                Component.literal(mod.name())
+            }
+            .append(" ")
+            .append(Component.literal("${mod.id()}@${mod.version()}")),
+        mutableSetOf(mod.id()),
+    )

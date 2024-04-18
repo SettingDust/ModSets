@@ -22,8 +22,8 @@ loom {
     mods {
         create(archives_name) {
             sourceSet("main")
-            sourceSet("main", project(":config"))
-            sourceSet("main", project(":ingame"))
+            sourceSet("main", project(":common:config"))
+            sourceSet("main", project(":common:ingame"))
             dependency(
                 catalog.kotlinx.serialization.core.get(),
                 catalog.kotlinx.serialization.json.get(),
@@ -34,7 +34,7 @@ loom {
     }
 }
 
-tasks { processResources { from(project(":ingame").sourceSets.main.get().resources) } }
+tasks { processResources { from(project(":common:ingame").sourceSets.main.get().resources) } }
 
 repositories {
     exclusiveContent {
@@ -62,15 +62,15 @@ dependencies {
     implementation(catalog.kotlinx.coroutines)
     implementation(catalog.kotlin.reflect)
 
-    implementation(project(path = ":config", configuration = "namedElements")) {
+    implementation(project(path = ":common:config", configuration = "namedElements")) {
         isTransitive = false
     }
-    include(project(":config"))
+    include(project(":common:config"))
 
-    implementation(project(path = ":ingame", configuration = "namedElements")) {
+    implementation(project(path = ":common:ingame", configuration = "namedElements")) {
         isTransitive = false
     }
-    include(project(":ingame"))
+    include(project(":common:ingame"))
 
     modImplementation(catalog.fabric.loader)
     modRuntimeOnly(catalog.fabric.kotlin) { exclude(module = "fabric-loader") }
@@ -78,11 +78,14 @@ dependencies {
     modRuntimeOnly(catalog.yacl.fabric) { isTransitive = false }
     modRuntimeOnly(catalog.modmenu) { exclude(module = "fabric-loader") }
 
-    val kinecraft =
-        "maven.modrinth:kinecraft-serialization:${catalog.kinecraft.serialization.get().version}-fabric"
-    modRuntimeOnly(kinecraft)
-    include(kinecraft)
+    catalog.kinecraft.serialization.get().copy().let {
+        it.version { require("$requiredVersion-fabric") }
+        modRuntimeOnly(it)
+        include(it)
+    }
 
-    implementation(catalog.preloading.tricks)
-    include(catalog.preloading.tricks)
+    catalog.preloading.tricks.let {
+        implementation(it)
+        include(it)
+    }
 }

@@ -60,11 +60,9 @@ val mod_name: String by settings
 
 rootProject.name = mod_name
 
-include("config")
+include("common:config")
 
-include("ingame")
-
-include("ingame-forge")
+include("common:ingame")
 
 include("fabric")
 
@@ -72,8 +70,10 @@ include("quilt")
 
 include("forge")
 
-include("forge-mod-locator")
+include("forge:mod-locator")
 
-include("forge-setup-mod-hook")
+include("forge:setup-mod-hook")
 
-include("forge-ingame")
+include("forge:ingame")
+
+include("forge:mod")

@@ -20,15 +20,16 @@ object Entrypoint : ModInitializer {
         val modSets = ModSets.rules.modSets
 
         ModSetsRegisterCallbacks += {
-            for ((key, value) in FilteredDirectoryModCandidateFinder.directoryModSets
-                .mapValues {
+            for ((key, value) in
+                FilteredDirectoryModCandidateFinder.directoryModSets.mapValues {
                     ModSet(
                         Component.literal(it.key),
                         Component.literal(gameDir.relativize(modsPath / it.key).toString()),
                         it.value.toMutableSet(),
                     )
                 }) {
-                if (key in modSets) ModSets.logger.warn("Duplicate mod set with directory name: $key")
+                if (key in modSets)
+                    ModSets.LOGGER.warn("Duplicate mod set with directory name: $key")
                 modSets.putIfAbsent(key, value)
             }
 
@@ -36,22 +37,26 @@ object Entrypoint : ModInitializer {
                 if (mod.origin.kind.equals(ModOrigin.Kind.NESTED)) continue
                 val metadata = mod.metadata
                 if (metadata.type.equals("builtin")) continue
-                if (metadata.id in modSets) ModSets.logger.warn("Duplicate mod set with mod id: ${metadata.id}")
+                if (metadata.id in modSets)
+                    ModSets.LOGGER.warn("Duplicate mod set with mod id: ${metadata.id}")
                 val nameKey = "modmenu.nameTranslation.${metadata.id}"
                 modSets.putIfAbsent(
                     metadata.id,
                     ModSet(
                         Component.literal(metadata.id),
-                        if (try {
-                                I18n.exists(nameKey)
-                            } catch (e: Exception) {
-                                false
+                        if (
+                                try {
+                                    I18n.exists(nameKey)
+                                } catch (e: Exception) {
+                                    false
+                                }
+                            ) {
+                                Component.translatable(nameKey)
+                            } else {
+                                Component.literal(metadata.name)
                             }
-                        ) {
-                            Component.translatable(nameKey)
-                        } else {
-                            Component.literal(metadata.name)
-                        }.append(" ").append(Component.literal("${metadata.id}@${metadata.version}")),
+                            .append(" ")
+                            .append(Component.literal("${metadata.id}@${metadata.version}")),
                         mutableSetOf(metadata.id),
                     ),
                 )
@@ -59,18 +64,22 @@ object Entrypoint : ModInitializer {
 
             ModSets.config.disabledMods.forEach {
                 modSets.putIfAbsent(
-                    it, ModSet(
+                    it,
+                    ModSet(
                         Component.literal(it),
-                        if (try {
-                                I18n.exists("modmenu.nameTranslation.$it")
-                            } catch (e: Exception) {
-                                false
+                        if (
+                                try {
+                                    I18n.exists("modmenu.nameTranslation.$it")
+                                } catch (e: Exception) {
+                                    false
+                                }
+                            ) {
+                                Component.translatable("modmenu.nameTranslation.$it")
+                            } else {
+                                Component.literal(it)
                             }
-                        ) {
-                            Component.translatable("modmenu.nameTranslation.$it")
-                        } else {
-                            Component.literal(it)
-                        }.append(" ").append(Component.literal("$it@disabled")),
+                            .append(" ")
+                            .append(Component.literal("$it@disabled")),
                         mutableSetOf(it),
                     )
                 )

@@ -46,13 +46,13 @@ repositories {
 dependencies {
     forge(catalog.forge)
 
-    include(project(":config"))
-    include(project(":ingame-forge"))
+    include(project(":common:config"))
+    include(project(":forge:ingame"))
 
-    include(project(":forge-ingame"))
-    include(project(":forge-setup-mod-hook"))
+    include(project(":forge:mod"))
+    include(project(":forge:setup-mod-hook"))
 
-    shadow(project(path = ":forge-mod-locator", configuration = "namedElements")) {
+    shadow(project(path = ":forge:mod-locator", configuration = "namedElements")) {
         isTransitive = false
     }
 
