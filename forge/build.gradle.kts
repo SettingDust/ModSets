@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.libsDirectory
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
-plugins { alias(libs.plugins.shadow) }
+plugins { alias(catalog.plugins.shadow) }
 
 loom {
     mods {
@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    forge(libs.forge)
+    forge(catalog.forge)
 
     include(project(":config"))
     include(project(":ingame-forge"))
@@ -56,14 +56,14 @@ dependencies {
         isTransitive = false
     }
 
-    runtimeOnly(libs.kotlin.forge)
-    modRuntimeOnly(libs.yacl.forge) { isTransitive = false }
+    runtimeOnly(catalog.forge.kotlin)
+    modRuntimeOnly(catalog.yacl.forge) { isTransitive = false }
 
     val kinecraft =
-        "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-forge"
+        "maven.modrinth:kinecraft-serialization:${catalog.kinecraft.serialization.get().version}-forge"
     include(kinecraft)
 
-    include(libs.preloading.tricks)
+    include(catalog.preloading.tricks)
 }
 
 tasks {

@@ -1,9 +1,7 @@
-architectury {
-    forge()
-}
+architectury { forge() }
 
 dependencies {
-    forge(libs.forge)
+    forge(catalog.forge)
 
     api(project(":config"))
 }

@@ -1,8 +1,4 @@
-import net.fabricmc.loom.task.AbstractRunTask
-
-architectury {
-    forge()
-}
+architectury { forge() }
 
 repositories {
     maven {
@@ -13,8 +9,8 @@ repositories {
 }
 
 dependencies {
-    forge(libs.forge)
-    implementation(libs.kotlin.forge)
+    forge(catalog.forge)
+    implementation(catalog.forge.kotlin)
 
     implementation(project(path = ":config", configuration = "namedElements")) {
         isTransitive = false

@@ -15,12 +15,6 @@ versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.$id]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[${minecraft_version},)"
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.$id]]
 modId = "kotlinforforge"
 mandatory = true
 versionRange = "[${kotlin_forge_version},)"

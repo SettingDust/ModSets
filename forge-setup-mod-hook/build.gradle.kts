@@ -1,6 +1,4 @@
-architectury {
-    forge()
-}
+architectury { forge() }
 
 repositories {
     exclusiveContent {
@@ -10,17 +8,15 @@ repositories {
                 url = uri("https://api.modrinth.com/maven")
             }
         }
-        filter {
-            includeGroup("maven.modrinth")
-        }
+        filter { includeGroup("maven.modrinth") }
     }
 
     mavenLocal()
 }
 
 dependencies {
-    forge(libs.forge)
-    implementation(libs.preloading.tricks)
+    forge(catalog.forge)
+    implementation(catalog.preloading.tricks)
 
     implementation(project(path = ":config", configuration = "namedElements")) {
         isTransitive = false

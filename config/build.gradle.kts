@@ -1,12 +1,10 @@
-architectury {
-    common(rootProject.property("enabled_platforms").toString().split(","))
-}
+architectury { common(rootProject.property("enabled_platforms").toString().split(",")) }
 
 dependencies {
-    api(libs.kotlinx.serialization.core)
-    api(libs.kotlinx.serialization.json)
-    api(libs.kotlinx.coroutines)
-    api(libs.kotlin.reflect)
+    api(catalog.kotlinx.serialization.core)
+    api(catalog.kotlinx.serialization.json)
+    api(catalog.kotlinx.coroutines)
+    api(catalog.kotlin.reflect)
 }
 
 tasks {

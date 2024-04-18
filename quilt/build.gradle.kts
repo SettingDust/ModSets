@@ -34,9 +34,7 @@ repositories {
                 url = uri("https://api.modrinth.com/maven")
             }
         }
-        filter {
-            includeGroup("maven.modrinth")
-        }
+        filter { includeGroup("maven.modrinth") }
     }
 
     maven("https://maven.fabricmc.net/")
@@ -56,10 +54,10 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlinx.serialization.core)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines)
-    implementation(libs.kotlin.reflect)
+    implementation(catalog.kotlinx.serialization.core)
+    implementation(catalog.kotlinx.serialization.json)
+    implementation(catalog.kotlinx.coroutines)
+    implementation(catalog.kotlin.reflect)
 
     implementation(project(path = ":config", configuration = "namedElements")) {
         isTransitive = false
@@ -71,32 +69,23 @@ dependencies {
     }
     include(project(":ingame"))
 
-    modImplementation(libs.quilt.loader)
-    modImplementation(libs.quilt.standard.libraries.core)
+    modImplementation(catalog.quilt.loader)
+    modImplementation(catalog.quilt.standard.libraries.core)
 
-    modRuntimeOnly(libs.fabric.languageKotlin) {
-        exclude(module = "fabric-loader")
-    }
+    modRuntimeOnly(catalog.fabric.kotlin) { exclude(module = "fabric-loader") }
 
-    modRuntimeOnly(libs.yacl.fabric) {
-        isTransitive = false
-    }
-    modRuntimeOnly(libs.modmenu) {
-        isTransitive = false
-    }
+    modRuntimeOnly(catalog.yacl.fabric) { isTransitive = false }
+    modRuntimeOnly(catalog.modmenu) { isTransitive = false }
 
-    modRuntimeOnly(libs.quilted.fabric.api)
+    modRuntimeOnly(catalog.quilt.fabric.api)
 
-    val kinecraft = "maven.modrinth:kinecraft-serialization:${libs.versions.kinecraft.serialization.get()}-fabric"
+    val kinecraft =
+        "maven.modrinth:kinecraft-serialization:${catalog.kinecraft.serialization.get().version}-fabric"
     modRuntimeOnly(kinecraft)
     include(kinecraft)
 
-    implementation(libs.preloading.tricks)
-    include(libs.preloading.tricks)
+    implementation(catalog.preloading.tricks)
+    include(catalog.preloading.tricks)
 }
 
-tasks {
-    processResources {
-        from(project(":ingame").sourceSets.main.get().resources)
-    }
-}
+tasks { processResources { from(project(":ingame").sourceSets.main.get().resources) } }

@@ -1,9 +1,3 @@
-dependencies {
-    forge(libs.forge)
-}
+dependencies { forge(catalog.forge) }
 
-tasks {
-    remapJar {
-        inputFile.set(project(":ingame").tasks.jar.get().archiveFile)
-    }
-}
+tasks { remapJar { inputFile.set(project(":ingame").tasks.jar.get().archiveFile) } }
