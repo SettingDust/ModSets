@@ -1,3 +1,12 @@
+## [1.7.0] - 2024-04-18
+### :sparkles: New Features
+- [`37ee792`](https://github.com/SettingDust/ModSets/commit/37ee7923c7a3d296368b55f83887ab659ee7cb68) - add badge for modmenu *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :recycle: Refactors
+- [`13fbf8c`](https://github.com/SettingDust/ModSets/commit/13fbf8c389c97d426a7eb32bd8a2a73cc67bddac) - use catalog from `settings.gradle.kts` *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`fd64553`](https://github.com/SettingDust/ModSets/commit/fd64553e4e3c331f4f2111952602dc532f7b784b) - regroup the modules *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.6.1] - 2024-03-14
 ### :bug: Bug Fixes
 - [`78e2e9c`](https://github.com/SettingDust/ModSets/commit/78e2e9c30233eb71dc960ac1bc107650610de5e6) - **forge**: crashing when loading on forge *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -42,3 +51,4 @@
 [1.5.0]: https://github.com/SettingDust/ModSets/compare/1.4.8...1.5.0
 [1.6.0]: https://github.com/SettingDust/ModSets/compare/1.5.0...1.6.0
 [1.6.1]: https://github.com/SettingDust/ModSets/compare/1.6.0...1.6.1
+[1.7.0]: https://github.com/SettingDust/ModSets/compare/1.6.1...1.7.0
