@@ -1,3 +1,8 @@
+## [1.7.1] - 2024-04-19
+### :bug: Bug Fixes
+- [`7460df5`](https://github.com/SettingDust/ModSets/commit/7460df51639c1580b1518eebaf206e8a1edbe3a0) - wrong group causing crash in prod *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.7.0] - 2024-04-18
 ### :sparkles: New Features
 - [`37ee792`](https://github.com/SettingDust/ModSets/commit/37ee7923c7a3d296368b55f83887ab659ee7cb68) - add badge for modmenu *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -52,3 +57,4 @@
 [1.6.0]: https://github.com/SettingDust/ModSets/compare/1.5.0...1.6.0
 [1.6.1]: https://github.com/SettingDust/ModSets/compare/1.6.0...1.6.1
 [1.7.0]: https://github.com/SettingDust/ModSets/compare/1.6.1...1.7.0
+[1.7.1]: https://github.com/SettingDust/ModSets/compare/1.7.0...1.7.1
