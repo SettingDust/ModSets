@@ -13,7 +13,7 @@ import settingdust.modsets.ModSetsConfig;
 import settingdust.modsets.game.ModSet;
 import settingdust.modsets.game.Rules;
 
-@Mixin(ModBadgeRenderer.class)
+@Mixin(value = ModBadgeRenderer.class, remap = false)
 public abstract class ModBadgeRendererMixin {
 
     @Shadow

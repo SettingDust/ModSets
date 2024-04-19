@@ -48,6 +48,7 @@ subprojects {
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
 
+    group = maven_group
     version = rootProject.version
 
     base { archivesName.set("$archives_name-${project.name}") }
