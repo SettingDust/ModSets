@@ -37,7 +37,7 @@ jobs:
         with:
           changelog: ${{ steps.changelog.outputs.changes }}
           game-versions: |
-            [1.19.4, 1.20.4)
+            [1.19.4, 1.20.4]
           game-version-filter: releases
 
           # Only include this section if you wish to publish
