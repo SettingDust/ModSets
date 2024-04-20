@@ -125,7 +125,10 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
             );
             return Optional.empty();
         } catch (final Exception e) {
-            logger.error("Failed to load resource {} from mod {}, cause {}", path, modFile.getFileName(), e);
+            if (modFile != null)
+                logger.error("Failed to load resource {} from mod {}, cause {}", path, modFile.getFileName(), e);
+            else
+                logger.warn("Can't read mod file from {}", path);
             return Optional.empty();
         }
     }
@@ -150,6 +153,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     }
 
     protected String identifyMod(final IModFile modFile) {
+        if (modFile == null) return null;
         if (modFile.getModFileInfo() == null || modFile.getModInfos().isEmpty()) {
             return modFile.getFileName();
         }
