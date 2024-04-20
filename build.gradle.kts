@@ -133,13 +133,15 @@ tasks {
         mergeServiceFiles()
         archiveClassifier.set("")
 
-        manifest {
-            from(
-                configurations
-                    .flatMap { it.files }
-                    .map { zipTree(it) }
-                    .map { zip -> zip.find { it.name.equals("MANIFEST.MF") } }
-            )
+        doFirst {
+            manifest {
+                from(
+                    configurations
+                        .flatMap { it.files }
+                        .map { zipTree(it) }
+                        .map { zip -> zip.find { it.name.equals("MANIFEST.MF") } }
+                )
+            }
         }
     }
 
