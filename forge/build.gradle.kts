@@ -1,5 +1,4 @@
 import net.fabricmc.loom.task.AbstractRunTask
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.libsDirectory
 
 val archives_name: String by rootProject
 val mod_name: String by rootProject
@@ -70,7 +69,7 @@ tasks {
     jar { enabled = false }
 
     shadowJar {
-        configurations = listOf(project.configurations.getByName("shadow"))
+        configurations = listOf(project.configurations.shadow.get())
         destinationDirectory = project.layout.buildDirectory.dir("devlibs")
         archiveClassifier = "dev"
 
@@ -84,7 +83,6 @@ tasks {
     remapJar {
         dependsOn(shadowJar)
         inputFile = shadowJar.get().archiveFile
-        destinationDirectory = rootProject.libsDirectory
     }
 
     afterEvaluate { withType<AbstractRunTask> { dependsOn(shadowJar) } }

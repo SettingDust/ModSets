@@ -7,7 +7,6 @@
 )
 
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.task.RemapJarTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -32,11 +31,13 @@ val maven_group: String by project
 val archives_name: String by project
 val mod_name: String by rootProject
 
-project.version = "${semver.semVersion}+${catalog.versions.minecraft.get()}"
+project.version = "${semver.semVersion}"
 
 project.group = maven_group
 
 architectury { minecraft = catalog.versions.minecraft.get() }
+
+base { archivesName.set(archives_name) }
 
 subprojects {
     apply(plugin = "java")
@@ -51,7 +52,7 @@ subprojects {
     group = maven_group
     version = rootProject.version
 
-    base { archivesName.set("$archives_name-${project.name}") }
+    base { archivesName.set("$archives_name${project.path.replace(":", "-")}") }
 
     configure<LoomGradleExtensionAPI> { silentMojangMappingsLicense() }
 
@@ -118,22 +119,20 @@ subprojects {
     }
 }
 
+dependencies {
+    shadow(project(":fabric")) { isTransitive = false }
+    shadow(project(":quilt")) { isTransitive = false }
+    shadow(project(":forge")) { isTransitive = false }
+}
+
 tasks {
     jar { enabled = false }
+
     shadowJar {
-        val fabricJar = project(":fabric").tasks.named("remapJar")
-        val quiltJar = project(":quilt").tasks.named("remapJar")
-
-        from(fabricJar, quiltJar)
-
+        configurations = listOf(project.configurations.shadow.get())
         mergeServiceFiles()
-
-        archiveBaseName.set("$archives_name-intermediary")
         archiveClassifier.set("")
     }
 
-    build {
-        val forgeJar = project(":forge").tasks.named<RemapJarTask>("remapJar")
-        dependsOn(shadowJar, forgeJar)
-    }
+    build { dependsOn(shadowJar) }
 }

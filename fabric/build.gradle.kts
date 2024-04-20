@@ -11,14 +11,14 @@ val mod_name: String by rootProject
 
 version = rootProject.version
 
-base { archivesName.set("$archives_name-fabric") }
-
 architectury {
     platformSetupLoomIde()
     fabric()
 }
 
 loom {
+    mixin { add("main", "$archives_name.fabric.refmap.json") }
+
     mods {
         create(archives_name) {
             sourceSet("main")

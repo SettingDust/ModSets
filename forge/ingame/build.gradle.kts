@@ -1,3 +1,9 @@
 dependencies { forge(catalog.forge) }
 
-tasks { remapJar { inputFile.set(project(":common:ingame").tasks.jar.get().archiveFile) } }
+tasks {
+    remapJar {
+        val task = project(":common:ingame").tasks.jar
+        dependsOn(task)
+        inputFile.set(task.get().archiveFile)
+    }
+}

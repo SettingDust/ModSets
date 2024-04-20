@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "settingdust.modsets.mixin.fabric",
-  "refmap": "${id}.refmap.json",
+  "refmap": "${id}.fabric.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ModBadgeRendererMixin"
