@@ -153,7 +153,6 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     }
 
     protected String identifyMod(final IModFile modFile) {
-        if (modFile == null) return null;
         if (modFile.getModFileInfo() == null || modFile.getModInfos().isEmpty()) {
             return modFile.getFileName();
         }
