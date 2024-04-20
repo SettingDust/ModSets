@@ -1,3 +1,12 @@
+## [1.7.2] - 2024-04-20
+### :bug: Bug Fixes
+- [`db23fd0`](https://github.com/SettingDust/ModSets/commit/db23fd01a42e8e756ac1185a4ca4a0c099c7fa2b) - avoid loading for JiJ non-forge mods *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`d4da4c8`](https://github.com/SettingDust/ModSets/commit/d4da4c8c7666bc01a4e015d829411dd98c7323b5) - merge the manifest correctly *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :recycle: Refactors
+- [`23bcff8`](https://github.com/SettingDust/ModSets/commit/23bcff834d952ff62b79b842388aec62e36f51e9) - produce only one jar *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.7.1] - 2024-04-19
 ### :bug: Bug Fixes
 - [`7460df5`](https://github.com/SettingDust/ModSets/commit/7460df51639c1580b1518eebaf206e8a1edbe3a0) - wrong group causing crash in prod *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -58,3 +67,4 @@
 [1.6.1]: https://github.com/SettingDust/ModSets/compare/1.6.0...1.6.1
 [1.7.0]: https://github.com/SettingDust/ModSets/compare/1.6.1...1.7.0
 [1.7.1]: https://github.com/SettingDust/ModSets/compare/1.7.0...1.7.1
+[1.7.2]: https://github.com/SettingDust/ModSets/compare/1.7.1...1.7.2
