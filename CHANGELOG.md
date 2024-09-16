@@ -1,3 +1,11 @@
+## [1.8.0] - 2024-09-16
+### :sparkles: New Features
+- [`934fb3b`](https://github.com/SettingDust/ModSets/commit/934fb3b31c952eebb8ae357518e5395ff18879a9) - support fabric 0.16.2+ *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :bug: Bug Fixes
+- [`00f0f84`](https://github.com/SettingDust/ModSets/commit/00f0f8486e7da049f6ca897f51658dac9ca4bb0b) - usable on quilt *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.7.2] - 2024-04-20
 ### :bug: Bug Fixes
 - [`db23fd0`](https://github.com/SettingDust/ModSets/commit/db23fd01a42e8e756ac1185a4ca4a0c099c7fa2b) - avoid loading for JiJ non-forge mods *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -68,3 +76,4 @@
 [1.7.0]: https://github.com/SettingDust/ModSets/compare/1.6.1...1.7.0
 [1.7.1]: https://github.com/SettingDust/ModSets/compare/1.7.0...1.7.1
 [1.7.2]: https://github.com/SettingDust/ModSets/compare/1.7.1...1.7.2
+[1.8.0]: https://github.com/SettingDust/ModSets/compare/1.7.2...1.8.0
