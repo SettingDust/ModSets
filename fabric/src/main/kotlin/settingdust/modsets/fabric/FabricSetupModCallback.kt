@@ -3,7 +3,11 @@ package settingdust.modsets.fabric
 import net.fabricmc.loader.api.LanguageAdapter
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.fabricmc.loader.impl.ModContainerImpl
-import net.fabricmc.loader.impl.discovery.*
+import net.fabricmc.loader.impl.discovery.ModCandidateImpl
+import net.fabricmc.loader.impl.discovery.ModDiscoverer
+import net.fabricmc.loader.impl.discovery.ModResolutionException
+import net.fabricmc.loader.impl.discovery.ModResolver
+import net.fabricmc.loader.impl.discovery.RuntimeModRemapper
 import net.fabricmc.loader.impl.gui.FabricGuiEntry
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import net.fabricmc.loader.impl.metadata.DependencyOverrides
@@ -30,7 +34,7 @@ import kotlin.reflect.jvm.isAccessible
 class FabricSetupModCallback : SetupModCallback {
     private val logger = LoggerFactory.getLogger("ModSets/SetupMod")
     private val service = FabricModSetupService.INSTANCE
-    private var envDisabledMods = mutableMapOf<String, Set<ModCandidate>>()
+    private var envDisabledMods = mutableMapOf<String, Set<ModCandidateImpl>>()
 
     @Suppress("UNCHECKED_CAST")
     private val adapterMapProperty =
@@ -57,7 +61,7 @@ class FabricSetupModCallback : SetupModCallback {
         service.removeIf { it.metadata.id in ModSets.config.disabledMods }
     }
 
-    private fun discoverMods(): Collection<ModCandidate> {
+    private fun discoverMods(): Collection<ModCandidateImpl> {
         val discoverer = ModDiscoverer(VersionOverrides(), DependencyOverrides(FabricLoaderImpl.INSTANCE.configDir))
         addCandidateFinderFunction.call(
             discoverer,
@@ -84,7 +88,7 @@ class FabricSetupModCallback : SetupModCallback {
         return discoverer.discoverMods(FabricLoaderImpl.INSTANCE, envDisabledMods)
     }
 
-    private fun Collection<ModCandidate>.resolveMods(): Collection<ModCandidate> {
+    private fun Collection<ModCandidateImpl>.resolveMods(): Collection<ModCandidateImpl> {
         val modId = service.all().asSequence().map { it.metadata.id }.toSet()
         val cacheDir: Path = FabricLoaderImpl.INSTANCE.gameDir.resolve(FabricLoaderImpl.CACHE_DIR_NAME)
         val processedModsDir = cacheDir.resolve("processedMods")
@@ -108,14 +112,14 @@ class FabricSetupModCallback : SetupModCallback {
         return candidates
     }
 
-    private fun Collection<ModCandidate>.addMods() {
+    private fun Collection<ModCandidateImpl>.addMods() {
         for (candidate in this) {
             service.add(candidate)
             candidate.paths.forEach { FabricLauncherBase.getLauncher().addToClassPath(it) }
         }
     }
 
-    private fun Collection<ModCandidate>.setupLanguageAdapter() {
+    private fun Collection<ModCandidateImpl>.setupLanguageAdapter() {
         val adapterMap = adapterMapProperty.call(FabricLoaderImpl.INSTANCE)
         for (candidate in this) {
             val definitions = candidate.metadata.languageAdapterDefinitions
@@ -134,11 +138,11 @@ class FabricSetupModCallback : SetupModCallback {
         }
     }
 
-    private fun Collection<ModCandidate>.dumpModList() {
+    private fun Collection<ModCandidateImpl>.dumpModList() {
         val modListText = StringBuilder()
         val lastItemOfNestLevel = BooleanArray(size)
         val topLevelMods = stream()
-            .filter { mod: ModCandidate -> mod.parentMods.isEmpty() }
+            .filter { mod: ModCandidateImpl -> mod.parentMods.isEmpty() }
             .collect(Collectors.toList())
         val topLevelModsCount = topLevelMods.size
         for (i in 0 until topLevelModsCount) {
@@ -156,7 +160,7 @@ class FabricSetupModCallback : SetupModCallback {
         )
     }
 
-    private fun ModCandidate.dumpModList0(log: StringBuilder, nestLevel: Int, lastItemOfNestLevel: BooleanArray) {
+    private fun ModCandidateImpl.dumpModList0(log: StringBuilder, nestLevel: Int, lastItemOfNestLevel: BooleanArray) {
         if (log.isNotEmpty()) log.append('\n')
         for (depth in 0 until nestLevel) {
             log.append(if (depth == 0) "\t" else if (lastItemOfNestLevel[depth]) "     " else "   | ")
@@ -167,11 +171,11 @@ class FabricSetupModCallback : SetupModCallback {
         log.append(id)
         log.append(' ')
         log.append(version.friendlyString)
-        val nestedMods: List<ModCandidate> = ArrayList(nestedMods)
+        val nestedMods: List<ModCandidateImpl> = ArrayList(nestedMods)
         nestedMods.sortedBy { it.metadata.id }
         if (nestedMods.isNotEmpty()) {
             val iterator = nestedMods.iterator()
-            var nestedMod: ModCandidate
+            var nestedMod: ModCandidateImpl
             var lastItem: Boolean
             while (iterator.hasNext()) {
                 nestedMod = iterator.next()

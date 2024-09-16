@@ -22,8 +22,10 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     version("min-yacl", "3.0.3")
     version("min-modmenu", "3.0.0")
     version("min-forge", "45")
-    version("fabric-loader", "0.14")
+    version("fabric-loader", "0.16.2")
     version("quilt-loader", "0.24.0")
+
+    library("fabric-loader", "net.fabricmc", "fabric-loader").version("0.16.5")
 
     library("kotlin-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").version("$kotlin")
     val kotlinxSerialization = "1.6.3"
@@ -44,8 +46,8 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     plugin("shadow", "com.github.johnrengelman.shadow").version("8.+")
 
     // https://modrinth.com/mod/preloading-tricks/versions
-    library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.0.6")
-    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.3.0")
+    library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.1")
+    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.4.1")
 
     library("parchment", "org.parchmentmc.data", "parchment-1.20.1").version("2023.09.03")
 

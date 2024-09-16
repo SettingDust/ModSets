@@ -3,7 +3,7 @@ package settingdust.modsets.fabric;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.fabricmc.loader.impl.discovery.DirectoryModCandidateFinder;
-import net.fabricmc.loader.impl.discovery.ModCandidate;
+import net.fabricmc.loader.impl.discovery.ModCandidateImpl;
 import net.fabricmc.loader.impl.discovery.ModDiscoverer;
 import net.fabricmc.loader.impl.metadata.DependencyOverrides;
 import net.fabricmc.loader.impl.metadata.VersionOverrides;
@@ -49,9 +49,13 @@ public class FilteredDirectoryModCandidateFinder extends DirectoryModCandidateFi
     @Override
     public void findCandidates(ModCandidateConsumer out) {
         super.findCandidates((final var path, final var requiresRemap) -> {
-            ModCandidate candidate;
+            ModCandidateImpl candidate;
             try {
-                candidate = (ModCandidate) modScanTaskCompute.invoke(modScanTaskConstructor.newInstance(discoverer, path, requiresRemap));
+                candidate = (ModCandidateImpl) modScanTaskCompute.invoke(modScanTaskConstructor.newInstance(
+                    discoverer,
+                    path,
+                    requiresRemap
+                ));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
