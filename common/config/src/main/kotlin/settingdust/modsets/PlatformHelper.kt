@@ -4,15 +4,11 @@ import java.nio.file.Path
 import java.util.*
 
 interface PlatformHelper {
-    companion object {
-        @JvmStatic
-        val INSTANCE =
-            ServiceLoader.load(PlatformHelper::class.java, Companion::class.java.classLoader)
-                .first()!!
-
-        val configDir: Path
-            get() = INSTANCE.configDir
-    }
+    companion object :
+        PlatformHelper by ServiceLoader.load(
+            PlatformHelper::class.java, Companion::class.java.classLoader
+        )
+            .firstOrNull() ?: error("PlatformHelper implementation not found")
 
     val configDir: Path
 }
