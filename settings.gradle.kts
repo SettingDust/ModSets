@@ -1,60 +1,37 @@
-apply(
-    from = "https://github.com/SettingDust/FabricKotlinTemplate/raw/main/common.settings.gradle.kts"
-)
+extra["minecraft"] = "1.20.1"
 
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        maven("https://maven.architectury.dev/")
-        maven("https://maven2.bai.lol")
-        maven("https://maven.fabricmc.net/") { name = "Fabric" }
-        maven("https://maven.quiltmc.org/repository/release") { name = "Quilt" }
-        maven("https://maven.minecraftforge.net/") { name = "Forge" }
-        maven("https://repo.spongepowered.org/repository/maven-public/") { name = "Sponge" }
-    }
-}
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/common.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/kotlin.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/fabric.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/forge.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/parchmentmc.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/quilt.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/modmenu.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/mixin.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/yacl.gradle.kts")
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/vanillagradle.gradle.kts")
 
 val minecraft = settings.extra["minecraft"]
 val kotlin = settings.extra["kotlin"]
 
 dependencyResolutionManagement.versionCatalogs.named("catalog") {
+    library("minecraft-fabric-1.21", "com.mojang", "minecraft").version("1.21")
+
+    plugin("neoforge-moddev", "net.neoforged.moddev").version("1.+")
+
+    // https://linkie.shedaniel.dev/dependencies?loader=neoforge
+    library("neoforge", "net.neoforged", "neoforge").version("21.1.54")
+
     version("min-yacl", "3.0.3")
     version("min-modmenu", "3.0.0")
     version("min-forge", "45")
     version("fabric-loader", "0.16.2")
     version("quilt-loader", "0.24.0")
 
-    library("fabric-loader", "net.fabricmc", "fabric-loader").version("0.16.5")
-
-    library("kotlin-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").version("$kotlin")
-    val kotlinxSerialization = "1.6.3"
-    library("kotlinx-serialization-core", "org.jetbrains.kotlinx", "kotlinx-serialization-core")
-        .version(kotlinxSerialization)
-    library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json")
-        .version(kotlinxSerialization)
-    library("kotlinx-coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core")
-        .version("1.8.0")
-    library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").version("$kotlin")
-
-    library("forge-kotlin", "thedarkcolour", "kotlinforforge").version("4.7.0")
-
     library("quilt-standard-libraries-core", "org.quiltmc.qsl", "core").version("6.1.2+$minecraft")
-
-    plugin("architectury", "architectury-plugin").version("3.+")
-    plugin("architectury-loom", "dev.architectury.loom").version("1.6.+")
-    plugin("shadow", "com.github.johnrengelman.shadow").version("8.+")
 
     // https://modrinth.com/mod/preloading-tricks/versions
     library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.1")
-    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.4.1")
-
-    library("parchment", "org.parchmentmc.data", "parchment-1.20.1").version("2023.09.03")
-
-    val yacl = "3.2.2+1.20"
-    library("yacl-common", "dev.isxander.yacl", "yet-another-config-lib-common").version(yacl)
-    library("yacl-fabric", "dev.isxander.yacl", "yet-another-config-lib-fabric").version(yacl)
-    library("yacl-forge", "dev.isxander.yacl", "yet-another-config-lib-forge").version(yacl)
 }
 
 val mod_name: String by settings
@@ -67,14 +44,14 @@ include("common:ingame")
 
 include("fabric")
 
-include("quilt")
-
-include("forge")
-
-include("forge:mod-locator")
-
-include("forge:setup-mod-hook")
-
-include("forge:ingame")
-
-include("forge:mod")
+//include("quilt")
+//
+//include("forge")
+//
+//include("forge:mod-locator")
+//
+//include("forge:setup-mod-hook")
+//
+//include("forge:ingame")
+//
+//include("forge:mod")

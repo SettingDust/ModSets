@@ -61,12 +61,12 @@ dependencies {
     implementation(catalog.kotlinx.coroutines)
     implementation(catalog.kotlin.reflect)
 
-    implementation(project(path = ":common:config", configuration = "namedElements")) {
+    implementation(project(":common:config")) {
         isTransitive = false
     }
     include(project(":common:config"))
 
-    implementation(project(path = ":common:ingame", configuration = "namedElements")) {
+    implementation(project(":common:ingame")) {
         isTransitive = false
     }
     include(project(":common:ingame"))

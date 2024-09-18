@@ -1,26 +1,20 @@
-architectury { common(rootProject.property("enabled_platforms").toString().split(",")) }
-
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter { includeGroup("maven.modrinth") }
-    }
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
+plugins {
+    alias(catalog.plugins.kotlin.jvm)
+    alias(catalog.plugins.kotlin.plugin.serialization)
+    alias(catalog.plugins.vanilla.gradle)
 }
 
-dependencies {
-    modApi(catalog.yacl.common) { isTransitive = false }
-    modApi(catalog.modmenu)
+minecraft { version(catalog.versions.minecraft.get()) }
 
-    modApi(
-        "maven.modrinth:kinecraft-serialization:${catalog.kinecraft.serialization.get().version}-fabric"
-    )
+dependencies {
+    api(catalog.kotlinx.serialization.core)
+    api(catalog.kotlinx.serialization.json)
+    api(catalog.kotlinx.coroutines)
+    api(catalog.kotlin.reflect)
+    api(variantOf(catalog.kinecraft.serialization) { classifier("common") })
+
+    implementation(catalog.modmenu)
+    implementation(catalog.yacl.forge)
 
     api(project(":common:config"))
 }

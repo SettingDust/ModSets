@@ -6,7 +6,8 @@
     "UnstableApiUsage",
 )
 
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import groovy.lang.Closure
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -17,62 +18,60 @@ plugins {
     alias(catalog.plugins.kotlin.jvm) apply false
     alias(catalog.plugins.kotlin.plugin.serialization) apply false
 
-    alias(catalog.plugins.architectury)
-    alias(catalog.plugins.architectury.loom) apply false
-    //    alias(catalog.plugins.quilt.loom) apply false
-    //    alias(catalog.plugins.fabric.loom) apply false
+    alias(catalog.plugins.neoforge.moddev) apply false
 
     alias(catalog.plugins.shadow)
-    alias(catalog.plugins.semver)
+    alias(catalog.plugins.git.version)
 }
 
-val mod_version: String by project
-val maven_group: String by project
+apply("https://github.com/SettingDust/MinecraftGradleScripts/raw/main/gradle_issue_15754.gradle.kts")
+
 val archives_name: String by project
+val mod_id: String by rootProject
 val mod_name: String by rootProject
 
-project.version = "${semver.semVersion}"
+group = "${project.property("group")}"
 
-project.group = maven_group
-
-architectury { minecraft = catalog.versions.minecraft.get() }
+val gitVersion: Closure<String> by extra
+version = gitVersion()
 
 base { archivesName.set(archives_name) }
 
-subprojects {
+allprojects {
     apply(plugin = "java")
-    apply(plugin = "kotlin")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-    apply(plugin = "dev.architectury.loom")
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "maven-publish")
 
-    val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
 
-    group = maven_group
+        // Still required by IDEs such as Eclipse and Visual Studio Code
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build"
+        // task if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+        // If this mod is going to be a library, then it should also generate Javadocs in order to
+        // aid with development.
+        // Uncomment this line to generate them.
+        withJavadocJar()
+    }
+
+    tasks.withType<KotlinCompile> {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
+    }
+}
+
+subprojects {
+    group = rootProject.group
     version = rootProject.version
 
-    base { archivesName.set("$archives_name${project.path.replace(":", "-")}") }
-
-    configure<LoomGradleExtensionAPI> { silentMojangMappingsLicense() }
-
-    architectury { compileOnly() }
-
-    repositories { maven("https://maven.parchmentmc.org") { name = "ParchmentMC" } }
-
-    dependencies {
-        "minecraft"(rootProject.catalog.minecraft)
-        "mappings"(
-            loom.layered {
-                officialMojangMappings()
-                parchment(
-                    variantOf(rootProject.catalog.parchment) { artifactType("zip") },
-                )
-            },
-        )
-
-        implementation(rootProject.catalog.kotlin.jdk8)
-    }
+    base { archivesName.set("${rootProject.base.archivesName.get()}${project.path.replace(":", "-")}") }
 
     tasks {
         val properties =
@@ -88,7 +87,7 @@ subprojects {
                 "quilt_loader_version" to rootProject.catalog.versions.quilt.loader.get(),
                 "forge_version" to rootProject.catalog.versions.min.forge.get(),
                 "fabric_language_kotlin_version" to rootProject.catalog.fabric.kotlin.get().version,
-                "kotlin_forge_version" to rootProject.catalog.forge.kotlin.get().version,
+//                "kotlin_forge_version" to rootProject.catalog.kotlin.forge.get().version,
                 "yacl_version" to rootProject.catalog.versions.min.yacl.get(),
                 "kinecraft_serialization_version" to
                     rootProject.catalog.kinecraft.serialization.get().version,
@@ -100,7 +99,13 @@ subprojects {
         withType<ProcessResources> {
             inputs.properties(properties)
             filesMatching(
-                listOf("fabric.mod.json", "quilt.mod.json", "META-INF/mods.toml", "*.mixins.json")
+                listOf(
+                    "fabric.mod.json",
+                    "quilt.mod.json",
+                    "META-INF/mods.toml",
+                    "META-INF/neoforge.mods.toml",
+                    "*.mixins.json"
+                )
             ) {
                 expand(properties)
             }
@@ -113,16 +118,14 @@ subprojects {
             withSourcesJar()
         }
 
-        withType<KotlinCompile> { kotlinOptions { jvmTarget = "17" } }
-
         jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
     }
 }
 
 dependencies {
     shadow(project(":fabric")) { isTransitive = false }
-    shadow(project(":quilt")) { isTransitive = false }
-    shadow(project(":forge")) { isTransitive = false }
+//    shadow(project(":quilt")) { isTransitive = false }
+//    shadow(project(":forge")) { isTransitive = false }
 }
 
 tasks {

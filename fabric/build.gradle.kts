@@ -1,20 +1,13 @@
-@file:Suppress(
-    "DSL_SCOPE_VIOLATION",
-    "MISSING_DEPENDENCY_CLASS",
-    "FUNCTION_CALL_EXPECTED",
-    "PropertyName",
-    "UnstableApiUsage",
-)
+plugins {
+    alias(catalog.plugins.kotlin.jvm)
+    alias(catalog.plugins.kotlin.plugin.serialization)
+    alias(catalog.plugins.fabric.loom)
+}
 
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
 version = rootProject.version
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
 
 loom {
     mixin { add("main", "$archives_name.fabric.refmap.json") }
@@ -32,42 +25,27 @@ loom {
             )
         }
     }
+
+    runs { named("client") { ideConfigGenerated(true) } }
 }
 
 tasks { processResources { from(project(":common:ingame").sourceSets.main.get().resources) } }
 
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter { includeGroup("maven.modrinth") }
-    }
-
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
-    mavenLocal()
-}
-
 dependencies {
+    minecraft(catalog.minecraft.fabric)
+    mappings(loom.officialMojangMappings())
+
     implementation(catalog.kotlinx.serialization.core)
     implementation(catalog.kotlinx.serialization.json)
     implementation(catalog.kotlinx.coroutines)
     implementation(catalog.kotlin.reflect)
 
-    implementation(project(path = ":common:config", configuration = "namedElements")) {
+    implementation(project(":common:config")) {
         isTransitive = false
     }
     include(project(":common:config"))
 
-    implementation(project(path = ":common:ingame", configuration = "namedElements")) {
+    implementation(project(":common:ingame")) {
         isTransitive = false
     }
     include(project(":common:ingame"))
@@ -78,14 +56,13 @@ dependencies {
     modRuntimeOnly(catalog.yacl.fabric) { isTransitive = false }
     modImplementation(catalog.modmenu) { exclude(module = "fabric-loader") }
 
-    catalog.kinecraft.serialization.get().copy().let {
-        it.version { require("$requiredVersion-fabric") }
-        modRuntimeOnly(it)
-        include(it)
-    }
+    modRuntimeOnly(variantOf(catalog.kinecraft.serialization) { classifier("fabric") })
+    include(catalog.kinecraft.serialization)
 
     catalog.preloading.tricks.let {
         implementation(it)
         include(it)
     }
 }
+
+tasks { ideaSyncTask { enabled = true } }

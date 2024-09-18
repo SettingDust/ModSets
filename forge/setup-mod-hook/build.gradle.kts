@@ -18,7 +18,7 @@ dependencies {
     forge(catalog.forge)
     implementation(catalog.preloading.tricks)
 
-    implementation(project(path = ":common:config", configuration = "namedElements")) {
+    implementation(project(":common:config")) {
         isTransitive = false
     }
 }

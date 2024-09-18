@@ -51,7 +51,7 @@ dependencies {
     include(project(":forge:mod"))
     include(project(":forge:setup-mod-hook"))
 
-    shadow(project(path = ":forge:mod-locator", configuration = "namedElements")) {
+    shadow(project(":forge:mod-locator")) {
         isTransitive = false
     }
 

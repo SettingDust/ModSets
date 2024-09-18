@@ -12,11 +12,11 @@ dependencies {
     forge(catalog.forge)
     implementation(catalog.forge.kotlin)
 
-    implementation(project(path = ":common:config", configuration = "namedElements")) {
+    implementation(project(":common:config")) {
         isTransitive = false
     }
 
-    implementation(project(path = ":common:ingame", configuration = "namedElements")) {
+    implementation(project(":common:ingame")) {
         isTransitive = false
     }
 
