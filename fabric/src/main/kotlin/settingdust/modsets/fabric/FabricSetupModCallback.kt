@@ -16,6 +16,7 @@ import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
 import net.fabricmc.loader.impl.util.log.LogCategory
 import org.slf4j.LoggerFactory
+import settingdust.modsets.ModSetsConfig
 import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.fabric.FabricModSetupService
 import java.io.IOException

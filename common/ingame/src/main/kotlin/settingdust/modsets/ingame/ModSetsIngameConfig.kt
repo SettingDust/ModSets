@@ -1,4 +1,4 @@
-package settingdust.modsets.game
+package settingdust.modsets.ingame
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps

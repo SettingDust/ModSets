@@ -1,4 +1,4 @@
-package settingdust.modsets.game
+package settingdust.modsets.ingame
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException

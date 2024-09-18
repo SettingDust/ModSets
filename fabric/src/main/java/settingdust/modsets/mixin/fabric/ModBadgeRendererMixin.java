@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import settingdust.modsets.ModSetsConfig;
-import settingdust.modsets.game.ModSet;
-import settingdust.modsets.game.ModSetsIngameConfig;
+import settingdust.modsets.ingame.ModSet;
+import settingdust.modsets.ingame.ModSetsIngameConfig;
 
 @Mixin(value = ModBadgeRenderer.class, remap = false)
 public abstract class ModBadgeRendererMixin {

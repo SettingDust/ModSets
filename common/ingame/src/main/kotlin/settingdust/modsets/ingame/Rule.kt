@@ -1,4 +1,4 @@
-package settingdust.modsets.game
+package settingdust.modsets.ingame
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionAddable
@@ -24,7 +24,7 @@ import net.minecraft.network.chat.HoverEvent
 import org.quiltmc.qkl.library.serialization.annotation.CodecSerializable
 import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
-import settingdust.modsets.game.ModSetsIngameConfig.getOrThrow
+import settingdust.modsets.ingame.ModSetsIngameConfig.getOrThrow
 
 @CodecSerializable
 data class RuleSet(
