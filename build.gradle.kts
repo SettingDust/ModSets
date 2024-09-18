@@ -39,6 +39,7 @@ base { archivesName.set(archives_name) }
 
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "java-library")
 
     java {
         toolchain {

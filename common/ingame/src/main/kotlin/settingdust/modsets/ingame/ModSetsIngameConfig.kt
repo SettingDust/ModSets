@@ -164,5 +164,5 @@ object ModSetsIngameConfig {
 }
 
 @Suppress("DEPRECATION", "UnusedReceiverParameter")
-val ModSets.rules: ModSetsIngameConfig
+val ModSetsIngameConfig.rules: ModSetsIngameConfig
     get() = ModSetsIngameConfig

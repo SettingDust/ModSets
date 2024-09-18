@@ -210,9 +210,9 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
 
     @NotNull
     private String formatError(final ModWithVersionRange modWithVersionRange) {
-        return "\u00a7e" + modWithVersionRange.modInfo().getModId() + "\u00a7r - \u00a74"
-               + modWithVersionRange.versionRange().toString() + "\u00a74 - \u00a72"
-               + modWithVersionRange.artifactVersion().toString() + "\u00a72";
+        return "§e" + modWithVersionRange.modInfo().getModId() + "§r - §4"
+               + modWithVersionRange.versionRange().toString() + "§4 - §2"
+               + modWithVersionRange.artifactVersion().toString() + "§2";
     }
 
     private record ModWithVersionRange(IModInfo modInfo, VersionRange versionRange, ArtifactVersion artifactVersion) {

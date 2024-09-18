@@ -1,26 +1,16 @@
-architectury { forge() }
+plugins {
+    alias(catalog.plugins.forge.gradle)
+}
 
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter { includeGroup("maven.modrinth") }
-    }
-
-    mavenLocal()
+minecraft {
+    mappings("official", catalog.versions.minecraft.get())
 }
 
 dependencies {
-    forge(catalog.forge)
+    minecraft(catalog.minecraft.forge)
     implementation(catalog.preloading.tricks)
 
-    implementation(project(":common")) {
-        isTransitive = false
-    }
+    implementation(project(":common"))
 }
 
 tasks {

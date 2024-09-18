@@ -44,19 +44,12 @@ val mod_name: String by settings
 rootProject.name = mod_name
 
 include("common")
-
 include("common:ingame")
 
 include("fabric")
-
 include("quilt")
-//
-//include("forge")
-//
-//include("forge:mod-locator")
-//
-//include("forge:setup-mod-hook")
-//
-//include("forge:ingame")
-//
-//include("forge:mod")
+
+include("forge:mod-locator")
+include("forge:setup-mod-hook")
+include("forge:ingame")
+include("forge:mod")

@@ -1,9 +1,29 @@
-dependencies { forge(catalog.forge) }
+import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
+import org.apache.commons.io.FileUtils
+
+plugins {
+    alias(catalog.plugins.forge.gradle)
+}
+
+minecraft {
+    mappings("official", catalog.versions.minecraft.get())
+}
+
+dependencies {
+    minecraft(catalog.minecraft.forge)
+    implementation(project(":common"))
+}
 
 tasks {
-    remapJar {
-        val task = project(":common:ingame").tasks.jar
-        dependsOn(task)
-        inputFile.set(task.get().archiveFile)
+    afterEvaluate {
+        named<RenameJarInPlace>("reobfJar") {
+            input = project(":common:ingame").tasks.jar.flatMap { it.archiveFile }.map { jar ->
+                val output = project.layout.buildDirectory.dir("libs")
+                    .flatMap { libs -> libs.file(tasks.jar.flatMap { forgeJar -> forgeJar.archiveFile.map { it.asFile.name } }) }
+                    .get()
+                FileUtils.copyFile(jar.asFile, output.asFile)
+                jar
+            }
+        }
     }
 }

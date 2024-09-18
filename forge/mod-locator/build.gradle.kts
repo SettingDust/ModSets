@@ -1,8 +1,13 @@
-architectury { forge() }
+plugins {
+    alias(catalog.plugins.forge.gradle)
+}
+
+minecraft {
+    mappings("official", catalog.versions.minecraft.get())
+}
 
 dependencies {
-    forge(catalog.forge)
-
+    minecraft(catalog.minecraft.forge)
     api(project(":common"))
 }
 

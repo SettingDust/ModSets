@@ -1,16 +1,16 @@
-architectury { forge() }
+plugins {
+    alias(catalog.plugins.kotlin.jvm)
+    alias(catalog.plugins.kotlin.plugin.serialization)
+    alias(catalog.plugins.forge.gradle)
+}
 
-repositories {
-    maven {
-        name = "Kotlin for Forge"
-        setUrl("https://thedarkcolour.github.io/KotlinForForge/")
-    }
-    mavenLocal()
+minecraft {
+    mappings("official", catalog.versions.minecraft.get())
 }
 
 dependencies {
-    forge(catalog.forge)
-    implementation(catalog.forge.kotlin)
+    minecraft(catalog.minecraft.forge)
+    implementation(catalog.kotlin.forge)
 
     implementation(project(":common")) {
         isTransitive = false

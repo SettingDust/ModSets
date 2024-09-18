@@ -16,10 +16,10 @@ import kotlin.io.path.name
 
 class Entrypoint : ModInitializer {
     override fun onInitialize(container: ModContainer) {
-        val modSets = ModSets.rules.modSets
+        val modSets = ModSetsIngameConfig.rules.modSets
         val modDir = QuiltLoaderImpl.INSTANCE.modsDir
 
-        ModSets.rules.ModSetsRegisterCallbacks += {
+        ModSetsIngameConfig.rules.ModSetsRegisterCallbacks += {
             for (mod in QuiltLoader.getAllMods()) {
                 if (mod.sourceType.equals(BasicSourceType.BUILTIN)) continue
                 val metadata = mod.metadata()

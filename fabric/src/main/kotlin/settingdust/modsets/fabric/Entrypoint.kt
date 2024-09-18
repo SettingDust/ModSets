@@ -11,14 +11,13 @@ import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.ingame.ModSet
 import settingdust.modsets.ingame.ModSetsIngameConfig
-import settingdust.modsets.ingame.rules
 import kotlin.io.path.div
 
 object Entrypoint : ModInitializer {
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
-        val modSets = ModSets.rules.modSets
+        val modSets = ModSetsIngameConfig.rules.modSets
 
         runBlocking {
             ModSetsIngameConfig.MOD_SET_REGISTER_CALLBACK.collect {

@@ -1,68 +1,35 @@
-import net.fabricmc.loom.task.AbstractRunTask
+plugins {
+    alias(catalog.plugins.shadow)
+    alias(catalog.plugins.forge.gradle)
+}
 
 val archives_name: String by rootProject
 val mod_name: String by rootProject
 
-plugins { alias(catalog.plugins.shadow) }
-
-loom {
-    mods {
-        named("main") {
-            modFiles.setFrom(tasks.shadowJar.get().archiveFile)
-            modSourceSets.empty()
-        }
-    }
+minecraft {
+    mappings("official", catalog.versions.minecraft.get())
 }
 
-architectury {
-    platformSetupLoomIde()
-    forge()
-}
-
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter { includeGroup("maven.modrinth") }
-    }
-
-    // Add KFF Maven repository
-    maven {
-        name = "Kotlin for Forge"
-        setUrl("https://thedarkcolour.github.io/KotlinForForge/")
-    }
-
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
-    maven("https://maven.neoforged.net/releases")
-    mavenLocal()
-}
+jarJar.enable()
 
 dependencies {
-    forge(catalog.forge)
+    minecraft(catalog.minecraft.forge)
 
-    include(project(":common"))
-    include(project(":forge:ingame"))
+    jarJar(project(":common"))
+    jarJar(project(":forge:ingame"))
 
-    include(project(":forge:mod"))
-    include(project(":forge:setup-mod-hook"))
+    jarJar(project(":forge:mod"))
+    jarJar(project(":forge:setup-mod-hook"))
 
     shadow(project(":forge:mod-locator")) {
         isTransitive = false
     }
 
-    runtimeOnly(catalog.forge.kotlin)
-    modRuntimeOnly(catalog.yacl.forge) { isTransitive = false }
+    runtimeOnly(catalog.kotlin.forge)
+    runtimeOnly(fg.deobf(catalog.yacl.forge.get()))
 
-    val kinecraft =
-        "maven.modrinth:kinecraft-serialization:${catalog.kinecraft.serialization.get().version}-forge"
-    include(kinecraft)
-
-    include(catalog.preloading.tricks)
+    jarJar(catalog.kinecraft.serialization)
+    jarJar(catalog.preloading.tricks)
 }
 
 tasks {
@@ -70,8 +37,6 @@ tasks {
 
     shadowJar {
         configurations = listOf(project.configurations.shadow.get())
-        destinationDirectory = project.layout.buildDirectory.dir("devlibs")
-        archiveClassifier = "dev"
 
         manifest {
             attributes(
@@ -79,11 +44,4 @@ tasks {
             )
         }
     }
-
-    remapJar {
-        dependsOn(shadowJar)
-        inputFile = shadowJar.get().archiveFile
-    }
-
-    afterEvaluate { withType<AbstractRunTask> { dependsOn(shadowJar) } }
 }
