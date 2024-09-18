@@ -9,6 +9,6 @@ import settingdust.preloadingtricks.quilt.QuiltModSetupService
 class QuiltSetupModCallback : SetupModCallback {
     init {
         val service = QuiltModSetupService.INSTANCE
-        service.removeIf { (it as ModContainer).metadata().id() in ModSets.config.disabledMods }
+        service.removeIf { (it as ModContainer).metadata().id() in ModSetsConfig.disabledMods }
     }
 }

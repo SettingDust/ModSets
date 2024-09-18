@@ -28,7 +28,7 @@ class ModSetsLoaderPlugin : QuiltLoaderPlugin {
 
     override fun onLoadOptionAdded(option: LoadOption) {
         if (option !is ModLoadOption) return
-        if (option.metadata().id() !in ModSets.config.disabledMods) return
+        if (option.metadata().id() !in ModSetsConfig.disabledMods) return
         context.ruleContext().removeOption(option)
     }
 }
