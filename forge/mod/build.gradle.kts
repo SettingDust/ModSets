@@ -12,7 +12,7 @@ dependencies {
     forge(catalog.forge)
     implementation(catalog.forge.kotlin)
 
-    implementation(project(":common:config")) {
+    implementation(project(":common")) {
         isTransitive = false
     }
 

@@ -3,7 +3,7 @@ architectury { forge() }
 dependencies {
     forge(catalog.forge)
 
-    api(project(":common:config"))
+    api(project(":common"))
 }
 
 tasks {

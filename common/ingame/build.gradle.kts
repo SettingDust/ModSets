@@ -16,7 +16,7 @@ dependencies {
     implementation(catalog.modmenu)
     implementation(catalog.yacl.forge)
 
-    api(project(":common:config"))
+    api(project(":common"))
 }
 
 tasks {

@@ -45,7 +45,7 @@ repositories {
 dependencies {
     forge(catalog.forge)
 
-    include(project(":common:config"))
+    include(project(":common"))
     include(project(":forge:ingame"))
 
     include(project(":forge:mod"))

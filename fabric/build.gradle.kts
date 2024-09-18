@@ -15,7 +15,7 @@ loom {
     mods {
         create(archives_name) {
             sourceSet("main")
-            sourceSet("main", project(":common:config"))
+            sourceSet("main", project(":common"))
             sourceSet("main", project(":common:ingame"))
             dependency(
                 catalog.kotlinx.serialization.core.get(),
@@ -40,10 +40,10 @@ dependencies {
     implementation(catalog.kotlinx.coroutines)
     implementation(catalog.kotlin.reflect)
 
-    implementation(project(":common:config")) {
+    implementation(project(":common")) {
         isTransitive = false
     }
-    include(project(":common:config"))
+    include(project(":common"))
 
     implementation(project(":common:ingame")) {
         isTransitive = false

@@ -38,7 +38,7 @@ val mod_name: String by settings
 
 rootProject.name = mod_name
 
-include("common:config")
+include("common")
 
 include("common:ingame")
 
