@@ -7,9 +7,8 @@ import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
 import settingdust.modsets.ModSets
-import settingdust.modsets.config
 import settingdust.modsets.game.ModSet
-import settingdust.modsets.game.Rules.ModSetsRegisterCallbacks
+import settingdust.modsets.game.ModSetsIngameConfig.ModSetsRegisterCallbacks
 import settingdust.modsets.game.rules
 import kotlin.io.path.div
 
@@ -62,7 +61,7 @@ object Entrypoint : ModInitializer {
                 )
             }
 
-            ModSets.config.disabledMods.forEach {
+            ModSetsConfig.disabledMods.forEach {
                 modSets.putIfAbsent(
                     it,
                     ModSet(

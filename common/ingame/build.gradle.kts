@@ -13,7 +13,6 @@ dependencies {
     api(catalog.kotlin.reflect)
     api(variantOf(catalog.kinecraft.serialization) { classifier("common") })
 
-    implementation(catalog.modmenu)
     implementation(catalog.yacl.forge)
 
     api(project(":common"))

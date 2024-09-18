@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager
 import org.quiltmc.qkl.library.serialization.CodecFactory
 
 object ModSets {
+    val ID = "mod_sets"
     val LOGGER = LogManager.getLogger()!!
 
     val CODEC_FACTORY = CodecFactory {

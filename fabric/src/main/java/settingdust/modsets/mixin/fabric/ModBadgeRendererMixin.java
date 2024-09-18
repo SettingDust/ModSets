@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import settingdust.modsets.ModSetsConfig;
 import settingdust.modsets.game.ModSet;
-import settingdust.modsets.game.Rules;
+import settingdust.modsets.game.ModSetsIngameConfig;
 
 @Mixin(value = ModBadgeRenderer.class, remap = false)
 public abstract class ModBadgeRendererMixin {
@@ -38,7 +38,7 @@ public abstract class ModBadgeRendererMixin {
     ) {
         if (!ModSetsConfig.INSTANCE.getCommon().getBadgeInModMenu()) return;
         try {
-            for (final ModSet modSet : Rules.INSTANCE.getModIdToModSets().get(mod.getId())) {
+            for (final ModSet modSet : ModSetsIngameConfig.INSTANCE.getModIdToModSets().get(mod.getId())) {
                 drawBadge(
                     guiGraphics,
                     modSet.getText().getVisualOrderText(),

@@ -16,8 +16,6 @@ import net.fabricmc.loader.impl.util.SystemProperties
 import net.fabricmc.loader.impl.util.log.Log
 import net.fabricmc.loader.impl.util.log.LogCategory
 import org.slf4j.LoggerFactory
-import settingdust.modsets.ModSets
-import settingdust.modsets.config
 import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.fabric.FabricModSetupService
 import java.io.IOException
@@ -58,7 +56,7 @@ class FabricSetupModCallback : SetupModCallback {
         candidates.addMods()
         candidates.setupLanguageAdapter()
 
-        service.removeIf { it.metadata.id in ModSets.config.disabledMods }
+        service.removeIf { it.metadata.id in ModSetsConfig.disabledMods }
     }
 
     private fun discoverMods(): Collection<ModCandidateImpl> {
