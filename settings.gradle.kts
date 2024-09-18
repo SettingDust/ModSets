@@ -28,7 +28,12 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     version("fabric-loader", "0.16.2")
     version("quilt-loader", "0.24.0")
 
-    library("quilt-standard-libraries-core", "org.quiltmc.qsl", "core").version("6.1.2+$minecraft")
+    library("quilt-standard-libraries-core", "org.quiltmc.qsl", "core").version("6.2.0+$minecraft")
+    library(
+        "quilt-fabric-api",
+        "org.quiltmc.quilted-fabric-api",
+        "quilted-fabric-api"
+    ).version("7.6.0+0.92.2-$minecraft")
 
     // https://modrinth.com/mod/preloading-tricks/versions
     library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.1")
@@ -44,7 +49,7 @@ include("common:ingame")
 
 include("fabric")
 
-//include("quilt")
+include("quilt")
 //
 //include("forge")
 //

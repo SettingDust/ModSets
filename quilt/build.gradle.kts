@@ -1,61 +1,33 @@
-@file:Suppress(
-    "DSL_SCOPE_VIOLATION",
-    "MISSING_DEPENDENCY_CLASS",
-    "FUNCTION_CALL_EXPECTED",
-    "PropertyName",
-    "UnstableApiUsage",
-)
-
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-
-val archives_name: String by rootProject
-val loom: LoomGradleExtensionAPI by extensions
-
-architectury {
-    platformSetupLoomIde()
-    loader("quilt")
+plugins {
+    alias(catalog.plugins.quilt.loom)
+    alias(catalog.plugins.shadow)
 }
 
-loom {
-    mixin {}
+val archives_name: String by rootProject
 
+
+loom {
     mods {
-        create(archives_name) {
+        register(archives_name) {
             sourceSet("main")
             sourceSet("main", project(":common"))
             sourceSet("main", project(":common:ingame"))
         }
     }
-}
 
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
+    runs {
+        named("client") {
+            ideConfigGenerated(true)
         }
-        filter { includeGroup("maven.modrinth") }
     }
-
-    maven("https://maven.fabricmc.net/")
-
-    maven {
-        name = "Quilt"
-        url = uri("https://maven.quiltmc.org/repository/release")
-    }
-
-    maven("https://maven.terraformersmc.com/releases")
-    maven("https://maven.isxander.dev/releases")
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
-    mavenLocal()
 }
 
 dependencies {
+    minecraft(catalog.minecraft.fabric)
+    mappings(variantOf(catalog.mapping.yarn) {
+        classifier("v2")
+    })
+
     implementation(catalog.kotlinx.serialization.core)
     implementation(catalog.kotlinx.serialization.json)
     implementation(catalog.kotlinx.coroutines)
