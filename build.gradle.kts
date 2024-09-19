@@ -134,7 +134,7 @@ tasks {
     jar { enabled = false }
 
     shadowJar {
-        dependsOn(":forge:shadowJar")
+        dependsOn(":forge:jarJar")
         configurations = listOf(project.configurations.shadow.get())
         mergeServiceFiles()
         archiveClassifier.set("")

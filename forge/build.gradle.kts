@@ -18,16 +18,20 @@ dependencies {
     minecraft(catalog.minecraft.forge)
 
     jarJar(project(":common")) {
+        isTransitive = false
         jarJar.ranged(this, "[$version,)")
     }
     jarJar(project(":forge:ingame")) {
+        isTransitive = false
         jarJar.ranged(this, "[$version,)")
     }
 
     jarJar(project(":forge:mod")) {
+        isTransitive = false
         jarJar.ranged(this, "[$version,)")
     }
     jarJar(project(":forge:setup-mod-hook")) {
+        isTransitive = false
         jarJar.ranged(this, "[$version,)")
     }
 
@@ -49,18 +53,34 @@ dependencies {
 tasks {
     jar { enabled = false }
 
-    this.jarJar {
-        dependsOn(":common:ingame:jar")
-    }
-
     shadowJar {
         configurations = listOf(project.configurations.shadow.get())
+        archiveClassifier = "dev"
+    }
+
+    this.jarJar {
+        dependsOn(shadowJar, ":common:ingame:jar")
+
         archiveClassifier = ""
+
+        from(shadowJar.flatMap { it.archiveFile }.map { zipTree(it) })
 
         manifest {
             attributes(
                 "FMLModType" to "LIBRARY",
             )
+        }
+
+        eachFile {
+            if (path.startsWith("META-INF/jarjar")) {
+                if (name != "metadata.json")
+                    path = "META-INF/jars/$name"
+                else {
+                    filter {
+                        it.replace("\"path\": \"META-INF/jarjar", "\"path\": \"META-INF/jars")
+                    }
+                }
+            }
         }
     }
 
