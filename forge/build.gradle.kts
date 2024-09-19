@@ -15,11 +15,19 @@ jarJar.enable()
 dependencies {
     minecraft(catalog.minecraft.forge)
 
-    jarJar(project(":common"))
-    jarJar(project(":forge:ingame"))
+    jarJar(project(":common")) {
+        jarJar.ranged(this, "[$version,)")
+    }
+    jarJar(project(":forge:ingame")) {
+        jarJar.ranged(this, "[$version,)")
+    }
 
-    jarJar(project(":forge:mod"))
-    jarJar(project(":forge:setup-mod-hook"))
+    jarJar(project(":forge:mod")) {
+        jarJar.ranged(this, "[$version,)")
+    }
+    jarJar(project(":forge:setup-mod-hook")) {
+        jarJar.ranged(this, "[$version,)")
+    }
 
     shadow(project(":forge:mod-locator")) {
         isTransitive = false
@@ -28,8 +36,12 @@ dependencies {
     runtimeOnly(catalog.kotlin.forge)
     runtimeOnly(fg.deobf(catalog.yacl.forge.get()))
 
-    jarJar(catalog.kinecraft.serialization)
-    jarJar(catalog.preloading.tricks)
+    jarJar(catalog.kinecraft.serialization) {
+        jarJar.ranged(this, "[$version,)")
+    }
+    jarJar(catalog.preloading.tricks) {
+        jarJar.ranged(this, "[$version,)")
+    }
 }
 
 tasks {
