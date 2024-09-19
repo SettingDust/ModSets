@@ -3,8 +3,7 @@ package settingdust.modsets.fabric;
 import net.fabricmc.loader.api.metadata.ModOrigin;
 import net.fabricmc.loader.impl.ModContainerImpl;
 import net.fabricmc.loader.impl.discovery.ClasspathModCandidateFinder;
-import settingdust.modsets.ConfigKt;
-import settingdust.modsets.ModSets;
+import settingdust.modsets.ModSetsConfig;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class ModContainerModCandidateFinder extends ClasspathModCandidateFinder 
     @Override
     public void findCandidates(ModCandidateConsumer out) {
         containers.forEach((ModContainerImpl container) -> {
-            if (ConfigKt.getConfig(ModSets.INSTANCE).getDisabledMods().contains(container.getMetadata().getId()))
+            if (ModSetsConfig.INSTANCE.getDisabledMods().contains(container.getMetadata().getId()))
                 return;
             // Nested are added in ModResolver#resolve
             if (container.getOrigin().getKind().equals(ModOrigin.Kind.PATH))

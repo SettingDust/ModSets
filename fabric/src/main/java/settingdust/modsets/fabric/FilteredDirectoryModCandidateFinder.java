@@ -7,8 +7,7 @@ import net.fabricmc.loader.impl.discovery.ModCandidateImpl;
 import net.fabricmc.loader.impl.discovery.ModDiscoverer;
 import net.fabricmc.loader.impl.metadata.DependencyOverrides;
 import net.fabricmc.loader.impl.metadata.VersionOverrides;
-import settingdust.modsets.ConfigKt;
-import settingdust.modsets.ModSets;
+import settingdust.modsets.ModSetsConfig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -61,7 +60,7 @@ public class FilteredDirectoryModCandidateFinder extends DirectoryModCandidateFi
             }
             directoryModSets.putIfAbsent(this.path, new ArrayList<>());
             directoryModSets.get(this.path).add(candidate.getId());
-            if (ConfigKt.getConfig(ModSets.INSTANCE).getDisabledMods().contains(candidate.getId())) return;
+            if (ModSetsConfig.INSTANCE.getDisabledMods().contains(candidate.getId())) return;
             out.accept(path, requiresRemap);
         });
     }

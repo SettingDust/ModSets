@@ -17,7 +17,9 @@ dependencies {
 tasks {
     afterEvaluate {
         named<RenameJarInPlace>("reobfJar") {
-            input = project(":common:ingame").tasks.jar.flatMap { it.archiveFile }.map { jar ->
+            val ingameJarTask = project(":common:ingame").tasks.jar
+            dependsOn(ingameJarTask)
+            input = ingameJarTask.flatMap { it.archiveFile }.map { jar ->
                 val output = project.layout.buildDirectory.dir("libs")
                     .flatMap { libs -> libs.file(tasks.jar.flatMap { forgeJar -> forgeJar.archiveFile.map { it.asFile.name } }) }
                     .get()

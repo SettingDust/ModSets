@@ -41,7 +41,7 @@ object ModSetsIngameConfig {
     private val modSetsPath = PlatformHelper.configDir / "modsets.json"
     var modSets: MutableMap<String, ModSet> = mutableMapOf()
         private set
-    val modIdToModSets = mutableMapOf<String, Set<String>>()
+    val modIdToModSets = mutableMapOf<String, Set<ModSet>>()
     private val definedModSets = mutableMapOf<String, ModSet>()
     val MOD_SET_REGISTER_CALLBACK = WaitingSharedFlow<Unit>()
 
@@ -76,10 +76,11 @@ object ModSetsIngameConfig {
                 for (mod in curr.value.mods) {
                     if (mod == curr.key) continue
                     val set = map.getOrPut(mod, ::mutableSetOf) as MutableSet
-                    set += curr.key
+                    set += curr.value
                 }
                 map
-            })
+            }
+        )
 
         runCatching {
             rulesDir.createDirectories()

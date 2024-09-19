@@ -17,7 +17,7 @@ object Entrypoint : ModInitializer {
     override fun onInitialize() {
         val gameDir = FabricLoaderImpl.INSTANCE.gameDir
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
-        val modSets = ModSetsIngameConfig.rules.modSets
+        val modSets = ModSetsIngameConfig.modSets
 
         runBlocking {
             ModSetsIngameConfig.MOD_SET_REGISTER_CALLBACK.collect {

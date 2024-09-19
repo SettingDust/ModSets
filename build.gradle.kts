@@ -126,14 +126,15 @@ subprojects {
 
 dependencies {
     shadow(project(":fabric")) { isTransitive = false }
-//    shadow(project(":quilt")) { isTransitive = false }
-//    shadow(project(":forge")) { isTransitive = false }
+    shadow(project(":quilt")) { isTransitive = false }
+    shadow(project(":forge")) { isTransitive = false }
 }
 
 tasks {
     jar { enabled = false }
 
     shadowJar {
+        dependsOn(":forge:shadowJar")
         configurations = listOf(project.configurations.shadow.get())
         mergeServiceFiles()
         archiveClassifier.set("")

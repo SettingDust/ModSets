@@ -1,3 +1,5 @@
+import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
+
 plugins {
     alias(catalog.plugins.shadow)
     alias(catalog.plugins.forge.gradle)
@@ -47,13 +49,24 @@ dependencies {
 tasks {
     jar { enabled = false }
 
+    this.jarJar {
+        dependsOn(":common:ingame:jar")
+    }
+
     shadowJar {
         configurations = listOf(project.configurations.shadow.get())
+        archiveClassifier = ""
 
         manifest {
             attributes(
                 "FMLModType" to "LIBRARY",
             )
+        }
+    }
+
+    afterEvaluate {
+        named<RenameJarInPlace>("reobfJar") {
+            input = shadowJar.flatMap { it.archiveFile }
         }
     }
 }
