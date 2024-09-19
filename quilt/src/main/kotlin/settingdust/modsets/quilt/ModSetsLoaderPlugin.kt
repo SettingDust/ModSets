@@ -5,8 +5,7 @@ import org.quiltmc.loader.api.plugin.QuiltLoaderPlugin
 import org.quiltmc.loader.api.plugin.QuiltPluginContext
 import org.quiltmc.loader.api.plugin.solver.LoadOption
 import org.quiltmc.loader.api.plugin.solver.ModLoadOption
-import settingdust.modsets.ModSets
-import settingdust.modsets.config
+import settingdust.modsets.ModSetsConfig
 
 /**
  * Quilt not allow loader plugin for now

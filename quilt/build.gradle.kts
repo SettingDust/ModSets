@@ -1,6 +1,8 @@
 plugins {
+    alias(catalog.plugins.kotlin.jvm)
+    alias(catalog.plugins.kotlin.plugin.serialization)
+
     alias(catalog.plugins.quilt.loom)
-    alias(catalog.plugins.shadow)
 }
 
 val archives_name: String by rootProject
@@ -24,9 +26,7 @@ loom {
 
 dependencies {
     minecraft(catalog.minecraft.fabric)
-    mappings(variantOf(catalog.mapping.yarn) {
-        classifier("v2")
-    })
+    mappings(loom.officialMojangMappings())
 
     implementation(catalog.kotlinx.serialization.core)
     implementation(catalog.kotlinx.serialization.json)
@@ -53,11 +53,8 @@ dependencies {
 
     modRuntimeOnly(catalog.quilt.fabric.api)
 
-    catalog.kinecraft.serialization.get().copy().let {
-        it.version { require("$requiredVersion-fabric") }
-        modRuntimeOnly(it)
-        include(it)
-    }
+    modRuntimeOnly(variantOf(catalog.kinecraft.serialization) { classifier("fabric") })
+    include(catalog.kinecraft.serialization)
 
     catalog.preloading.tricks.let {
         implementation(it)

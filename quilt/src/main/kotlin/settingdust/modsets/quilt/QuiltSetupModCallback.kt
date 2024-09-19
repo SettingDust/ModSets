@@ -1,8 +1,7 @@
 package settingdust.modsets.quilt
 
 import org.quiltmc.loader.api.ModContainer
-import settingdust.modsets.ModSets
-import settingdust.modsets.config
+import settingdust.modsets.ModSetsConfig
 import settingdust.preloadingtricks.SetupModCallback
 import settingdust.preloadingtricks.quilt.QuiltModSetupService
 
