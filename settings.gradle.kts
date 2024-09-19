@@ -22,7 +22,7 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     // https://linkie.shedaniel.dev/dependencies?loader=neoforge
     library("neoforge", "net.neoforged", "neoforge").version("21.1.54")
 
-    version("min-yacl", "3.0.3")
+    version("min-yacl", "3.5.0")
     version("min-modmenu", "3.0.0")
     version("min-forge", "45")
     version("fabric-loader", "0.16.2")
