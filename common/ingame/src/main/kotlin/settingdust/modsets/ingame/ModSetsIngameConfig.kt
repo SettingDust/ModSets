@@ -1,48 +1,39 @@
 package settingdust.modsets.ingame
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.dsl.YetAnotherConfigLib
 import dev.isxander.yacl3.dsl.onReady
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.decodeFromStream
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
-import net.minecraft.util.GsonHelper
-import org.quiltmc.qkl.library.serialization.annotation.CodecSerializable
-import settingdust.kinecraft.serialization.unwrap
 import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.PlatformHelper
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.div
+import kotlin.io.path.inputStream
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
-import kotlin.io.path.reader
 import kotlin.io.path.writeText
 
-@CodecSerializable
+@Serializable
 data class ModSet(
     val text: @Contextual Component,
     val description: @Contextual Component? = null,
     val mods: MutableSet<String>,
-) {
-    companion object {
-        val CODEC = ModSets.CODEC_FACTORY.create<ModSet>()
-        val MAP_CODEC: Codec<MutableMap<String, ModSet>> =
-            Codec.unboundedMap(Codec.STRING, CODEC)
-    }
-}
+)
 
 object ModSetsIngameConfig {
     private val modSetsPath = PlatformHelper.configDir / "modsets.json"
     var modSets: MutableMap<String, ModSet> = mutableMapOf()
         private set
     val modIdToModSets = mutableMapOf<String, Set<ModSet>>()
-    private val definedModSets = mutableMapOf<String, ModSet>()
+    private var definedModSets = mutableMapOf<String, ModSet>()
     val MOD_SET_REGISTER_CALLBACK = WaitingSharedFlow<Unit>()
 
     private val rulesDir = PlatformHelper.configDir / "rules"
@@ -59,11 +50,7 @@ object ModSetsIngameConfig {
         }
 
         runCatching {
-            definedModSets.clear()
-            definedModSets.putAll(
-                ModSet.MAP_CODEC.parse(JsonOps.INSTANCE, GsonHelper.parse(modSetsPath.reader()))
-                    .unwrap()
-            )
+            definedModSets = ModSets.json.decodeFromStream(modSetsPath.inputStream())
         }
         modSets.clear()
         modSets.putAll(definedModSets)
@@ -90,8 +77,7 @@ object ModSetsIngameConfig {
             rules.clear()
             rulesDir.listDirectoryEntries("*.json").forEach {
                 try {
-                    rules[it.nameWithoutExtension] =
-                        RuleSet.CODEC.parse(JsonOps.INSTANCE, GsonHelper.parse(it.reader())).unwrap()
+                    rules[it.nameWithoutExtension] = ModSets.json.decodeFromStream(it.inputStream())
                 } catch (e: Exception) {
                     ModSets.LOGGER.error("Failed to load rule ${it.name}", e)
                 }
@@ -163,7 +149,3 @@ object ModSetsIngameConfig {
         }
             .generateScreen(lastScreen)
 }
-
-@Suppress("DEPRECATION", "UnusedReceiverParameter")
-val ModSetsIngameConfig.rules: ModSetsIngameConfig
-    get() = ModSetsIngameConfig

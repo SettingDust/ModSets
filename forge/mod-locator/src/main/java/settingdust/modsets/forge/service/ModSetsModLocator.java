@@ -141,7 +141,7 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
             final Map<String, ?> outerFsArgs = ImmutableMap.of("packagePath", pathInModFile);
             final FileSystem zipFS = FileSystems.newFileSystem(filePathUri, outerFsArgs);
             final Path pathInFS = zipFS.getPath("/");
-            return Optional.of(createMod(pathInFS).file());
+            return Optional.ofNullable(createMod(pathInFS).file());
         } catch (Exception e) {
             logger.error("Failed to load mod file {} from {}", path, file.getFileName());
             final RuntimeException exception =

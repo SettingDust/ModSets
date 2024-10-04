@@ -1,6 +1,7 @@
 package settingdust.modsets.quilt
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
 import org.quiltmc.loader.api.ModContainer
@@ -20,7 +21,7 @@ class Entrypoint : ModInitializer {
         val modSets = ModSetsIngameConfig.modSets
         val modDir = QuiltLoaderImpl.INSTANCE.modsDir
 
-        runBlocking {
+        GlobalScope.launch {
             ModSetsIngameConfig.MOD_SET_REGISTER_CALLBACK.collect {
                 for (mod in QuiltLoader.getAllMods()) {
                     if (mod.sourceType.equals(BasicSourceType.BUILTIN)) continue

@@ -42,9 +42,6 @@ dependencies {
     runtimeOnly(catalog.kotlin.forge)
     runtimeOnly(fg.deobf(catalog.yacl.forge.get()))
 
-    jarJar(catalog.kinecraft.serialization) {
-        jarJar.ranged(this, "[$version,)")
-    }
     jarJar(catalog.preloading.tricks) {
         jarJar.ranged(this, "[$version,)")
     }

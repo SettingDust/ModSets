@@ -54,7 +54,6 @@ dependencies {
     modRuntimeOnly(catalog.quilt.fabric.api)
 
     modRuntimeOnly(variantOf(catalog.kinecraft.serialization) { classifier("fabric") })
-    include(catalog.kinecraft.serialization)
 
     catalog.preloading.tricks.let {
         implementation(it)

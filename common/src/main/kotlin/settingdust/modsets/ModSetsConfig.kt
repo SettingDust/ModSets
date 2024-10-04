@@ -1,27 +1,18 @@
 package settingdust.modsets
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
-import net.minecraft.util.GsonHelper
-import org.quiltmc.qkl.library.serialization.annotation.CodecSerializable
-import settingdust.kinecraft.serialization.unwrap
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.div
-import kotlin.io.path.reader
-import kotlin.io.path.writeText
+import kotlin.io.path.inputStream
+import kotlin.io.path.outputStream
 
 object ModSetsConfig {
-    @CodecSerializable
-    data class Common(val badgeInModMenu: Boolean = true) {
-        companion object {
-            val CODEC = ModSets.CODEC_FACTORY.create<Common>()
-        }
-    }
-
-    val GSON: Gson = GsonBuilder().create()
+    @Serializable
+    data class Common(val badgeInModMenu: Boolean = true)
 
     private val commonPath = PlatformHelper.configDir / "common.json"
     var common = Common()
@@ -30,37 +21,25 @@ object ModSetsConfig {
     private val disabledModsPath = PlatformHelper.configDir / "disabled_mods.json"
     var disabledMods: MutableSet<String> = mutableSetOf()
         private set
-    private val disabledModsCodec = Codec.STRING.setOf()
-
 
     fun reload() {
         runCatching { PlatformHelper.configDir.createDirectories() }
 
         runCatching { disabledModsPath.createFile() }
         runCatching {
-            disabledMods =
-                disabledModsCodec
-                    .parse(JsonOps.INSTANCE, GsonHelper.parse(commonPath.reader()))
-                    .unwrap()
+            disabledMods = ModSets.json.decodeFromStream(disabledModsPath.inputStream())
         }
         runCatching { commonPath.createFile() }
         runCatching {
             common =
-                Common.CODEC.parse(JsonOps.INSTANCE, GsonHelper.parse(commonPath.reader()))
-                    .unwrap()
+                ModSets.json.decodeFromStream(commonPath.inputStream())
         }
         save()
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun save() {
-        commonPath.writeText(
-            Common.CODEC.encodeStart(JsonOps.INSTANCE, common).map { GSON.toJson(it) }.unwrap()
-        )
-
-        disabledModsPath.writeText(
-            disabledModsCodec
-                .encodeStart(JsonOps.INSTANCE, disabledMods)
-                .map { GSON.toJson(it) }
-                .unwrap())
+        ModSets.json.encodeToStream(common, commonPath.outputStream())
+        ModSets.json.encodeToStream(disabledMods, disabledModsPath.outputStream())
     }
 }

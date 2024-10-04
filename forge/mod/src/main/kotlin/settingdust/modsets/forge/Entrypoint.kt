@@ -1,6 +1,7 @@
 package settingdust.modsets.forge
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
 import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory
 import net.minecraftforge.fml.ModList
@@ -28,7 +29,7 @@ class Entrypoint {
         val modsPath = FMLPaths.MODSDIR.get()
         val modSets = ModSetsIngameConfig.modSets
 
-        runBlocking {
+        GlobalScope.launch {
             ModSetsIngameConfig.MOD_SET_REGISTER_CALLBACK.collect {
                 for ((key, value) in
                 ModSetsModLocator.directoryModSet.mapValues {

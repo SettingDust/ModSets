@@ -19,25 +19,21 @@ import dev.isxander.yacl3.dsl.tickBox
 import dev.isxander.yacl3.gui.controllers.LabelController
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
-import org.quiltmc.qkl.library.serialization.annotation.CodecSerializable
 import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.ingame.ModSetsIngameConfig.getOrThrow
 
-@CodecSerializable
+@Serializable
 data class RuleSet(
     val text: @Contextual Component,
     val description: @Contextual Component? = null,
     val rules: List<Rule>,
-) {
-    companion object {
-        val CODEC = ModSets.CODEC_FACTORY.create<RuleSet>()
-    }
-}
+)
 
-@CodecSerializable
+@Serializable
 data class Rule(
     val text: @Contextual Component,
     val description: @Contextual Component? = null,
@@ -59,22 +55,22 @@ private fun GroupRegistrar.register(block: GroupDsl.() -> Unit) = register(DUMMY
 
 private fun GroupRegistrar.register(registrant: OptionGroup) = register(DUMMY_ID, registrant)
 
-@CodecSerializable
+@Serializable
 sealed interface RuleController {
     fun <T : OptionAddable> build(builder: T, rule: Rule): T
 }
 
-@CodecSerializable
+@Serializable
 sealed interface OptionRule<T> : RuleController {
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T
 }
 
-@CodecSerializable
+@Serializable
 sealed interface GroupRule : RuleController {
     override fun <T : OptionAddable> build(builder: T, rule: Rule): T
 }
 
-@CodecSerializable
+@Serializable
 sealed interface RuleRegistrar {
     context(Rule, CategoryDsl)
     fun registerCategory() {
@@ -90,7 +86,7 @@ sealed interface RuleRegistrar {
     fun registerOption()
 }
 
-@CodecSerializable
+@Serializable
 @SerialName("label")
 data object LabelRule : RuleRegistrar {
     context(Rule, OptionRegistrar)
@@ -120,8 +116,8 @@ private val String.booleanBinding: Binding<Boolean>
         )
     }
 
-@CodecSerializable
-@SerialName("label")
+@Serializable
+@SerialName("boolean")
 data class BooleanRule(val id: String) : RuleRegistrar {
     context(Rule, OptionRegistrar)
     override fun registerOption() {
@@ -136,7 +132,7 @@ data class BooleanRule(val id: String) : RuleRegistrar {
     }
 }
 
-@CodecSerializable
+@Serializable
 @SerialName("cycling")
 data class CyclingRule(val ids: List<String>) : RuleRegistrar {
     private val firstMod = ids.first()
@@ -219,7 +215,7 @@ data class CyclingRule(val ids: List<String>) : RuleRegistrar {
     }
 }
 
-@CodecSerializable
+@Serializable
 @SerialName("mods_group")
 data class ModsGroupRule(
     val ids: List<String>,
@@ -291,7 +287,7 @@ data class ModsGroupRule(
     }
 }
 
-@CodecSerializable
+@Serializable
 @SerialName("rules_group")
 data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) : RuleRegistrar {
 

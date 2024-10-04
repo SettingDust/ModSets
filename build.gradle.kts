@@ -30,7 +30,7 @@ val archives_name: String by project
 val mod_id: String by rootProject
 val mod_name: String by rootProject
 
-group = "${project.property("group")}"
+group = "${project.property("maven_group")}"
 
 val gitVersion: Closure<String> by extra
 version = gitVersion()

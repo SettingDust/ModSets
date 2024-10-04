@@ -1,6 +1,7 @@
 package settingdust.modsets.fabric
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.ModOrigin
@@ -19,7 +20,7 @@ object Entrypoint : ModInitializer {
         val modsPath = FabricLoaderImpl.INSTANCE.modsDirectory.toPath()
         val modSets = ModSetsIngameConfig.modSets
 
-        runBlocking {
+        GlobalScope.launch {
             ModSetsIngameConfig.MOD_SET_REGISTER_CALLBACK.collect {
                 for ((key, value) in
                 FilteredDirectoryModCandidateFinder.directoryModSets.mapValues {

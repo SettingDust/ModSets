@@ -1,15 +1,23 @@
 package settingdust.modsets
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.plus
 import org.apache.logging.log4j.LogManager
-import org.quiltmc.qkl.library.serialization.CodecFactory
+import settingdust.kinecraft.serialization.ComponentSerializer
 
 object ModSets {
     val ID = "mod_sets"
     val LOGGER = LogManager.getLogger()!!
 
-    val CODEC_FACTORY = CodecFactory {
+    val json = Json {
         encodeDefaults = true
         ignoreUnknownKeys = true
+
+        serializersModule += SerializersModule {
+            contextual(ComponentSerializer)
+        }
     }
 
     init {

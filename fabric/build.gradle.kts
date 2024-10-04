@@ -57,7 +57,6 @@ dependencies {
     modImplementation(catalog.modmenu) { exclude(module = "fabric-loader") }
 
     modRuntimeOnly(variantOf(catalog.kinecraft.serialization) { classifier("fabric") })
-    include(catalog.kinecraft.serialization)
 
     catalog.preloading.tricks.let {
         implementation(it)
