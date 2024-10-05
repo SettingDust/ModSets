@@ -9,6 +9,8 @@ minecraft {
 dependencies {
     minecraft(catalog.minecraft.forge)
     api(project(":common"))
+
+    implementation(catalog.connector)
 }
 
 tasks {

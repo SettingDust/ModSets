@@ -37,6 +37,9 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
 
     // https://modrinth.com/mod/preloading-tricks/versions
     library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.1")
+
+    // https://modrinth.com/mod/preloading-tricks/versions
+    library("connector", "maven.modrinth", "connector").version("1.0.0-beta.46+1.20.1")
 }
 
 val mod_name: String by settings

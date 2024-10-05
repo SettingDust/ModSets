@@ -32,6 +32,25 @@ import java.util.stream.Stream;
 public class ModSetsModLocator extends AbstractJarFileModLocator {
     private static final Logger logger = LoggerFactory.getLogger(ModSetsModLocator.class);
     public static Map<String, List<String>> directoryModSet = new HashMap<>();
+    private final Path modsDir = FMLPaths.GAMEDIR.get().resolve(FMLPaths.MODSDIR.get());
+    private final List<Path> directories = Files.list(modsDir)
+                                                .filter(Files::isDirectory)
+                                                .filter(it -> it.getFileName().toString().charAt(0) != '.')
+                                                .toList();
+
+    public ModSetsModLocator() throws IOException {
+        if (ConnectorLocatorInvoker.CONNECTOR_EXIST) {
+            logger.info(
+                "Detected the Sinytra Connector. Loading the fabric mods. I can't handle the directory information " +
+                "since the mods is loaded from `mods/.connector` into the forge. Tracking on https://github" +
+                ".com/Sinytra/Connector/issues/1451");
+            System.setProperty(
+                "connector.additionalModLocations",
+                System.getProperty("connector.additionalModLocations") + "," +
+                directories.stream().map(Path::toString).collect(Collectors.joining(","))
+            );
+        }
+    }
 
     @Override
     protected ModFileOrException createMod(Path... path) {
@@ -76,33 +95,27 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
             result.addAll(dependenciesToLoad.stream()
                                             .map(it -> new ModFileOrException(it, null))
                                             .toList());
+
             return result;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
+
     @Override
     public Stream<Path> scanCandidates() {
-        var modsDir = FMLPaths.GAMEDIR.get().resolve(FMLPaths.MODSDIR.get());
-        try (var dirs = Files.list(modsDir)
-                             .filter(Files::isDirectory)
-                             .filter(it -> it.getFileName().toString().charAt(0) != '.')) {
-            var dirList = dirs.toList();
-            logger.info("Loading mods from {} sub folders in mods", dirList.size());
-            logger.debug(String.join(
-                ",", dirList.stream().map(it -> it.getFileName().toString()).toList()));
+        logger.info("Loading mods from {} sub folders in mods", directories.size());
+        logger.debug(String.join(
+            ",", directories.stream().map(it -> it.getFileName().toString()).toList()));
 
-            return dirList.stream().flatMap(it -> {
-                try {
-                    return Streams.stream(Files.newDirectoryStream(it, "*.jar"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return directories.stream().flatMap(it -> {
+            try {
+                return Streams.stream(Files.newDirectoryStream(it, "*.jar"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
