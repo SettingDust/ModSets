@@ -1,3 +1,30 @@
+## [1.9.0] - 2024-10-05
+### :sparkles: New Features
+- [`f53f6d8`](https://github.com/SettingDust/ModSets/commit/f53f6d8a5e86a2c8181f5e851fb02292fc294e1a) - use new yacl api for rules *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`5eeb2fe`](https://github.com/SettingDust/ModSets/commit/5eeb2fe9cae14d2a46def1167b3ffa86f10b3868) - make fabric use new config *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`ce0ee90`](https://github.com/SettingDust/ModSets/commit/ce0ee90af92f6cac8c6cb96aed9c3f0185276db1) - re-enable the quilt module *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`451ba3b`](https://github.com/SettingDust/ModSets/commit/451ba3b73fcb598fe4e85a07e4bf73faeb0a62bf) - re-enable the forge module *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`af585de`](https://github.com/SettingDust/ModSets/commit/af585de700196a8facd9d078a7861c316e9dd8ed) - use new config api *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`30dd6db`](https://github.com/SettingDust/ModSets/commit/30dd6db0a50338cda4c2046984a3f29bcc8a7aaa) - move the jarJar into jars for thiner file *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`6006302`](https://github.com/SettingDust/ModSets/commit/600630278ed35e53773ac75331d3d6438628d2b1) - add "compat" with connector *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :bug: Bug Fixes
+- [`aeaf49c`](https://github.com/SettingDust/ModSets/commit/aeaf49ca8d7941a929468ea26df266ea91104c4d) - errors avoid from build *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`e6a159a`](https://github.com/SettingDust/ModSets/commit/e6a159a6dfdeae5d76fe0dd4f5772a5884ce3791) - quilt module port to new api *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`f746c5a`](https://github.com/SettingDust/ModSets/commit/f746c5a3782137dcd876aea0f06b7b2801b98ce6) - use kotlin serialization since codec isn't loaded before game launching *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :recycle: Refactors
+- [`521cab4`](https://github.com/SettingDust/ModSets/commit/521cab4298820d2ef6dbe6c835b8e781e571e42d) - use fabric loom and vanilla gradle instead of architectury *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`140f6c0`](https://github.com/SettingDust/ModSets/commit/140f6c08e5ab2db4cd1c41ca83be4f0b53dbb61a) - rewrite the config with codec *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`17d0a25`](https://github.com/SettingDust/ModSets/commit/17d0a25d01afdb3b428c62315e4147cd6ac0f134) - move the config module to common module *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`3822b19`](https://github.com/SettingDust/ModSets/commit/3822b19c15f57dad66deacc0b45bc80f48c825ab) - use new yacl api for config screen *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`fd2660d`](https://github.com/SettingDust/ModSets/commit/fd2660d719969d805534b9ed0f22335d6275ca29) - simply PlatformHelper *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`f4dc1ba`](https://github.com/SettingDust/ModSets/commit/f4dc1bae6c47c03fe35845725209ad341d4429cf) - use `ModSetsConfig` *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`fce41b9`](https://github.com/SettingDust/ModSets/commit/fce41b983deaedaa0db5861ee960a15820917b54) - bump min yacl *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.8.0] - 2024-09-16
 ### :sparkles: New Features
 - [`934fb3b`](https://github.com/SettingDust/ModSets/commit/934fb3b31c952eebb8ae357518e5395ff18879a9) - support fabric 0.16.2+ *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -77,3 +104,4 @@
 [1.7.1]: https://github.com/SettingDust/ModSets/compare/1.7.0...1.7.1
 [1.7.2]: https://github.com/SettingDust/ModSets/compare/1.7.1...1.7.2
 [1.8.0]: https://github.com/SettingDust/ModSets/compare/1.7.2...1.8.0
+[1.9.0]: https://github.com/SettingDust/ModSets/compare/1.8.0...1.9.0
