@@ -1,3 +1,8 @@
+## [1.9.1] - 2024-10-07
+### :bug: Bug Fixes
+- [`e6aad21`](https://github.com/SettingDust/ModSets/commit/e6aad21916880eb76eb9c0dc59f7d8893f28ad47) - the config path is wrong *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.0] - 2024-10-05
 ### :sparkles: New Features
 - [`f53f6d8`](https://github.com/SettingDust/ModSets/commit/f53f6d8a5e86a2c8181f5e851fb02292fc294e1a) - use new yacl api for rules *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -105,3 +110,4 @@
 [1.7.2]: https://github.com/SettingDust/ModSets/compare/1.7.1...1.7.2
 [1.8.0]: https://github.com/SettingDust/ModSets/compare/1.7.2...1.8.0
 [1.9.0]: https://github.com/SettingDust/ModSets/compare/1.8.0...1.9.0
+[1.9.1]: https://github.com/SettingDust/ModSets/compare/1.9.0...1.9.1
