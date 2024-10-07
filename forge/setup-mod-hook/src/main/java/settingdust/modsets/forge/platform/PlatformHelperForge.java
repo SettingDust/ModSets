@@ -11,6 +11,6 @@ public class PlatformHelperForge implements PlatformHelper {
     @NotNull
     @Override
     public Path getConfigDir() {
-        return FMLPaths.CONFIGDIR.get();
+        return FMLPaths.CONFIGDIR.get().resolve("modsets");
     }
 }

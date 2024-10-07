@@ -2,9 +2,10 @@ package settingdust.modsets.quilt
 
 import org.quiltmc.loader.api.QuiltLoader
 import settingdust.modsets.PlatformHelper
-import java.nio.file.Path
+import kotlin.io.path.div
 
 class PlatformHelperQuilt : PlatformHelper {
-    override val configDir: Path
-        get() = QuiltLoader.getConfigDir()
+    override val configDir by lazy {
+        QuiltLoader.getConfigDir() / "modsets"
+    }
 }
