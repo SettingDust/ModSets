@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 public class ConnectorLocatorInvoker {
     public static final boolean CONNECTOR_EXIST;
 
-    private static final Class<ConnectorLocator> locatorClass = ConnectorLocator.class;
     private static Method isFabricModJarMethod;
     private static Method shouldIgnoreModMethod;
 
