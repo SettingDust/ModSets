@@ -1,3 +1,9 @@
+## [1.9.2] - 2024-10-07
+### :bug: Bug Fixes
+- [`286ccec`](https://github.com/SettingDust/ModSets/commit/286ccecedc0fe26fdacbbb072ee0c62593510e79) - don't reference connector before exist check *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`65f261c`](https://github.com/SettingDust/ModSets/commit/65f261c9b37424901f4b1ba29838f97f57eac4a3) - update preloading tricks since it's crashing *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.1] - 2024-10-07
 ### :bug: Bug Fixes
 - [`e6aad21`](https://github.com/SettingDust/ModSets/commit/e6aad21916880eb76eb9c0dc59f7d8893f28ad47) - the config path is wrong *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -111,3 +117,4 @@
 [1.8.0]: https://github.com/SettingDust/ModSets/compare/1.7.2...1.8.0
 [1.9.0]: https://github.com/SettingDust/ModSets/compare/1.8.0...1.9.0
 [1.9.1]: https://github.com/SettingDust/ModSets/compare/1.9.0...1.9.1
+[1.9.2]: https://github.com/SettingDust/ModSets/compare/1.9.1...1.9.2
