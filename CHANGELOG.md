@@ -1,3 +1,8 @@
+## [1.9.6] - 2024-10-09
+### :bug: Bug Fixes
+- [`5b2b16d`](https://github.com/SettingDust/ModSets/commit/5b2b16df8819263af779175e58fa2bb1850331e9) - include the `FMLModType` manifest attribute *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.5] - 2024-10-09
 ### :bug: Bug Fixes
 - [`0f042f1`](https://github.com/SettingDust/ModSets/commit/0f042f15f303200f290c039275b27f1bf5b80ce4) - shadow the forge jars *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -136,3 +141,4 @@
 [1.9.3]: https://github.com/SettingDust/ModSets/compare/1.9.2...1.9.3
 [1.9.4]: https://github.com/SettingDust/ModSets/compare/1.9.3...1.9.4
 [1.9.5]: https://github.com/SettingDust/ModSets/compare/1.9.4...1.9.5
+[1.9.6]: https://github.com/SettingDust/ModSets/compare/1.9.5...1.9.6
