@@ -1,5 +1,3 @@
-import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
-
 plugins {
     alias(catalog.plugins.shadow)
     alias(catalog.plugins.forge.gradle)
@@ -48,7 +46,9 @@ dependencies {
 }
 
 tasks {
-    jar { enabled = false }
+    jar {
+        from(shadowJar.flatMap { it.archiveFile }.map { zipTree(it) })
+    }
 
     shadowJar {
         configurations = listOf(project.configurations.shadow.get())
@@ -56,11 +56,7 @@ tasks {
     }
 
     this.jarJar {
-        dependsOn(shadowJar, ":common:ingame:jar")
-
-        archiveClassifier = ""
-
-        from(shadowJar.flatMap { it.archiveFile }.map { zipTree(it) })
+        dependsOn(":common:ingame:jar", ":forge:mod:reobfJar", ":forge:ingame:reobfJar")
 
         manifest {
             attributes(
@@ -78,12 +74,6 @@ tasks {
                     }
                 }
             }
-        }
-    }
-
-    afterEvaluate {
-        named<RenameJarInPlace>("reobfJar") {
-            input = shadowJar.flatMap { it.archiveFile }
         }
     }
 }
