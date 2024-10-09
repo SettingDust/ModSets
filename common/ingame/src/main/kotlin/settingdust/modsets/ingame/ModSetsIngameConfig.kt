@@ -6,9 +6,14 @@ import dev.isxander.yacl3.dsl.onReady
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.plus
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.PlatformHelper
@@ -29,7 +34,13 @@ data class ModSet(
 )
 
 object ModSetsIngameConfig {
-    private val modSetsPath = PlatformHelper.configDir / "modsets.json"
+    private val json = Json(ModSets.json) {
+        serializersModule += SerializersModule {
+            contextual(ComponentSerializer)
+        }
+    }
+
+    private val modSetsPath = PlatformHelper.configDir / "json"
     var modSets: MutableMap<String, ModSet> = mutableMapOf()
         private set
     val modIdToModSets = mutableMapOf<String, Set<ModSet>>()
@@ -50,7 +61,7 @@ object ModSetsIngameConfig {
         }
 
         runCatching {
-            definedModSets = ModSets.json.decodeFromStream(modSetsPath.inputStream())
+            definedModSets = json.decodeFromStream(modSetsPath.inputStream())
         }
         modSets.clear()
         modSets.putAll(definedModSets)
@@ -77,7 +88,7 @@ object ModSetsIngameConfig {
             rules.clear()
             rulesDir.listDirectoryEntries("*.json").forEach {
                 try {
-                    rules[it.nameWithoutExtension] = ModSets.json.decodeFromStream(it.inputStream())
+                    rules[it.nameWithoutExtension] = json.decodeFromStream(it.inputStream())
                 } catch (e: Exception) {
                     ModSets.LOGGER.error("Failed to load rule ${it.name}", e)
                 }
