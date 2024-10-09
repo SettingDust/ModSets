@@ -61,18 +61,18 @@ tasks {
 
     jar {
         from(this@tasks.jarJar.flatMap { it.archiveFile }.map { zipTree(it) })
-    }
-
-    this.jarJar {
-        dependsOn(":common:ingame:jar", ":forge:mod:reobfJar", ":forge:ingame:reobfJar")
-
-        from(shadowJar.flatMap { it.archiveFile }.map { zipTree(it) })
 
         manifest {
             attributes(
                 "FMLModType" to "LIBRARY",
             )
         }
+    }
+
+    this.jarJar {
+        dependsOn(":common:ingame:jar", ":forge:mod:reobfJar", ":forge:ingame:reobfJar")
+
+        from(shadowJar.flatMap { it.archiveFile }.map { zipTree(it) })
 
         eachFile {
             if (path.startsWith("META-INF/jarjar")) {
