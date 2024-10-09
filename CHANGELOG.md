@@ -1,3 +1,8 @@
+## [1.9.3] - 2024-10-09
+### :bug: Bug Fixes
+- [`bbbd881`](https://github.com/SettingDust/ModSets/commit/bbbd8815f6ffb5ae7968cb3353c6775661a30304) - avoid using game layer class in `ModSets` to work on Forge *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.2] - 2024-10-07
 ### :bug: Bug Fixes
 - [`286ccec`](https://github.com/SettingDust/ModSets/commit/286ccecedc0fe26fdacbbb072ee0c62593510e79) - don't reference connector before exist check *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -118,3 +123,4 @@
 [1.9.0]: https://github.com/SettingDust/ModSets/compare/1.8.0...1.9.0
 [1.9.1]: https://github.com/SettingDust/ModSets/compare/1.9.0...1.9.1
 [1.9.2]: https://github.com/SettingDust/ModSets/compare/1.9.1...1.9.2
+[1.9.3]: https://github.com/SettingDust/ModSets/compare/1.9.2...1.9.3
