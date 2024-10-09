@@ -1,3 +1,8 @@
+## [1.9.5] - 2024-10-09
+### :bug: Bug Fixes
+- [`0f042f1`](https://github.com/SettingDust/ModSets/commit/0f042f15f303200f290c039275b27f1bf5b80ce4) - shadow the forge jars *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.4] - 2024-10-09
 ### :bug: Bug Fixes
 - [`cca6f83`](https://github.com/SettingDust/ModSets/commit/cca6f83d3878bcf1ba94aa0e9751fd040ef87dd2) - jarJar the forge reobfed jars correctly *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -130,3 +135,4 @@
 [1.9.2]: https://github.com/SettingDust/ModSets/compare/1.9.1...1.9.2
 [1.9.3]: https://github.com/SettingDust/ModSets/compare/1.9.2...1.9.3
 [1.9.4]: https://github.com/SettingDust/ModSets/compare/1.9.3...1.9.4
+[1.9.5]: https://github.com/SettingDust/ModSets/compare/1.9.4...1.9.5
