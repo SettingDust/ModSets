@@ -22,6 +22,10 @@ object ModSetsConfig {
     var disabledMods: MutableSet<String> = mutableSetOf()
         private set
 
+    init {
+        reload()
+    }
+
     fun reload() {
         runCatching { PlatformHelper.configDir.createDirectories() }
 

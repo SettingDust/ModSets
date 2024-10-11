@@ -36,7 +36,7 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     ).version("7.6.0+0.92.2-$minecraft")
 
     // https://modrinth.com/mod/preloading-tricks/versions
-    library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.2")
+    library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.3")
 
     // https://modrinth.com/mod/preloading-tricks/versions
     library("connector", "maven.modrinth", "connector").version("1.0.0-beta.46+1.20.1")

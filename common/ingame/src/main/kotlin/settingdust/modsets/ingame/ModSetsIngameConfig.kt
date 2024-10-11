@@ -155,7 +155,7 @@ object ModSetsIngameConfig {
                     }
                 }
             } else {
-                categories.registering { name(Component.translatable("modsets.no_rules")) }
+                categories.register("no_rules") { name(Component.translatable("modsets.no_rules")) }
             }
         }
             .generateScreen(lastScreen)
