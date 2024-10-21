@@ -1,9 +1,11 @@
+
 package settingdust.modsets.ingame
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionAddable
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.OptionGroup
+import dev.isxander.yacl3.api.StateManager
 import dev.isxander.yacl3.dsl.CategoryDsl
 import dev.isxander.yacl3.dsl.GroupDsl
 import dev.isxander.yacl3.dsl.GroupDslImpl
@@ -47,8 +49,8 @@ private fun OptionRegistrar.registerLabel(builder: TextLineBuilderDsl.() -> Unit
 
 private fun <T> OptionRegistrar.register(block: OptionDsl<T>.() -> Unit) =
     register<T>(DUMMY_ID) {
-        instant(true)
         block(this)
+        stateManager(StateManager.createInstant(binding))
     }
 
 private fun GroupRegistrar.register(block: GroupDsl.() -> Unit) = register(DUMMY_ID, block)
@@ -58,16 +60,6 @@ private fun GroupRegistrar.register(registrant: OptionGroup) = register(DUMMY_ID
 @Serializable
 sealed interface RuleController {
     fun <T : OptionAddable> build(builder: T, rule: Rule): T
-}
-
-@Serializable
-sealed interface OptionRule<T> : RuleController {
-    override fun <T : OptionAddable> build(builder: T, rule: Rule): T
-}
-
-@Serializable
-sealed interface GroupRule : RuleController {
-    override fun <T : OptionAddable> build(builder: T, rule: Rule): T
 }
 
 @Serializable

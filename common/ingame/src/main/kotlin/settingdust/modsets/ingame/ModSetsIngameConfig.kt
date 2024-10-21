@@ -134,10 +134,10 @@ object ModSetsIngameConfig {
                 }
 
                 for (option in options) {
-                    option.addListener { _, _ ->
+                    option.addEventListener { _, event ->
                         var changed = false
                         for (anotherOption in options.filter { it != option && it.changed() }) {
-                            anotherOption.requestSet(anotherOption.binding().value)
+                            anotherOption.requestSet(anotherOption.stateManager().get())
                             if (!changed && option.changed()) {
                                 ModSets.LOGGER.warn(
                                     "Option ${option.name()} is conflicting with ${anotherOption.name()}. Can't change"
@@ -149,7 +149,7 @@ object ModSetsIngameConfig {
                             ModSets.LOGGER.warn(
                                 "Option ${option.name()} is conflicting with unknown option. Can't change"
                             )
-                            option.requestSet(option.binding().value)
+                            option.requestSet(option.stateManager().get())
                         }
                         save() // The save won't be called with the instant
                     }

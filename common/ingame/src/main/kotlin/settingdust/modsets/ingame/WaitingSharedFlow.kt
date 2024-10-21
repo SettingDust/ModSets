@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 
 /** https://github.com/Kotlin/kotlinx.coroutines/issues/2603#issuecomment-2065377205 */
-class WaitingSharedFlow<T>() : Flow<T> {
+class WaitingSharedFlow<T> : Flow<T> {
     private val allChannels = mutableSetOf<Channels<T>>()
 
     override suspend fun collect(collector: FlowCollector<T>) {
