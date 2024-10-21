@@ -10,6 +10,7 @@ object ModSets {
     val json = Json {
         encodeDefaults = true
         ignoreUnknownKeys = true
+        prettyPrint = true
     }
 
     init {
