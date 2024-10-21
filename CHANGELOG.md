@@ -1,3 +1,8 @@
+## [1.10.1] - 2024-10-21
+### :wrench: Chores
+- [`e404108`](https://github.com/SettingDust/ModSets/commit/e4041087a92a4c3543026ad7b6b9c220d45c63b2) - pretty print the jsons *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.0] - 2024-10-21
 ### :sparkles: New Features
 - [`04fd8e0`](https://github.com/SettingDust/ModSets/commit/04fd8e0de695a9a05952ac99ae28e8690498f276) - update to yacl 3.6.0 *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -154,3 +159,4 @@
 [1.9.6]: https://github.com/SettingDust/ModSets/compare/1.9.5...1.9.6
 [1.9.7]: https://github.com/SettingDust/ModSets/compare/1.9.6...1.9.7
 [1.10.0]: https://github.com/SettingDust/ModSets/compare/1.9.7...1.10.0
+[1.10.1]: https://github.com/SettingDust/ModSets/compare/1.10.0...1.10.1
