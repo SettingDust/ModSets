@@ -1,3 +1,8 @@
+## [1.10.0] - 2024-10-21
+### :sparkles: New Features
+- [`04fd8e0`](https://github.com/SettingDust/ModSets/commit/04fd8e0de695a9a05952ac99ae28e8690498f276) - update to yacl 3.6.0 *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.9.7] - 2024-10-11
 ### :bug: Bug Fixes
 - [`1cb08ba`](https://github.com/SettingDust/ModSets/commit/1cb08ba9769bb9f7c2cfc609380b3ae7e3a33d23) - bump preloading tricks so that it's working on Forge *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -148,3 +153,4 @@
 [1.9.5]: https://github.com/SettingDust/ModSets/compare/1.9.4...1.9.5
 [1.9.6]: https://github.com/SettingDust/ModSets/compare/1.9.5...1.9.6
 [1.9.7]: https://github.com/SettingDust/ModSets/compare/1.9.6...1.9.7
+[1.10.0]: https://github.com/SettingDust/ModSets/compare/1.9.7...1.10.0
