@@ -1,3 +1,8 @@
+## [1.10.2] - 2024-11-11
+### :bug: Bug Fixes
+- [`40d7525`](https://github.com/SettingDust/ModSets/commit/40d7525425572e23107c757c742b269b82a4bca7) - remap the fabric ingame jar *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.1] - 2024-10-21
 ### :wrench: Chores
 - [`e404108`](https://github.com/SettingDust/ModSets/commit/e4041087a92a4c3543026ad7b6b9c220d45c63b2) - pretty print the jsons *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -160,3 +165,4 @@
 [1.9.7]: https://github.com/SettingDust/ModSets/compare/1.9.6...1.9.7
 [1.10.0]: https://github.com/SettingDust/ModSets/compare/1.9.7...1.10.0
 [1.10.1]: https://github.com/SettingDust/ModSets/compare/1.10.0...1.10.1
+[1.10.2]: https://github.com/SettingDust/ModSets/compare/1.10.1...1.10.2
