@@ -58,7 +58,7 @@ jobs:
             fabric-language-kotlin
             yacl
             modmenu(recommended)
-            kinecraft-serialization#(ignore:curseforge)
+            kinecraft-serialization
             preloading-tricks(embedded)#(ignore:curseforge)
 
           java: |
