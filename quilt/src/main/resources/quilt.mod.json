@@ -28,7 +28,7 @@
       },
       "modmenu": {
         "adapter": "kotlin",
-        "value": "${group}.game.ModSetsModMenu"
+        "value": "${group}.fabric.ModSetsModMenu"
       }
     },
     "depends": [

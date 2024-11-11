@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":common:ingame")) {
         isTransitive = false
     }
-    include(project(":common:ingame"))
+    include(project(":fabric:ingame"))
 
     modImplementation(catalog.fabric.loader)
     modRuntimeOnly(catalog.fabric.kotlin) { exclude(module = "fabric-loader") }
@@ -64,4 +64,6 @@ dependencies {
     }
 }
 
-tasks { ideaSyncTask { enabled = true } }
+tasks {
+    ideaSyncTask { enabled = true }
+}

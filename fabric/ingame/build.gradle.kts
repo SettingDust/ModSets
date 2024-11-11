@@ -1,13 +1,15 @@
 plugins {
-    alias(catalog.plugins.forge.gradle)
+    alias(catalog.plugins.kotlin.jvm)
+    alias(catalog.plugins.kotlin.plugin.serialization)
+    alias(catalog.plugins.fabric.loom)
 }
 
-minecraft {
-    mappings("official", catalog.versions.minecraft.get())
-}
+version = rootProject.version
 
 dependencies {
-    minecraft(catalog.minecraft.forge)
+    minecraft(catalog.minecraft.fabric)
+    mappings(loom.officialMojangMappings())
+
     implementation(project(":common"))
 }
 

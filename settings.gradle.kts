@@ -50,6 +50,8 @@ include("common")
 include("common:ingame")
 
 include("fabric")
+include("fabric:ingame")
+
 include("quilt")
 
 include("forge:mod-locator")

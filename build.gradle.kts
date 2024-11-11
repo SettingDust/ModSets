@@ -46,19 +46,10 @@ allprojects {
             languageVersion = JavaLanguageVersion.of(17)
         }
 
-        // Still required by IDEs such as Eclipse and Visual Studio Code
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
 
-        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build"
-        // task if it is present.
-        // If you remove this line, sources will not be generated.
         withSourcesJar()
-
-        // If this mod is going to be a library, then it should also generate Javadocs in order to
-        // aid with development.
-        // Uncomment this line to generate them.
-        withJavadocJar()
     }
 
     tasks.withType<KotlinCompile> {

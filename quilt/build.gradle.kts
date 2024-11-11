@@ -41,7 +41,7 @@ dependencies {
     implementation(project(":common:ingame")) {
         isTransitive = false
     }
-    include(project(":common:ingame"))
+    include(project(":fabric:ingame"))
 
     modImplementation(catalog.quilt.loader)
     modImplementation(catalog.quilt.standard.libraries.core)
