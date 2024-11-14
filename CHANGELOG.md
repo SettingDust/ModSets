@@ -1,3 +1,11 @@
+## [1.10.3] - 2024-11-14
+### :bug: Bug Fixes
+- [`f657849`](https://github.com/SettingDust/ModSets/commit/f657849051ef0f43a3a49aac41ee392a2c529500) - the mod sets json name is wrong *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`460b985`](https://github.com/SettingDust/ModSets/commit/460b9857f1ee966dbba9ba4692ef67bb628bf525) - bump the kinecraft serialization *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.2] - 2024-11-11
 ### :bug: Bug Fixes
 - [`40d7525`](https://github.com/SettingDust/ModSets/commit/40d7525425572e23107c757c742b269b82a4bca7) - remap the fabric ingame jar *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -166,3 +174,4 @@
 [1.10.0]: https://github.com/SettingDust/ModSets/compare/1.9.7...1.10.0
 [1.10.1]: https://github.com/SettingDust/ModSets/compare/1.10.0...1.10.1
 [1.10.2]: https://github.com/SettingDust/ModSets/compare/1.10.1...1.10.2
+[1.10.3]: https://github.com/SettingDust/ModSets/compare/1.10.2...1.10.3
