@@ -40,7 +40,7 @@ object ModSetsIngameConfig {
         }
     }
 
-    private val modSetsPath = PlatformHelper.configDir / "json"
+    private val modSetsPath = PlatformHelper.configDir / "modsets.json"
     var modSets: MutableMap<String, ModSet> = mutableMapOf()
         private set
     val modIdToModSets = mutableMapOf<String, Set<ModSet>>()

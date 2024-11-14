@@ -41,7 +41,7 @@ dependencyResolutionManagement.versionCatalogs.named("catalog") {
     // https://modrinth.com/mod/preloading-tricks/versions
     library("connector", "maven.modrinth", "connector").version("1.0.0-beta.46+1.20.1")
 
-    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("0.16.1")
+    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.16.1")
 }
 
 val mod_name: String by settings
