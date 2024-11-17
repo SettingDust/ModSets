@@ -1,3 +1,8 @@
+## [1.10.4] - 2024-11-17
+### :bug: Bug Fixes
+- [`5323773`](https://github.com/SettingDust/ModSets/commit/532377350a2d27ae8db762c453789bf0e65d05bd) - deserialize the gson element correctly *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.3] - 2024-11-14
 ### :bug: Bug Fixes
 - [`f657849`](https://github.com/SettingDust/ModSets/commit/f657849051ef0f43a3a49aac41ee392a2c529500) - the mod sets json name is wrong *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -175,3 +180,4 @@
 [1.10.1]: https://github.com/SettingDust/ModSets/compare/1.10.0...1.10.1
 [1.10.2]: https://github.com/SettingDust/ModSets/compare/1.10.1...1.10.2
 [1.10.3]: https://github.com/SettingDust/ModSets/compare/1.10.2...1.10.3
+[1.10.4]: https://github.com/SettingDust/ModSets/compare/1.10.3...1.10.4
