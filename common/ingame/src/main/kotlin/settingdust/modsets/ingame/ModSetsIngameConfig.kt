@@ -14,6 +14,7 @@ import kotlinx.serialization.modules.plus
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
+import settingdust.kinecraft.serialization.GsonElementSerializer
 import settingdust.modsets.ModSets
 import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.PlatformHelper
@@ -36,6 +37,7 @@ data class ModSet(
 object ModSetsIngameConfig {
     private val json = Json(ModSets.json) {
         serializersModule += SerializersModule {
+            contextual(GsonElementSerializer)
             contextual(ComponentSerializer)
         }
     }
