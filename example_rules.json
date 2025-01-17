@@ -19,7 +19,7 @@
       "description": "Text Text",
       "controller": {
         "type": "boolean",
-        "mod": "sodium"
+        "id": "sodium"
       }
     },
     {
@@ -27,7 +27,7 @@
       "description": "Text Text",
       "controller": {
         "type": "cycling",
-        "mods": [
+        "ids": [
           "sodium",
           "optifabric"
         ]
@@ -40,7 +40,7 @@
         "type": "mods_group",
         "collapsed": false,
         "show_mods": true,
-        "mods": [
+        "ids": [
           "sodium",
           "optifabric"
         ]
@@ -65,7 +65,7 @@
             "description": "description",
             "controller": {
               "type": "boolean",
-              "mod": "sodium"
+              "id": "sodium"
             }
           }
         ]

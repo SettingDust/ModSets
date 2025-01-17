@@ -31,7 +31,7 @@
             "description": "Text Text",
             "controller": {
               "type": "boolean",
-              "mod": "sodium"
+              "id": "sodium"
             }
           },
           {
@@ -39,7 +39,7 @@
             "description": "Text Text",
             "controller": {
               "type": "cycling",
-              "mods": [
+              "ids": [
                 "sodium",
                 "optifabric"
               ]
@@ -51,7 +51,7 @@
             "controller": {
               "type": "mods_group",
               "collapsed": false,
-              "mods": [
+              "ids": [
                 "sodium",
                 "optifabric"
               ]
@@ -76,7 +76,7 @@
                   "description": "description",
                   "controller": {
                     "type": "boolean",
-                    "mod": "sodium"
+                    "id": "sodium"
                   }
                 }
               ]
@@ -107,7 +107,7 @@
           "description": "Text Text",
           "controller": {
             "type": "boolean",
-            "mod": "sodium"
+            "id": "sodium"
           }
         },
         {
@@ -115,7 +115,7 @@
           "description": "Text Text",
           "controller": {
             "type": "cycling",
-            "mods": [
+            "ids": [
               "sodium",
               "optifabric"
             ]
@@ -127,7 +127,7 @@
           "controller": {
             "type": "mods_group",
             "collapsed": false,
-            "mods": [
+            "ids": [
               "sodium",
               "optifabric"
             ]
@@ -152,7 +152,7 @@
                 "description": "description",
                 "controller": {
                   "type": "boolean",
-                  "mod": "sodium"
+                  "id": "sodium"
                 }
               }
             ]
@@ -235,7 +235,7 @@
                 {
                   "properties": {
                     "type": "boolean",
-                    "mod": {
+                    "id": {
                       "type": "string"
                     }
                   }
@@ -243,7 +243,7 @@
                 {
                   "properties": {
                     "type": "cycling",
-                    "mods": {
+                    "ids": {
                       "type": "array",
                       "items": {
                         "type": "string"
@@ -259,7 +259,7 @@
                       "type": "boolean",
                       "default": false
                     },
-                    "mods": {
+                    "ids": {
                       "type": "array",
                       "items": {
                         "type": "string"
@@ -297,11 +297,11 @@
             },
             {
               "type": "boolean",
-              "mod": "sodium"
+              "id": "sodium"
             },
             {
               "type": "cycling",
-              "mods": [
+              "ids": [
                 "sodium",
                 "optifabric"
               ]
@@ -309,7 +309,7 @@
             {
               "type": "mods_group",
               "collapsed": false,
-              "mods": [
+              "ids": [
                 "sodium",
                 "optifabric"
               ]
@@ -330,7 +330,7 @@
                   "description": "description",
                   "controller": {
                     "type": "boolean",
-                    "mod": "sodium"
+                    "id": "sodium"
                   }
                 }
               ]
@@ -351,7 +351,7 @@
           "description": "Text Text",
           "controller": {
             "type": "boolean",
-            "mod": "sodium"
+            "id": "sodium"
           }
         },
         {
@@ -359,7 +359,7 @@
           "description": "Text Text",
           "controller": {
             "type": "cycling",
-            "mods": [
+            "ids": [
               "sodium",
               "optifabric"
             ]
@@ -371,7 +371,7 @@
           "controller": {
             "type": "mods_group",
             "collapsed": false,
-            "mods": [
+            "ids": [
               "sodium",
               "optifabric"
             ]
@@ -396,7 +396,7 @@
                 "description": "description",
                 "controller": {
                   "type": "boolean",
-                  "mod": "sodium"
+                  "id": "sodium"
                 }
               }
             ]

@@ -73,9 +73,8 @@ public class ModSetsModLocator extends AbstractJarFileModLocator {
     @Override
     public List<ModFileOrException> scanMods() {
         final var result = Lists.newArrayList(super.scanMods());
-        String path;
         try {
-            path = getClass()
+            var path = getClass()
                 .getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
