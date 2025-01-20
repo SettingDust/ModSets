@@ -13,7 +13,6 @@ import dev.isxander.yacl3.dsl.OptionDsl
 import dev.isxander.yacl3.dsl.OptionRegistrar
 import dev.isxander.yacl3.dsl.OptionRegistrarImpl
 import dev.isxander.yacl3.dsl.TextLineBuilderDsl
-import dev.isxander.yacl3.dsl.binding
 import dev.isxander.yacl3.dsl.controller
 import dev.isxander.yacl3.dsl.cyclingList
 import dev.isxander.yacl3.dsl.tickBox
@@ -81,10 +80,7 @@ data object LabelRule : RuleRegistrar {
             name(rule.text)
             rule.description?.let { description(OptionDescription.of(it)) }
             customController(::LabelController)
-            Binding.immutable<Component>(rule.text).also {
-                binding = it
-                stateManager(StateManager.createInstant(it))
-            }
+            stateManager(StateManager.createInstant(Binding.immutable<Component>(rule.text)))
         }
     }
 }
@@ -115,10 +111,7 @@ data class BooleanRule(val id: String) : RuleRegistrar {
                 description(OptionDescription.of(it))
             }
             controller = tickBox()
-            id.booleanBinding.also {
-                binding = it
-                stateManager(StateManager.createInstant(it))
-            }
+            stateManager(StateManager.createInstant(id.booleanBinding))
         }
     }
 }
@@ -148,62 +141,63 @@ data class CyclingRule(val ids: List<String>) : RuleRegistrar {
                     }
                 }
 
-            Binding.generic(
-                firstMod,
-                {
-                    val allModSets = ModSetsIngameConfig.modSets
-                    val enabledModSets =
-                        ids.filter { id ->
-                            if (id !in allModSets) return@filter false
-                            val mods = allModSets.getOrThrow(id).mods
-                            mods.none { it in ModSetsConfig.disabledMods }
-                        }
-                    if (enabledModSets.size > 1) {
-                        ModSets.LOGGER.warn(
-                            "More than one mod is enabled in cycling list: ${enabledModSets.joinToString()}. Will take the first and disable the others"
-                        )
 
-                        ModSetsConfig.disabledMods.addAll(
-                            enabledModSets.drop(1).flatMap { allModSets.getOrThrow(it).mods },
-                        )
-                        ModSetsConfig.disabledMods.removeAll(
-                            allModSets.getOrThrow(enabledModSets.first()).mods
-                        )
-                        return@generic enabledModSets.first()
-                    } else if (enabledModSets.isEmpty()) {
-                        ModSets.LOGGER.warn(
-                            "None mod is enabled in cycling list: ${ids.joinToString()}. Will take the first and disable the others"
-                        )
-                    }
-                    val firstNonEmptyModSet by lazy {
-                        ids.firstOrNull {
-                            it in allModSets && allModSets.getOrThrow(it).mods.isNotEmpty()
-                        }
-                    }
-                    val modSetAllEnabled =
-                        enabledModSets.singleOrNull { id ->
-                            allModSets.getOrThrow(id).mods.none {
-                                it in ModSetsConfig.disabledMods
+            stateManager(
+                StateManager.createInstant(
+                    Binding.generic(
+                        firstMod,
+                        {
+                            val allModSets = ModSetsIngameConfig.modSets
+                            val enabledModSets =
+                                ids.filter { id ->
+                                    if (id !in allModSets) return@filter false
+                                    val mods = allModSets.getOrThrow(id).mods
+                                    mods.none { it in ModSetsConfig.disabledMods }
+                                }
+                            if (enabledModSets.size > 1) {
+                                ModSets.LOGGER.warn(
+                                    "More than one mod is enabled in cycling list: ${enabledModSets.joinToString()}. Will take the first and disable the others"
+                                )
+
+                                ModSetsConfig.disabledMods.addAll(
+                                    enabledModSets.drop(1).flatMap { allModSets.getOrThrow(it).mods },
+                                )
+                                ModSetsConfig.disabledMods.removeAll(
+                                    allModSets.getOrThrow(enabledModSets.first()).mods
+                                )
+                                return@generic enabledModSets.first()
+                            } else if (enabledModSets.isEmpty()) {
+                                ModSets.LOGGER.warn(
+                                    "None mod is enabled in cycling list: ${ids.joinToString()}. Will take the first and disable the others"
+                                )
                             }
-                        }
-                    val selected = modSetAllEnabled ?: firstNonEmptyModSet ?: firstMod
+                            val firstNonEmptyModSet by lazy {
+                                ids.firstOrNull {
+                                    it in allModSets && allModSets.getOrThrow(it).mods.isNotEmpty()
+                                }
+                            }
+                            val modSetAllEnabled =
+                                enabledModSets.singleOrNull { id ->
+                                    allModSets.getOrThrow(id).mods.none {
+                                        it in ModSetsConfig.disabledMods
+                                    }
+                                }
+                            val selected = modSetAllEnabled ?: firstNonEmptyModSet ?: firstMod
 
-                    ModSetsConfig.disabledMods.removeAll(allModSets.getOrThrow(selected).mods)
+                            ModSetsConfig.disabledMods.removeAll(allModSets.getOrThrow(selected).mods)
 
-                    return@generic selected
-                },
-                { id ->
-                    ModSetsConfig.disabledMods.addAll(
-                        ids.filter { it in ModSetsIngameConfig.modSets }
-                            .flatMap { ModSetsIngameConfig.modSets.getOrThrow(it).mods })
-                    ModSetsConfig.disabledMods.removeAll(
-                        ModSetsIngameConfig.modSets.getOrThrow(id).mods.toSet()
-                    )
-                })
-                .also {
-                    binding = it
-                    stateManager(StateManager.createInstant(it))
-                }
+                            return@generic selected
+                        },
+                        { id ->
+                            ModSetsConfig.disabledMods.addAll(
+                                ids.filter { it in ModSetsIngameConfig.modSets }
+                                    .flatMap { ModSetsIngameConfig.modSets.getOrThrow(it).mods })
+                            ModSetsConfig.disabledMods.removeAll(
+                                ModSetsIngameConfig.modSets.getOrThrow(id).mods.toSet()
+                            )
+                        })
+                )
+            )
         }
     }
 }
@@ -247,10 +241,7 @@ data class ModsGroupRule(
                 description(OptionDescription.of(it))
             }
             customController(::LabelController)
-            Binding.immutable(rule.text).also {
-                binding = it
-                stateManager(StateManager.createInstant(it))
-            }
+            stateManager(StateManager.createInstant(Binding.immutable(rule.text)))
         }
         super.registerGroup(rule, group)
     }
@@ -275,10 +266,7 @@ data class ModsGroupRule(
             name(modSetDisplay.text)
             modSetDisplay.description?.let { description(OptionDescription.of(it)) }
             controller = tickBox()
-            id.booleanBinding.also {
-                binding = it
-                stateManager(StateManager.createInstant(it))
-            }
+            stateManager(StateManager.createInstant(id.booleanBinding))
         }
     }
 }
@@ -312,10 +300,7 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
             name(rule.text)
             rule.description?.let { description(OptionDescription.of(it)) }
             customController(::LabelController)
-            Binding.immutable(rule.text).also {
-                binding = it
-                stateManager(StateManager.createInstant(it))
-            }
+            stateManager(StateManager.createInstant(Binding.immutable(rule.text)))
         }
         for (rule in rules) {
             rule.controller.registerGroup(rule, group)
