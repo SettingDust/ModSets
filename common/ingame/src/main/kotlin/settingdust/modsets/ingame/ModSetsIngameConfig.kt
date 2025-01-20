@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.ComponentSerializer
 import settingdust.kinecraft.serialization.GsonElementSerializer
 import settingdust.modsets.ModSets
-import settingdust.modsets.ModSetsConfig
 import settingdust.modsets.PlatformHelper
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
@@ -86,20 +85,17 @@ object ModSetsIngameConfig {
             rulesDir.createDirectories()
         }
 
-        runCatching {
-            rules.clear()
-            rulesDir.listDirectoryEntries("*.json").forEach {
-                try {
-                    rules[it.nameWithoutExtension] = json.decodeFromStream(it.inputStream())
-                } catch (e: Exception) {
-                    ModSets.LOGGER.error("Failed to load rule ${it.name}", e)
-                }
+        rules.clear()
+        rulesDir.listDirectoryEntries("*.json").forEach {
+            try {
+                rules[it.nameWithoutExtension] = json.decodeFromStream(it.inputStream())
+            } catch (e: Exception) {
+                ModSets.LOGGER.error("Failed to load rule ${it.name}", e)
             }
         }
     }
 
     private fun save() {
-        ModSetsConfig.save()
     }
 
     fun generateConfigScreen(lastScreen: Screen?): Screen =
@@ -123,7 +119,7 @@ object ModSetsIngameConfig {
                         name(ruleSet.text)
                         ruleSet.description?.let { tooltip(it) }
                         for (rule in ruleSet.rules) {
-                            with(rule) { rule.controller.registerCategory() }
+                            with(rule) { rule.controller.registerCategory(rule, this@register) }
                         }
 
                         thisCategory.onReady { category ->

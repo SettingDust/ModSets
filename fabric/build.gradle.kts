@@ -32,7 +32,7 @@ loom {
 tasks { processResources { from(project(":common:ingame").sourceSets.main.get().resources) } }
 
 dependencies {
-    minecraft(catalog.minecraft.fabric)
+    minecraft(catalog.minecraft)
     mappings(loom.officialMojangMappings())
 
     implementation(catalog.kotlinx.serialization.core)

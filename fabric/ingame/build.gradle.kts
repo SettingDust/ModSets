@@ -7,7 +7,7 @@ plugins {
 version = rootProject.version
 
 dependencies {
-    minecraft(catalog.minecraft.fabric)
+    minecraft(catalog.minecraft)
     mappings(loom.officialMojangMappings())
 
     implementation(project(":common"))

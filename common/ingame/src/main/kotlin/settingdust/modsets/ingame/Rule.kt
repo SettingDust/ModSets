@@ -1,4 +1,3 @@
-
 package settingdust.modsets.ingame
 
 import dev.isxander.yacl3.api.Binding
@@ -50,7 +49,6 @@ private fun OptionRegistrar.registerLabel(builder: TextLineBuilderDsl.() -> Unit
 private fun <T> OptionRegistrar.register(block: OptionDsl<T>.() -> Unit) =
     register<T>(DUMMY_ID) {
         block(this)
-        stateManager(StateManager.createInstant(binding))
     }
 
 private fun GroupRegistrar.register(block: GroupDsl.() -> Unit) = register(DUMMY_ID, block)
@@ -64,30 +62,29 @@ sealed interface RuleController {
 
 @Serializable
 sealed interface RuleRegistrar {
-    context(Rule, CategoryDsl)
-    fun registerCategory() {
-        with(rootOptions) { registerOption() }
+    fun registerCategory(rule: Rule, category: CategoryDsl) {
+        category.rootOptions.registerOption(rule)
     }
 
-    context(Rule, GroupDsl)
-    fun registerGroup() {
-        with(options) { registerOption() }
+    fun registerGroup(rule: Rule, group: GroupDsl) {
+        group.options.registerOption(rule)
     }
 
-    context(Rule, OptionRegistrar)
-    fun registerOption()
+    fun OptionRegistrar.registerOption(rule: Rule)
 }
 
 @Serializable
 @SerialName("label")
 data object LabelRule : RuleRegistrar {
-    context(Rule, OptionRegistrar)
-    override fun registerOption() {
+    override fun OptionRegistrar.registerOption(rule: Rule) {
         register<Component> {
-            name(text)
-            description?.let { description(OptionDescription.of(it)) }
+            name(rule.text)
+            rule.description?.let { description(OptionDescription.of(it)) }
             customController(::LabelController)
-            binding = Binding.immutable(text)
+            Binding.immutable<Component>(rule.text).also {
+                binding = it
+                stateManager(StateManager.createInstant(it))
+            }
         }
     }
 }
@@ -111,15 +108,17 @@ private val String.booleanBinding: Binding<Boolean>
 @Serializable
 @SerialName("boolean")
 data class BooleanRule(val id: String) : RuleRegistrar {
-    context(Rule, OptionRegistrar)
-    override fun registerOption() {
+    override fun OptionRegistrar.registerOption(rule: Rule) {
         register<Boolean> {
-            name(text)
-            (description ?: ModSetsIngameConfig.modSets[id]?.description)?.let {
+            name(rule.text)
+            (rule.description ?: ModSetsIngameConfig.modSets[id]?.description)?.let {
                 description(OptionDescription.of(it))
             }
             controller = tickBox()
-            binding = id.booleanBinding
+            id.booleanBinding.also {
+                binding = it
+                stateManager(StateManager.createInstant(it))
+            }
         }
     }
 }
@@ -133,11 +132,10 @@ data class CyclingRule(val ids: List<String>) : RuleRegistrar {
         require(ids.isNotEmpty()) { "mod sets of cycling can't be empty" }
     }
 
-    context(Rule, OptionRegistrar)
-    override fun registerOption() {
+    override fun OptionRegistrar.registerOption(rule: Rule) {
         register<String> {
-            name(text)
-            (description ?: ModSetsIngameConfig.modSets[firstMod]?.description)?.let {
+            name(rule.text)
+            (rule.description ?: ModSetsIngameConfig.modSets[firstMod]?.description)?.let {
                 description(OptionDescription.of(it))
             }
             controller =
@@ -150,59 +148,62 @@ data class CyclingRule(val ids: List<String>) : RuleRegistrar {
                     }
                 }
 
-            binding =
-                Binding.generic(
-                    firstMod,
-                    {
-                        val allModSets = ModSetsIngameConfig.modSets
-                        val enabledModSets =
-                            ids.filter { id ->
-                                if (id !in allModSets) return@filter false
-                                val mods = allModSets.getOrThrow(id).mods
-                                mods.none { it in ModSetsConfig.disabledMods }
-                            }
-                        if (enabledModSets.size > 1) {
-                            ModSets.LOGGER.warn(
-                                "More than one mod is enabled in cycling list: ${enabledModSets.joinToString()}. Will take the first and disable the others"
-                            )
-
-                            ModSetsConfig.disabledMods.addAll(
-                                enabledModSets.drop(1).flatMap { allModSets.getOrThrow(it).mods },
-                            )
-                            ModSetsConfig.disabledMods.removeAll(
-                                allModSets.getOrThrow(enabledModSets.first()).mods
-                            )
-                            return@generic enabledModSets.first()
-                        } else if (enabledModSets.isEmpty()) {
-                            ModSets.LOGGER.warn(
-                                "None mod is enabled in cycling list: ${ids.joinToString()}. Will take the first and disable the others"
-                            )
+            Binding.generic(
+                firstMod,
+                {
+                    val allModSets = ModSetsIngameConfig.modSets
+                    val enabledModSets =
+                        ids.filter { id ->
+                            if (id !in allModSets) return@filter false
+                            val mods = allModSets.getOrThrow(id).mods
+                            mods.none { it in ModSetsConfig.disabledMods }
                         }
-                        val firstNonEmptyModSet by lazy {
-                            ids.firstOrNull {
-                                it in allModSets && allModSets.getOrThrow(it).mods.isNotEmpty()
-                            }
-                        }
-                        val modSetAllEnabled =
-                            enabledModSets.singleOrNull { id ->
-                                allModSets.getOrThrow(id).mods.none {
-                                    it in ModSetsConfig.disabledMods
-                                }
-                            }
-                        val selected = modSetAllEnabled ?: firstNonEmptyModSet ?: firstMod
-
-                        ModSetsConfig.disabledMods.removeAll(allModSets.getOrThrow(selected).mods)
-
-                        return@generic selected
-                    },
-                    { id ->
-                        ModSetsConfig.disabledMods.addAll(
-                            ids.filter { it in ModSetsIngameConfig.modSets }
-                                .flatMap { ModSetsIngameConfig.modSets.getOrThrow(it).mods })
-                        ModSetsConfig.disabledMods.removeAll(
-                            ModSetsIngameConfig.modSets.getOrThrow(id).mods.toSet()
+                    if (enabledModSets.size > 1) {
+                        ModSets.LOGGER.warn(
+                            "More than one mod is enabled in cycling list: ${enabledModSets.joinToString()}. Will take the first and disable the others"
                         )
-                    })
+
+                        ModSetsConfig.disabledMods.addAll(
+                            enabledModSets.drop(1).flatMap { allModSets.getOrThrow(it).mods },
+                        )
+                        ModSetsConfig.disabledMods.removeAll(
+                            allModSets.getOrThrow(enabledModSets.first()).mods
+                        )
+                        return@generic enabledModSets.first()
+                    } else if (enabledModSets.isEmpty()) {
+                        ModSets.LOGGER.warn(
+                            "None mod is enabled in cycling list: ${ids.joinToString()}. Will take the first and disable the others"
+                        )
+                    }
+                    val firstNonEmptyModSet by lazy {
+                        ids.firstOrNull {
+                            it in allModSets && allModSets.getOrThrow(it).mods.isNotEmpty()
+                        }
+                    }
+                    val modSetAllEnabled =
+                        enabledModSets.singleOrNull { id ->
+                            allModSets.getOrThrow(id).mods.none {
+                                it in ModSetsConfig.disabledMods
+                            }
+                        }
+                    val selected = modSetAllEnabled ?: firstNonEmptyModSet ?: firstMod
+
+                    ModSetsConfig.disabledMods.removeAll(allModSets.getOrThrow(selected).mods)
+
+                    return@generic selected
+                },
+                { id ->
+                    ModSetsConfig.disabledMods.addAll(
+                        ids.filter { it in ModSetsIngameConfig.modSets }
+                            .flatMap { ModSetsIngameConfig.modSets.getOrThrow(it).mods })
+                    ModSetsConfig.disabledMods.removeAll(
+                        ModSetsIngameConfig.modSets.getOrThrow(id).mods.toSet()
+                    )
+                })
+                .also {
+                    binding = it
+                    stateManager(StateManager.createInstant(it))
+                }
         }
     }
 }
@@ -219,13 +220,12 @@ data class ModsGroupRule(
         require(ids.isNotEmpty()) { "mods of mods_group can't be empty" }
     }
 
-    context(Rule, CategoryDsl)
-    override fun registerCategory() {
-        groups.register(
+    override fun registerCategory(rule: Rule, category: CategoryDsl) {
+        category.groups.register(
             OptionGroup.createBuilder()
                 .apply {
-                    name(text)
-                    description?.let { description(OptionDescription.of(it)) }
+                    name(rule.text)
+                    rule.description?.let { description(OptionDescription.of(it)) }
                     collapsed(collapsed)
 
                     val optionRegistrar =
@@ -235,26 +235,27 @@ data class ModsGroupRule(
                             DUMMY_ID,
                         )
 
-                    with(optionRegistrar) { registerOption() }
+                    optionRegistrar.registerOption(rule)
                 }
                 .build())
     }
 
-    context(Rule, GroupDsl)
-    override fun registerGroup() {
-        options.register<Component> {
-            name(text)
-            (description ?: ModSetsIngameConfig.modSets[ids.first()]?.description)?.let {
+    override fun registerGroup(rule: Rule, group: GroupDsl) {
+        group.options.register<Component> {
+            name(rule.text)
+            (rule.description ?: ModSetsIngameConfig.modSets[ids.first()]?.description)?.let {
                 description(OptionDescription.of(it))
             }
             customController(::LabelController)
-            binding = Binding.immutable(text)
+            Binding.immutable(rule.text).also {
+                binding = it
+                stateManager(StateManager.createInstant(it))
+            }
         }
-        super.registerGroup()
+        super.registerGroup(rule, group)
     }
 
-    context(Rule, OptionRegistrar)
-    override fun registerOption() {
+    override fun OptionRegistrar.registerOption(rule: Rule) {
         for (id in ids.filter { it in ModSetsIngameConfig.modSets }) {
             registerModSet(id)
             if (showMods) {
@@ -274,7 +275,10 @@ data class ModsGroupRule(
             name(modSetDisplay.text)
             modSetDisplay.description?.let { description(OptionDescription.of(it)) }
             controller = tickBox()
-            binding = id.booleanBinding
+            id.booleanBinding.also {
+                binding = it
+                stateManager(StateManager.createInstant(it))
+            }
         }
     }
 }
@@ -287,38 +291,37 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
         require(rules.isNotEmpty()) { "rules of rules_group can't be empty" }
     }
 
-    context(Rule, CategoryDsl)
-    override fun registerCategory() {
-        groups.register(
+    override fun registerCategory(rule: Rule, category: CategoryDsl) {
+        category.groups.register(
             OptionGroup.createBuilder()
                 .apply {
-                    name(text)
-                    description?.let { description(OptionDescription.of(it)) }
+                    name(rule.text)
+                    rule.description?.let { description(OptionDescription.of(it)) }
                     collapsed(collapsed)
 
-                    with(GroupDslImpl(DUMMY_ID, this@CategoryDsl)) {
-                        for (rule in rules) {
-                            rule.controller.registerGroup()
-                        }
+                    val group = GroupDslImpl(DUMMY_ID, category)
+                    for (rule in rules) {
+                        rule.controller.registerGroup(rule, group)
                     }
                 }
                 .build())
     }
 
-    context(Rule, GroupDsl)
-    override fun registerGroup() {
-        options.register<Component> {
-            name(text)
-            description?.let { description(OptionDescription.of(it)) }
+    override fun registerGroup(rule: Rule, group: GroupDsl) {
+        group.options.register<Component> {
+            name(rule.text)
+            rule.description?.let { description(OptionDescription.of(it)) }
             customController(::LabelController)
-            binding = Binding.immutable(text)
+            Binding.immutable(rule.text).also {
+                binding = it
+                stateManager(StateManager.createInstant(it))
+            }
         }
         for (rule in rules) {
-            rule.controller.registerGroup()
+            rule.controller.registerGroup(rule, group)
         }
     }
 
-    context(Rule, OptionRegistrar)
-    override fun registerOption() {
+    override fun OptionRegistrar.registerOption(rule: Rule) {
     }
 }

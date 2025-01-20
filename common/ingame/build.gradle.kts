@@ -13,7 +13,9 @@ dependencies {
     api(catalog.kotlin.reflect)
     api(variantOf(catalog.kinecraft.serialization) { classifier("common") })
 
-    implementation(catalog.yacl.forge)
+    implementation(catalog.yacl.forge) {
+        exclude(group = "thedarkcolour", module = "kotlinforforge")
+    }
 
     api(project(":common"))
 }

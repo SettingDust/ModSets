@@ -7,7 +7,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft(catalog.minecraft.forge)
+    minecraft(catalog.lexforge)
     api(project(":common"))
 
     implementation(catalog.connector)

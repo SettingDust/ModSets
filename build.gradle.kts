@@ -80,7 +80,7 @@ subprojects {
                 "quilt_loader_version" to rootProject.catalog.versions.quilt.loader.get(),
                 "forge_version" to rootProject.catalog.versions.min.forge.get(),
                 "fabric_language_kotlin_version" to rootProject.catalog.fabric.kotlin.get().version,
-                "kotlin_forge_version" to rootProject.catalog.kotlin.forge.asProvider().get().version,
+                "kotlin_forge_version" to rootProject.catalog.kotlin.forge.get().version,
                 "yacl_version" to rootProject.catalog.versions.min.yacl.get(),
                 "kinecraft_serialization_version" to
                     rootProject.catalog.kinecraft.serialization.get().version,

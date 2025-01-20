@@ -15,7 +15,7 @@ minecraft {
 jarJar.enable()
 
 dependencies {
-    minecraft(catalog.minecraft.forge)
+    minecraft(catalog.lexforge)
 
     jarJar(project(":common")) {
         isTransitive = false

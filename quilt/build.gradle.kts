@@ -25,7 +25,7 @@ loom {
 }
 
 dependencies {
-    minecraft(catalog.minecraft.fabric)
+    minecraft(catalog.minecraft)
     mappings(loom.officialMojangMappings())
 
     implementation(catalog.kotlinx.serialization.core)
