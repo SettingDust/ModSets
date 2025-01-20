@@ -1,3 +1,10 @@
+## [1.10.5] - 2025-01-20
+### :bug: Bug Fixes
+- [`ce375fd`](https://github.com/SettingDust/ModSets/commit/ce375fd17d842d637537b8ab85e7524ae7771b09) - fix crash when generating the config screen *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`a7e6403`](https://github.com/SettingDust/ModSets/commit/a7e6403bb75d6104c199149659d45ed5ff09aa08) - fix crash when generating the config screen by wrong usage for state manager *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`033bcc6`](https://github.com/SettingDust/ModSets/commit/033bcc6210cf428a6ead7b253f25c76fe2a4e12d) - rules group isn't working *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.4] - 2024-11-17
 ### :bug: Bug Fixes
 - [`5323773`](https://github.com/SettingDust/ModSets/commit/532377350a2d27ae8db762c453789bf0e65d05bd) - deserialize the gson element correctly *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -181,3 +188,4 @@
 [1.10.2]: https://github.com/SettingDust/ModSets/compare/1.10.1...1.10.2
 [1.10.3]: https://github.com/SettingDust/ModSets/compare/1.10.2...1.10.3
 [1.10.4]: https://github.com/SettingDust/ModSets/compare/1.10.3...1.10.4
+[1.10.5]: https://github.com/SettingDust/ModSets/compare/1.10.4...1.10.5
