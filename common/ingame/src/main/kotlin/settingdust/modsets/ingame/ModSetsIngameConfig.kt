@@ -96,6 +96,7 @@ object ModSetsIngameConfig {
     }
 
     private fun save() {
+        ModSets.save()
     }
 
     fun generateConfigScreen(lastScreen: Screen?): Screen =
@@ -105,10 +106,7 @@ object ModSetsIngameConfig {
 
             title { Component.translatable("modsets.name") }
 
-            save {
-                ModSets.save()
-                save()
-            }
+            save { save() }
 
             if (rules.isNotEmpty()) {
                 val options = mutableSetOf<Option<Any>>()
@@ -119,7 +117,7 @@ object ModSetsIngameConfig {
                         name(ruleSet.text)
                         ruleSet.description?.let { tooltip(it) }
                         for (rule in ruleSet.rules) {
-                            with(rule) { rule.controller.registerCategory(rule, this@register) }
+                            rule.controller.registerCategory(rule, this@register)
                         }
 
                         thisCategory.onReady { category ->

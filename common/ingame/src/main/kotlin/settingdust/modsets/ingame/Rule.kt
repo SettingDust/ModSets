@@ -7,7 +7,6 @@ import dev.isxander.yacl3.api.OptionGroup
 import dev.isxander.yacl3.api.StateManager
 import dev.isxander.yacl3.dsl.CategoryDsl
 import dev.isxander.yacl3.dsl.GroupDsl
-import dev.isxander.yacl3.dsl.GroupDslImpl
 import dev.isxander.yacl3.dsl.GroupRegistrar
 import dev.isxander.yacl3.dsl.OptionDsl
 import dev.isxander.yacl3.dsl.OptionRegistrar
@@ -163,7 +162,7 @@ data class CyclingRule(val ids: List<String>) : RuleRegistrar {
                                     enabledModSets.drop(1).flatMap { allModSets.getOrThrow(it).mods },
                                 )
                                 ModSetsConfig.disabledMods.removeAll(
-                                    allModSets.getOrThrow(enabledModSets.first()).mods
+                                    allModSets.getOrThrow(enabledModSets[0]).mods
                                 )
                                 return@generic enabledModSets.first()
                             } else if (enabledModSets.isEmpty()) {
@@ -283,11 +282,12 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
         category.groups.register(
             OptionGroup.createBuilder()
                 .apply {
-                    name(rule.text)
-                    rule.description?.let { description(OptionDescription.of(it)) }
                     collapsed(collapsed)
 
-                    val group = GroupDslImpl(DUMMY_ID, category)
+                    val group = GroupDslImpl(DUMMY_ID, category, this).apply {
+                        name(rule.text)
+                        rule.description?.let { description(OptionDescription.of(it)) }
+                    }
                     for (rule in rules) {
                         rule.controller.registerGroup(rule, group)
                     }
