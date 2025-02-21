@@ -3,6 +3,7 @@ package settingdust.modsets.ingame
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.dsl.YetAnotherConfigLib
 import dev.isxander.yacl3.dsl.onReady
+import dev.isxander.yacl3.gui.YACLScreen
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -99,60 +100,63 @@ object ModSetsIngameConfig {
         ModSets.save()
     }
 
-    fun generateConfigScreen(lastScreen: Screen?): Screen =
-        YetAnotherConfigLib(ModSets.ID) {
-            ModSets.reload()
-            runBlocking { reload() }
+    internal fun generateConfig() = YetAnotherConfigLib(ModSets.ID) {
+        ModSets.reload()
+        runBlocking { reload() }
 
-            title { Component.translatable("modsets.name") }
+        title { Component.translatable("modsets.name") }
 
-            save { save() }
+        save { save() }
 
-            if (rules.isNotEmpty()) {
-                val options = mutableSetOf<Option<Any>>()
+        if (rules.isNotEmpty()) {
+            val options = mutableSetOf<Option<Any>>()
 
-                for (ruleSetEntry in rules) {
-                    categories.register(ruleSetEntry.key) {
-                        val ruleSet = ruleSetEntry.value
-                        name(ruleSet.text)
-                        ruleSet.description?.let { tooltip(it) }
-                        for (rule in ruleSet.rules) {
-                            rule.controller.registerCategory(rule, this@register)
-                        }
+            for (ruleSetEntry in rules) {
+                categories.register(ruleSetEntry.key) {
+                    val ruleSet = ruleSetEntry.value
+                    name(ruleSet.text)
+                    ruleSet.description?.let { tooltip(it) }
+                    for (rule in ruleSet.rules) {
+                        rule.controller.registerCategory(rule, this@register)
+                    }
 
-                        thisCategory.onReady { category ->
-                            // Since the options are instant and may be affected by the others.
-                            // Update the changed options to correct value
-                            val optionsInCategory = category.groups().flatMap { it.options() }
-                            options.addAll(optionsInCategory as List<Option<Any>>)
-                        }
+                    thisCategory.onReady { category ->
+                        // Since the options are instant and may be affected by the others.
+                        // Update the changed options to correct value
+                        val optionsInCategory = category.groups().flatMap { it.options() }
+                        options.addAll(optionsInCategory as List<Option<Any>>)
                     }
                 }
-
-                for (option in options) {
-                    option.addEventListener { _, event ->
-                        var changed = false
-                        for (anotherOption in options.filter { it != option && it.changed() }) {
-                            anotherOption.requestSet(anotherOption.stateManager().get())
-                            if (!changed && option.changed()) {
-                                ModSets.LOGGER.warn(
-                                    "Option ${option.name()} is conflicting with ${anotherOption.name()}. Can't change"
-                                )
-                                changed = true
-                            }
-                        }
-                        if (option.changed()) {
-                            ModSets.LOGGER.warn(
-                                "Option ${option.name()} is conflicting with unknown option. Can't change"
-                            )
-                            option.requestSet(option.stateManager().get())
-                        }
-                        save() // The save won't be called with the instant
-                    }
-                }
-            } else {
-                categories.register("no_rules") { name(Component.translatable("modsets.no_rules")) }
             }
+
+            for (option in options) {
+                option.addEventListener { _, event ->
+                    var changed = false
+                    for (anotherOption in options.filter { it != option && it.changed() }) {
+                        anotherOption.requestSet(anotherOption.stateManager().get())
+                        if (!changed && option.changed()) {
+                            ModSets.LOGGER.warn(
+                                "Option ${option.name()} is conflicting with ${anotherOption.name()}. Can't change"
+                            )
+                            changed = true
+                        }
+                    }
+                    if (option.changed()) {
+                        ModSets.LOGGER.warn(
+                            "Option ${option.name()} is conflicting with unknown option. Can't change"
+                        )
+                        option.requestSet(option.stateManager().get())
+                    }
+                    save() // The save won't be called with the instant
+                }
+            }
+        } else {
+            categories.register("no_rules") { name(Component.translatable("modsets.no_rules")) }
         }
-            .generateScreen(lastScreen)
+    }
+
+    fun generateConfigScreen(lastScreen: Screen?): Screen =
+        ModSetConfigScreen(lastScreen)
+
+    class ModSetConfigScreen(parent: Screen?) : YACLScreen(generateConfig(), parent)
 }
