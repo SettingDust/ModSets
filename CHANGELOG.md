@@ -1,3 +1,8 @@
+## [0.10.7] - 2025-02-21
+### :bug: Bug Fixes
+- [`9c37512`](https://github.com/SettingDust/ModSets/commit/9c375125a9ca17d14d14e1d0b865ceb7c5bfc9dd) - after the disabled mods activated there will be error since the disabled mods won't be mod set *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [0.10.6] - 2025-02-21
 ### :bug: Bug Fixes
 - [`910ec8e`](https://github.com/SettingDust/ModSets/commit/910ec8ec19270803c767e4580d5a4cae6fa50f58) - not save disabled mods in game config *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -198,3 +203,4 @@
 [1.10.4]: https://github.com/SettingDust/ModSets/compare/1.10.3...1.10.4
 [1.10.5]: https://github.com/SettingDust/ModSets/compare/1.10.4...1.10.5
 [0.10.6]: https://github.com/SettingDust/ModSets/compare/1.10.5...0.10.6
+[0.10.7]: https://github.com/SettingDust/ModSets/compare/0.10.6...0.10.7
