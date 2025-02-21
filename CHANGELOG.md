@@ -1,3 +1,11 @@
+## [0.10.6] - 2025-02-21
+### :bug: Bug Fixes
+- [`910ec8e`](https://github.com/SettingDust/ModSets/commit/910ec8ec19270803c767e4580d5a4cae6fa50f58) - not save disabled mods in game config *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`e6874b4`](https://github.com/SettingDust/ModSets/commit/e6874b4872114241661051d7c710ef12ffbcb65b) - allowing any kinecraft serialization *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.10.5] - 2025-01-20
 ### :bug: Bug Fixes
 - [`ce375fd`](https://github.com/SettingDust/ModSets/commit/ce375fd17d842d637537b8ab85e7524ae7771b09) - fix crash when generating the config screen *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -189,3 +197,4 @@
 [1.10.3]: https://github.com/SettingDust/ModSets/compare/1.10.2...1.10.3
 [1.10.4]: https://github.com/SettingDust/ModSets/compare/1.10.3...1.10.4
 [1.10.5]: https://github.com/SettingDust/ModSets/compare/1.10.4...1.10.5
+[0.10.6]: https://github.com/SettingDust/ModSets/compare/1.10.5...0.10.6
