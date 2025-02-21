@@ -21,6 +21,7 @@ object ModSetsConfig {
     private val disabledModsPath = PlatformHelper.configDir / "disabled_mods.json"
     var disabledMods: MutableSet<String> = mutableSetOf()
         private set
+    lateinit var initialDisabledMods: MutableSet<String>
 
     init {
         reload()
@@ -33,6 +34,7 @@ object ModSetsConfig {
         runCatching {
             disabledMods = ModSets.json.decodeFromStream(disabledModsPath.inputStream())
         }
+        if (!this::initialDisabledMods.isInitialized) initialDisabledMods = disabledMods
         runCatching { commonPath.createFile() }
         runCatching {
             common =

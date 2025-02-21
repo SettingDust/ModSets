@@ -51,7 +51,7 @@ class Entrypoint : ModInitializer {
                     modSets.putIfAbsent(metadata.id(), ModSet(metadata))
                 }
 
-                ModSetsConfig.disabledMods.forEach {
+                ModSetsConfig.initialDisabledMods.forEach {
                     modSets.putIfAbsent(
                         it,
                         ModSet(

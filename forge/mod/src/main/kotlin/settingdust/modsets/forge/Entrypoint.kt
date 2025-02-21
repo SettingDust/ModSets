@@ -59,7 +59,7 @@ class Entrypoint {
                     )
                 }
 
-                ModSetsConfig.disabledMods.forEach {
+                ModSetsConfig.initialDisabledMods.forEach {
                     modSets.putIfAbsent(
                         it,
                         ModSet(
