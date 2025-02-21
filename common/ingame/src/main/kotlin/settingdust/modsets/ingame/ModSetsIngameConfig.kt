@@ -124,7 +124,7 @@ object ModSetsIngameConfig {
                             // Since the options are instant and may be affected by the others.
                             // Update the changed options to correct value
                             val optionsInCategory = category.groups().flatMap { it.options() }
-                            options.addAll(optionsInCategory as MutableSet<Option<Any>>)
+                            options.addAll(optionsInCategory as List<Option<Any>>)
                         }
                     }
                 }
