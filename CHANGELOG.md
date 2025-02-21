@@ -1,3 +1,8 @@
+## [0.11.0] - 2025-02-21
+### :sparkles: New Features
+- [`a15856e`](https://github.com/SettingDust/ModSets/commit/a15856e294a3dc58732182000a34ad73f1f51cda) - support fancymenu open screen by split the config screen into class *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [0.10.7] - 2025-02-21
 ### :bug: Bug Fixes
 - [`9c37512`](https://github.com/SettingDust/ModSets/commit/9c375125a9ca17d14d14e1d0b865ceb7c5bfc9dd) - after the disabled mods activated there will be error since the disabled mods won't be mod set *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -204,3 +209,4 @@
 [1.10.5]: https://github.com/SettingDust/ModSets/compare/1.10.4...1.10.5
 [0.10.6]: https://github.com/SettingDust/ModSets/compare/1.10.5...0.10.6
 [0.10.7]: https://github.com/SettingDust/ModSets/compare/0.10.6...0.10.7
+[0.11.0]: https://github.com/SettingDust/ModSets/compare/0.10.7...0.11.0
