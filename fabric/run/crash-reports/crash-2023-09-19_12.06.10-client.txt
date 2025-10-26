@@ -1,0 +1,167 @@
+---- Minecraft Crash Report ----
+// Who set us up the TNT?
+
+Time: 2023-09-19 12:06:10
+Description: mouseClicked event handler
+
+java.lang.IllegalArgumentException: Mod sets optifabric not exist
+	at settingdust.modsets.game.Rules.getOrThrow(Rules.kt:45)
+	at settingdust.modsets.game.CyclingRule$get$3$enabledModSet$1.invoke(Rule.kt:150)
+	at settingdust.modsets.game.CyclingRule$get$3$enabledModSet$1.invoke(Rule.kt:149)
+	at kotlin.sequences.FilteringSequence$iterator$1.calcNext(Sequences.kt:171)
+	at kotlin.sequences.FilteringSequence$iterator$1.hasNext(Sequences.kt:194)
+	at kotlin.sequences.SequencesKt___SequencesKt.toCollection(_Sequences.kt:787)
+	at kotlin.sequences.SequencesKt___SequencesKt.toMutableList(_Sequences.kt:817)
+	at kotlin.sequences.SequencesKt___SequencesKt.toList(_Sequences.kt:808)
+	at settingdust.modsets.game.CyclingRule.get$lambda$10(Rule.kt:153)
+	at dev.isxander.yacl3.impl.GenericBindingImpl.getValue(GenericBindingImpl.java:27)
+	at dev.isxander.yacl3.impl.OptionImpl.<init>(OptionImpl.java:50)
+	at dev.isxander.yacl3.impl.OptionImpl$BuilderImpl.build(OptionImpl.java:258)
+	at settingdust.modsets.game.CyclingRule.get(Rule.kt:175)
+	at settingdust.modsets.game.Rules.getConfig(Rules.kt:89)
+	at settingdust.modsets.game.Rules.createScreen(Rules.kt:160)
+	at settingdust.modsets.game.ModSetsModMenu.getModConfigScreenFactory$lambda$0(ModSetsModMenu.kt:9)
+	at com.terraformersmc.modmenu.ModMenu.getConfigScreen(ModMenu.java:61)
+	at com.terraformersmc.modmenu.gui.widget.entries.ModListEntry.openConfig(ModListEntry.java:120)
+	at com.terraformersmc.modmenu.gui.widget.entries.ModListEntry.mouseClicked(ModListEntry.java:110)
+	at com.terraformersmc.modmenu.gui.widget.ModListWidget.mouseClicked(ModListWidget.java:256)
+	at net.minecraft.client.gui.components.events.ContainerEventHandler.mouseClicked(ContainerEventHandler.java:38)
+	at net.minecraft.client.MouseHandler.method_1611(MouseHandler.java:98)
+	at net.minecraft.client.gui.screens.Screen.wrapScreenError(Screen.java:409)
+	at net.minecraft.client.MouseHandler.onPress(MouseHandler.java:98)
+	at net.minecraft.client.MouseHandler.method_22686(MouseHandler.java:169)
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:102)
+	at net.minecraft.client.MouseHandler.method_22684(MouseHandler.java:169)
+	at org.lwjgl.glfw.GLFWMouseButtonCallbackI.callback(GLFWMouseButtonCallbackI.java:43)
+	at org.lwjgl.system.JNI.invokeV(Native Method)
+	at org.lwjgl.glfw.GLFW.glfwWaitEventsTimeout(GLFW.java:3474)
+	at com.mojang.blaze3d.systems.RenderSystem.limitDisplayFPS(RenderSystem.java:237)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1244)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:802)
+	at net.minecraft.client.main.Main.main(Main.java:250)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:468)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at settingdust.modsets.game.Rules.getOrThrow(Rules.kt:45)
+	at settingdust.modsets.game.CyclingRule$get$3$enabledModSet$1.invoke(Rule.kt:150)
+	at settingdust.modsets.game.CyclingRule$get$3$enabledModSet$1.invoke(Rule.kt:149)
+	at kotlin.sequences.FilteringSequence$iterator$1.calcNext(Sequences.kt:171)
+	at kotlin.sequences.FilteringSequence$iterator$1.hasNext(Sequences.kt:194)
+	at kotlin.sequences.SequencesKt___SequencesKt.toCollection(_Sequences.kt:787)
+	at kotlin.sequences.SequencesKt___SequencesKt.toMutableList(_Sequences.kt:817)
+	at kotlin.sequences.SequencesKt___SequencesKt.toList(_Sequences.kt:808)
+	at settingdust.modsets.game.CyclingRule.get$lambda$10(Rule.kt:153)
+	at dev.isxander.yacl3.impl.GenericBindingImpl.getValue(GenericBindingImpl.java:27)
+	at dev.isxander.yacl3.impl.OptionImpl.<init>(OptionImpl.java:50)
+	at dev.isxander.yacl3.impl.OptionImpl$BuilderImpl.build(OptionImpl.java:258)
+	at settingdust.modsets.game.CyclingRule.get(Rule.kt:175)
+	at settingdust.modsets.game.Rules.getConfig(Rules.kt:89)
+	at settingdust.modsets.game.Rules.createScreen(Rules.kt:160)
+	at settingdust.modsets.game.ModSetsModMenu.getModConfigScreenFactory$lambda$0(ModSetsModMenu.kt:9)
+	at com.terraformersmc.modmenu.ModMenu.getConfigScreen(ModMenu.java:61)
+	at com.terraformersmc.modmenu.gui.widget.entries.ModListEntry.openConfig(ModListEntry.java:120)
+	at com.terraformersmc.modmenu.gui.widget.entries.ModListEntry.mouseClicked(ModListEntry.java:110)
+	at com.terraformersmc.modmenu.gui.widget.ModListWidget.mouseClicked(ModListWidget.java:256)
+	at net.minecraft.client.gui.components.events.ContainerEventHandler.mouseClicked(ContainerEventHandler.java:38)
+	at net.minecraft.client.MouseHandler.method_1611(MouseHandler.java:98)
+	at net.minecraft.client.gui.screens.Screen.wrapScreenError(Screen.java:409)
+	at net.minecraft.client.MouseHandler.onPress(MouseHandler.java:98)
+	at net.minecraft.client.MouseHandler.method_22686(MouseHandler.java:169)
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:102)
+	at net.minecraft.client.MouseHandler.method_22684(MouseHandler.java:169)
+	at org.lwjgl.glfw.GLFWMouseButtonCallbackI.callback(GLFWMouseButtonCallbackI.java:43)
+	at org.lwjgl.system.JNI.invokeV(Native Method)
+	at org.lwjgl.glfw.GLFW.glfwWaitEventsTimeout(GLFW.java:3474)
+
+-- Affected screen --
+Details:
+	Screen name: com.terraformersmc.modmenu.gui.ModsScreen
+Stacktrace:
+	at net.minecraft.client.gui.screens.Screen.wrapScreenError(Screen.java:409)
+	at net.minecraft.client.MouseHandler.onPress(MouseHandler.java:98)
+	at net.minecraft.client.MouseHandler.method_22686(MouseHandler.java:169)
+	at net.minecraft.util.thread.BlockableEventLoop.execute(BlockableEventLoop.java:102)
+	at net.minecraft.client.MouseHandler.method_22684(MouseHandler.java:169)
+	at org.lwjgl.glfw.GLFWMouseButtonCallbackI.callback(GLFWMouseButtonCallbackI.java:43)
+	at org.lwjgl.system.JNI.invokeV(Native Method)
+	at org.lwjgl.glfw.GLFW.glfwWaitEventsTimeout(GLFW.java:3474)
+	at com.mojang.blaze3d.systems.RenderSystem.limitDisplayFPS(RenderSystem.java:237)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1244)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:802)
+	at net.minecraft.client.main.Main.main(Main.java:250)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:468)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+
+-- Last reload --
+Details:
+	Reload number: 1
+	Reload reason: initial
+	Finished: Yes
+	Packs: vanilla, fabric
+Stacktrace:
+	at net.minecraft.client.ResourceLoadStateTracker.fillCrashReport(ResourceLoadStateTracker.java:49)
+	at net.minecraft.client.Minecraft.fillReport(Minecraft.java:2413)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:821)
+	at net.minecraft.client.main.Main.main(Main.java:250)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:468)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.20.1
+	Minecraft Version ID: 1.20.1
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 17.0.8, JetBrains s.r.o.
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode), JetBrains s.r.o.
+	Memory: 544378592 bytes (519 MiB) / 880803840 bytes (840 MiB) up to 8552185856 bytes (8156 MiB)
+	CPUs: 16
+	Processor Vendor: GenuineIntel
+	Processor Name: 13th Gen Intel(R) Core(TM) i5-13490F
+	Identifier: Intel64 Family 6 Model 191 Stepping 2
+	Microarchitecture: unknown
+	Frequency (GHz): 2.50
+	Number of physical packages: 1
+	Number of physical CPUs: 10
+	Number of logical CPUs: 16
+	Graphics card #0 name: NVIDIA GeForce RTX 4060
+	Graphics card #0 vendor: NVIDIA (0x10de)
+	Graphics card #0 VRAM (MB): 4095.00
+	Graphics card #0 deviceId: 0x2882
+	Graphics card #0 versionInfo: DriverVersion=31.0.15.3734
+	Memory slot #0 capacity (MB): 16384.00
+	Memory slot #0 clockSpeed (GHz): 2.67
+	Memory slot #0 type: DDR4
+	Memory slot #1 capacity (MB): 16384.00
+	Memory slot #1 clockSpeed (GHz): 2.67
+	Memory slot #1 type: DDR4
+	Virtual memory max (MB): 43979.56
+	Virtual memory used (MB): 35431.36
+	Swap memory total (MB): 11368.80
+	Swap memory used (MB): 2468.84
+	JVM Flags: 0 total; 
+	Launched Version: Fabric
+	Backend library: LWJGL version 3.3.1 SNAPSHOT
+	Backend API: NVIDIA GeForce RTX 4060/PCIe/SSE2 GL version 3.2.0 NVIDIA 537.34, NVIDIA Corporation
+	Window size: 854x480
+	GL Caps: Using framebuffer using OpenGL 3.2
+	GL debug messages: 
+	Using VBOs: Yes
+	Is Modded: Definitely; Client brand changed to 'fabric'
+	Type: Client (map_client.txt)
+	Graphics mode: fancy
+	Resource Packs: fabric
+	Current Language: en_us
+	CPU: 16x 13th Gen Intel(R) Core(TM) i5-13490F

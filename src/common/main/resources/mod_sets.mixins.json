@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "settingdust.mod_sets.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mod_sets.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ]
+}

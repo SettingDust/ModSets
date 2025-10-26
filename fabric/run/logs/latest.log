@@ -1,0 +1,59 @@
+[14:37:01] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 1.20.1 with Fabric Loader 0.16.9
+[14:37:01] [main/INFO] (FabricLoader) Loading 16 mods:
+	- fabric-api-base 0.4.29+b04edc7a77
+	- fabric-key-binding-api-v1 1.0.36+fb8d95da77
+	- fabric-language-kotlin 1.12.2+kotlin.2.0.20
+	- fabric-lifecycle-events-v1 2.2.20+b3afc78b77
+	- fabric-resource-loader-v0 0.11.7+f7923f6d77
+	- fabric-screen-api-v1 2.0.6+b3afc78b77
+	- fabricloader 0.16.9
+	- java 21
+	- kinecraft_serialization 1.16.1
+	- minecraft 1.20.1
+	- mixinextras 0.4.1
+	- mod_sets 1.10.4-2-g5001390.dirty
+	- modmenu 7.2.2
+	- preloading_tricks 1.2.3
+	   \-- preloading_tricks_language_adapter 1.2.3
+	- yet_another_config_lib_v3 3.6.2+1.20.1-fabric
+[14:37:01] [main/WARN] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Errors when loading preloading tricks may be intended since the implementations may targeting multiple mod loaders
+[14:37:01] [main/INFO] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.fabric.FabricLanguageProviderCallback
+[14:37:01] [main/INFO] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.quilt.QuiltLanguageProviderCallback
+[14:37:01] [main/ERROR] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.quilt.QuiltLanguageProviderCallback failed: java.lang.ClassNotFoundException: org.quiltmc.loader.impl.QuiltLoaderImpl
+[14:37:01] [main/INFO] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.neoforge.fml.FMLLanguageProviderCallback
+[14:37:01] [main/ERROR] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.neoforge.fml.FMLLanguageProviderCallback failed: java.lang.ClassNotFoundException: net.neoforged.fml.loading.FMLLoader
+[14:37:01] [main/INFO] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.forge.fml.FMLLanguageProviderCallback
+[14:37:01] [main/ERROR] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.forge.fml.FMLLanguageProviderCallback failed: java.lang.ClassNotFoundException: net.minecraftforge.fml.loading.FMLLoader
+[14:37:01] [main/INFO] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.forge.fml40.FML40LanguageProviderCallback
+[14:37:01] [main/ERROR] (PreloadingTricks/LanguageAdapter) [PreloadingTricks/LanguageAdapter] Loading settingdust.preloadingtricks.forge.fml40.FML40LanguageProviderCallback failed: java.lang.ClassNotFoundException: net.minecraftforge.fml.loading.FMLLoader
+[14:37:01] [main/INFO] (PreloadingTricks/ModSetup) [PreloadingTricks/ModSetup] Loading settingdust.modsets.fabric.FabricSetupModCallback
+[14:37:02] [main/INFO] (ModSets/SetupMod) Loading mods from 1 sub folders in mods
+[14:37:02] [main/ERROR] (PreloadingTricks/ModSetup) [PreloadingTricks/ModSetup] Loading settingdust.modsets.fabric.FabricSetupModCallback failed: java.lang.ClassNotFoundException: can't load class settingdust.modsets.ModSetsConfig at D:\Projects\Minecraft\ModSets\common\build\libs\mod_sets-common-1.10.4-2-g5001390.dirty.jar as it hasn't been exposed to the game (yet? The system property fabric.classPathGroups may not be set correctly in-dev)
+[14:37:02] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/D:/Applications/Scoop/apps/gradle/current/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.4+mixin.0.8.7/6a12aacc794f1078458433116e9ed42c1cc98096/sponge-mixin-0.15.4+mixin.0.8.7.jar Service=Knot/Fabric Env=CLIENT
+[14:37:02] [main/INFO] (FabricLoader/Mixin) Loaded Fabric development mappings for mixin remapper!
+[14:37:02] [main/INFO] (FabricLoader/Mixin) Compatibility level set to JAVA_16
+[14:37:02] [main/INFO] (FabricLoader/Mixin) Compatibility level set to JAVA_17
+[14:37:04] [main/INFO] (FabricLoader/MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.4.1).
+[14:37:06] [Datafixer Bootstrap/INFO] (Minecraft) 188 Datafixer optimizations took 170 milliseconds
+[14:37:07] [Render thread/INFO] (Minecraft) [STDERR]: [LWJGL] [ThreadLocalUtil] Unsupported JNI version detected, this may result in a crash. Please inform LWJGL developers.
+[14:37:07] [Render thread/INFO] (Minecraft) Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[14:37:08] [Render thread/ERROR] (Minecraft) Failed to verify authentication
+com.mojang.authlib.exceptions.InvalidCredentialsException: Status: 401
+	at com.mojang.authlib.exceptions.MinecraftClientHttpException.toAuthenticationException(MinecraftClientHttpException.java:56) ~[authlib-4.0.43.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:156) ~[authlib-4.0.43.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.<init>(YggdrasilUserApiService.java:55) ~[authlib-4.0.43.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.createUserApiService(YggdrasilAuthenticationService.java:124) ~[authlib-4.0.43.jar:?]
+	at net.minecraft.client.Minecraft.createUserApiService(Minecraft.java:733) ~[minecraft-merged-e611ab1cf0-1.20.1-loom.mappings.1_20_1.layered+hash.2198-v2.jar:?]
+	at net.minecraft.client.Minecraft.<init>(Minecraft.java:442) ~[minecraft-merged-e611ab1cf0-1.20.1-loom.mappings.1_20_1.layered+hash.2198-v2.jar:?]
+	at net.minecraft.client.main.Main.main(Main.java:211) ~[minecraft-merged-e611ab1cf0-1.20.1-loom.mappings.1_20_1.layered+hash.2198-v2.jar:?]
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:480) ~[fabric-loader-0.16.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:74) ~[fabric-loader-0.16.9.jar:?]
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23) ~[fabric-loader-0.16.9.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) ~[dev-launch-injector-0.2.1+build.8.jar:?]
+Caused by: com.mojang.authlib.exceptions.MinecraftClientHttpException: Status: 401
+	at com.mojang.authlib.minecraft.client.MinecraftClient.readInputStream(MinecraftClient.java:85) ~[authlib-4.0.43.jar:?]
+	at com.mojang.authlib.minecraft.client.MinecraftClient.get(MinecraftClient.java:48) ~[authlib-4.0.43.jar:?]
+	at com.mojang.authlib.yggdrasil.YggdrasilUserApiService.fetchProperties(YggdrasilUserApiService.java:129) ~[authlib-4.0.43.jar:?]
+	... 9 more
+[14:37:08] [Render thread/INFO] (Minecraft) Setting user: Player1
+[14:37:08] [Worker-Main-1/INFO] (Mod Menu/Update Checker) Checking mod updates...

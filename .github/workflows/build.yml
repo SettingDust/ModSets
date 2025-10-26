@@ -1,23 +1,27 @@
-name: Test latest Gradle
 on:
-  schedule:
-    - cron: 0 0 * * 0 # weekly
+  push:
 jobs:
-  gradle:
+  build:
+    name: Dependencies
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout Repository
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
-          java-version: 17
-          distribution: microsoft
+          distribution: temurin
+          java-version: 21
+          cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: current
+          cache-read-only: false
 
-      - run: gradle build --dry-run # just test build configuration
+      - uses: burrunan/gradle-cache-action@v3
+        name: Execute Gradle build
+        with:
+          arguments: remapFabricMinecraftIntermediary build

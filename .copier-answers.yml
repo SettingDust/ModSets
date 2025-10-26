@@ -1,0 +1,10 @@
+# Changes here will be overwritten by Copier
+_commit: 0.1.8-8-g9b00b99
+_src_path: https://github.com/SettingDust/cloche-template
+author: SettingDust
+description: ModSets
+group: settingdust.mod_sets
+id: mod_sets
+license: Apache License 2.0
+name: ModSets
+slug: mod-sets

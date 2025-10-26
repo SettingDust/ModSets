@@ -1,118 +1,163 @@
 dependencyResolutionManagement {
     pluginManagement {
         repositories {
-            maven("https://maven.architectury.dev/")
-            maven("https://maven.fabricmc.net/")
-            maven("https://maven.minecraftforge.net/")
-            maven("https://maven2.bai.lol")
-            maven("https://repo.spongepowered.org/repository/maven-public/")
             mavenCentral()
             gradlePluginPortal()
+            maven("https://maven.msrandom.net/repository/cloche")
+            maven("https://raw.githubusercontent.com/SettingDust/cloche/refs/heads/maven-repo/")
+            maven("https://raw.githubusercontent.com/SettingDust/minecraft-codev/refs/heads/maven-repo/")
+            mavenLocal()
+        }
+    }
+}
+
+object VersionFormats {
+    val versionPlusMc = { mcVer: String, ver: String -> "$ver+$mcVer" }
+    val mcDashVersion = { mcVer: String, ver: String -> "$mcVer-$ver" }
+}
+
+object VersionTransformers {
+    val versionDashLoader = { ver: String, variant: String -> "$ver-$variant" }
+    val loaderUnderlineVersion = { ver: String, variant: String -> "${variant}_$ver" }
+}
+
+object ArtifactTransformers {
+    val artifactDashLoaderDashMcVersion =
+        { artifact: String, variant: String, mcVersion: String -> "$artifact-$variant-$mcVersion" }
+    val artifactDashLoader = { artifact: String, variant: String, _: String -> "$artifact-$variant" }
+}
+
+open class VariantConfig(
+    val artifactTransformer: (artifact: String, variant: String, mcVersion: String) -> String = { artifact, _, _ -> artifact },
+    val versionTransformer: (version: String, variant: String) -> String = { ver, _ -> ver }
+) {
+    companion object : VariantConfig()
+}
+
+data class VariantMapping(
+    val mcVersion: String,
+    val loaders: Map<String, VariantConfig>
+)
+
+fun VersionCatalogBuilder.modrinth(
+    id: String,
+    artifact: String = id,
+    mcVersionToVersion: Map<String, String>,
+    versionFormat: (String, String) -> String = { _, v -> v },
+    mapping: List<VariantMapping> = emptyList()
+) {
+    val allLoaders = mapping.flatMap { it.loaders.keys }.toSet()
+    val isSingleLoader = allLoaders.size == 1
+    val isSingleMcVersion = mcVersionToVersion.size == 1
+
+    if (isSingleMcVersion) {
+        val (mcVersion, modVersion) = mcVersionToVersion.entries.single()
+        val config = mapping.find { it.mcVersion == mcVersion }
+            ?: error("No loader config found for MC $mcVersion")
+
+        val version = versionFormat(mcVersion, modVersion)
+
+        config.loaders.forEach { (loaderName, loader) ->
+            library(
+                if (isSingleLoader) "$id"
+                else "${id}_$loaderName",
+                "maven.modrinth",
+                loader.artifactTransformer(artifact, loaderName, mcVersion)
+            ).version(loader.versionTransformer(version, loaderName))
+        }
+        return
+    }
+
+    mcVersionToVersion.forEach { (mcVersion, modVersion) ->
+        val config = mapping.find { it.mcVersion == mcVersion }
+            ?: error("No loader config found for MC $mcVersion")
+
+        val version = versionFormat(mcVersion, modVersion)
+
+        config.loaders.forEach { (loaderName, loader) ->
+            library(
+                if (isSingleLoader) "${id}_${mcVersion}"
+                else "${id}_${mcVersion}_$loaderName",
+                "maven.modrinth",
+                loader.artifactTransformer(artifact, loaderName, mcVersion)
+            ).version(loader.versionTransformer(version, loaderName))
+        }
+    }
+}
+
+fun VersionCatalogBuilder.maven(
+    id: String,
+    group: String,
+    artifact: String = id,
+    mcVersionToVersion: Map<String, String>,
+    versionFormat: (String, String) -> String = { _, v -> v },
+    mapping: List<VariantMapping> = emptyList()
+) {
+    val allLoaders = mapping.flatMap { it.loaders.keys }.toSet()
+    val isSingleLoader = allLoaders.size == 1
+    val isSingleMcVersion = mcVersionToVersion.size == 1
+
+    if (isSingleMcVersion) {
+        val (mcVersion, modVersion) = mcVersionToVersion.entries.single()
+        val config = mapping.find { it.mcVersion == mcVersion }
+            ?: error("No loader config found for MC $mcVersion")
+
+        val version = versionFormat(mcVersion, modVersion)
+
+        config.loaders.forEach { (loaderName, loader) ->
+            library(
+                if (isSingleLoader) id
+                else "${id}_$loaderName",
+                group,
+                loader.artifactTransformer(artifact, loaderName, mcVersion)
+            ).version(loader.versionTransformer(version, loaderName))
+        }
+        return
+    }
+
+    mcVersionToVersion.forEach { (mcVersion, baseVersion) ->
+        val config = mapping.find { it.mcVersion == mcVersion }
+            ?: error("No loader config found for MC $mcVersion")
+
+        val version = versionFormat(mcVersion, baseVersion)
+
+        config.loaders.forEach { (loaderName, loader) ->
+            library(
+                if (mcVersion == "*") {
+                    if (isSingleLoader) id
+                    else "${id}_$loaderName"
+                } else {
+                    if (isSingleLoader) "${id}_${mcVersion}"
+                    else "${id}_${mcVersion}_$loaderName"
+                },
+                group,
+                loader.artifactTransformer(artifact, loaderName, mcVersion)
+            ).version(loader.versionTransformer(version, loaderName))
         }
     }
 }
 
 dependencyResolutionManagement.versionCatalogs.create("catalog") {
-    // https://github.com/palantir/gradle-git-version
-    plugin("git-version", "com.palantir.git-version").version("3.+")
-
-    plugin("shadow", "com.gradleup.shadow").version("8.+")
-
-    plugin("explosion", "lol.bai.explosion").version("0.2.0")
-
-    library("minecraft-fabric-1.21", "com.mojang", "minecraft").version("1.21")
-
-
-    val minecraft = "1.20.1"
-    version("minecraft", minecraft)
-
-    val kotlin = "2.0.20"
-    version("kotlin", kotlin)
-    plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlin)
-    plugin("kotlin-plugin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlin)
-
-    library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").version(kotlin)
-
-    val kotlinxSerialization = "1.7.3"
-    library("kotlinx-serialization-core", "org.jetbrains.kotlinx", "kotlinx-serialization-core").version(
-        kotlinxSerialization
+    maven(
+        id = "mixinextras",
+        group = "io.github.llamalad7",
+        artifact = "mixinextras",
+        mcVersionToVersion = mapOf("*" to "0.5.0"),
+        versionFormat = { _, v -> v },
+        mapping = listOf(
+            VariantMapping(
+                "*", mapOf(
+                    "forge" to VariantConfig(ArtifactTransformers.artifactDashLoader),
+                    "fabric" to VariantConfig(ArtifactTransformers.artifactDashLoader),
+                    "common" to VariantConfig(ArtifactTransformers.artifactDashLoader)
+                )
+            )
+        )
     )
-    library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").version(
-        kotlinxSerialization
-    )
-
-    library("kotlinx-coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.10.1")
-
-    // https://modrinth.com/mod/kinecraft-serialization/versions
-    library("kinecraft-serialization", "maven.modrinth", "kinecraft-serialization").version("1.16.1")
-
-    library("minecraft", "com.mojang", "minecraft").version("1.20.1")
-
-    plugin("vanilla-gradle", "org.spongepowered.gradle.vanilla").version("0.2.1-SNAPSHOT")
-
-
-    plugin("fabric-loom", "fabric-loom").version("1.9.+")
-    // https://linkie.shedaniel.dev/dependencies?loader=fabric
-    version("fabric-loader", "0.16.9")
-    version("fabric-api", "0.92.2+$minecraft")
-    library("fabric-loader", "net.fabricmc", "fabric-loader").version("0.16.9")
-    library("fabric-api", "net.fabricmc.fabric-api", "fabric-api").version("0.92.2+$minecraft")
-    library("fabric-kotlin", "net.fabricmc", "fabric-language-kotlin").version("1.12.2+kotlin.$kotlin")
-
-    plugin("forge-gradle", "net.minecraftforge.gradle").version("6.+")
-    // https://linkie.shedaniel.dev/dependencies?loader=forge
-    version("lexforge", "47.3.12")
-    library("lexforge", "net.minecraftforge", "forge").version("1.20.1-47.3.12")
-    library("forgified-fabric-api", "dev.su5ed.sinytra.fabric-api", "fabric-api").version("0.92.2+1.11.8+$minecraft")
-    library("sinytra-connector", "org.sinytra", "Connector").version("1.0.0-beta.46+$minecraft")
-    library("kotlin-forge", "thedarkcolour", "kotlinforforge").version("4.11.0")
-
-    plugin("neoforge-moddev", "net.neoforged.moddev").version("1.+")
-
-    // https://linkie.shedaniel.dev/dependencies?loader=neoforge
-    library("neoforge", "net.neoforged", "neoforge").version("21.1.54")
-
-    version("min-yacl", "3.6.0")
-    version("min-modmenu", "3.0.0")
-    version("min-forge", "45")
-    version("quilt-loader", "0.24.0")
-
-    library("quilt-loader", "org.quiltmc", "quilt-loader").version("0.26.4")
-    plugin("quilt-loom", "org.quiltmc.loom").version("1.8.+")
-    library("quilt-standard-libraries-core", "org.quiltmc.qsl", "core").version("6.2.0+$minecraft")
-    library(
-        "quilt-fabric-api",
-        "org.quiltmc.quilted-fabric-api",
-        "quilted-fabric-api"
-    ).version("7.6.0+0.92.2-$minecraft")
-
-
-    val yaclVersion = "3.6.2"
-    library("yacl-fabric", "dev.isxander", "yet-another-config-lib").version("$yaclVersion+1.20.1-fabric")
-    library("yacl-forge", "dev.isxander", "yet-another-config-lib").version("$yaclVersion+1.20.1-forge")
-
-    library("modmenu", "com.terraformersmc", "modmenu").version("7.2.2")
-
-    // https://modrinth.com/mod/preloading-tricks/versions
-    library("preloading-tricks", "maven.modrinth", "preloading-tricks").version("1.2.3")
-
-    // https://modrinth.com/mod/preloading-tricks/versions
-    library("connector", "maven.modrinth", "connector").version("1.0.0-beta.46+1.20.1")
 }
 
-val mod_name: String by settings
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 
-rootProject.name = mod_name
-
-include("common")
-include("common:ingame")
-
-include("fabric")
-include("fabric:ingame")
-
-include("quilt")
-
-include("forge:mod-locator")
-include("forge:setup-mod-hook")
-include("forge:ingame")
-include("forge:mod")
+rootProject.name = "ModSets"

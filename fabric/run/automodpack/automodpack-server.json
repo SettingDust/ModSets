@@ -1,0 +1,30 @@
+{
+  "modpackName": "",
+  "modpackHost": true,
+  "generateModpackOnStart": true,
+  "syncedFiles": [
+    "/mods/",
+    "/config/"
+  ],
+  "excludeSyncedFiles": [
+    "/mods/iDontWantThisModInModpack.jar",
+    "/config/andThisConfigToo.json",
+    "/mods/andAllTheseMods-*.jar"
+  ],
+  "allowEditsInFiles": [
+    "/options.txt"
+  ],
+  "optionalModpack": false,
+  "autoExcludeServerSideMods": true,
+  "hostThreads": 8,
+  "hostIp": "112.117.132.248",
+  "hostLocalIp": "192.168.31.158",
+  "updateIpsOnEveryStart": false,
+  "hostPort": 30037,
+  "reverseProxy": false,
+  "externalModpackHostLink": "",
+  "selfUpdater": true,
+  "acceptedLoaders": [
+    "fabric"
+  ]
+}

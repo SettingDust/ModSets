@@ -1,0 +1,43 @@
+{
+  "$schema": "https://github.com/SettingDust/ModSets/raw/main/rules.schema.json",
+  "text": {
+    "text": "My first rule set",
+    "bold": true,
+    "color": "green"
+  },
+  "description": "Awwww",
+  "rules": [
+    {
+      "text": "The mods group",
+      "description": "Text Text",
+      "controller": {
+        "type": "rules_group",
+        "collapsed": true,
+        "rules": [
+          {
+            "text": "Chest Tracker",
+            "controller": {
+              "type": "mods_group",
+              "collapsed": true,
+              "mods": [
+                "sodium",
+                "automodpack"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "text": "Chest Tracker",
+      "controller": {
+        "type": "mods_group",
+        "collapsed": true,
+        "mods": [
+          "sodium",
+          "automodpack"
+        ]
+      }
+    }
+  ]
+}
