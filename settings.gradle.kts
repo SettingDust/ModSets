@@ -154,6 +154,33 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
             )
         )
     )
+
+    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("2.4.1")
+
+    maven(
+        id = "yacl",
+        group = "dev.isxander",
+        artifact = "yet-another-config-lib",
+        mcVersionToVersion = mapOf(
+            "1.20.1" to "3.6.6",
+            "1.21.1" to "3.8.0"
+        ),
+        versionFormat = VersionFormats.versionPlusMc,
+        mapping = listOf(
+            VariantMapping(
+                "1.20.1", mapOf(
+                    "forge" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader),
+                    "fabric" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader)
+                )
+            ),
+            VariantMapping(
+                "1.21.1", mapOf(
+                    "neoforge" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader),
+                    "fabric" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader)
+                )
+            )
+        )
+    )
 }
 
 plugins {

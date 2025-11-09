@@ -9,7 +9,6 @@ import earth.terrarium.cloche.api.metadata.FabricMetadata
 import earth.terrarium.cloche.api.target.FabricTarget
 import earth.terrarium.cloche.api.target.ForgeLikeTarget
 import earth.terrarium.cloche.api.target.MinecraftTarget
-import earth.terrarium.cloche.api.target.NeoforgeTarget
 import earth.terrarium.cloche.tasks.GenerateFabricModJson
 import groovy.lang.Closure
 import net.msrandom.minecraftcodev.core.utils.lowerCamelCaseGradleName
@@ -57,6 +56,15 @@ repositories {
     maven("https://thedarkcolour.github.io/KotlinForForge/") {
         content {
             includeGroup("thedarkcolour")
+        }
+    }
+
+    maven("https://maven.isxander.dev/releases") {
+        name = "Xander Maven"
+
+        content {
+            includeGroup("dev.isxander")
+            includeGroup("org.quiltmc.parsers")
         }
     }
 
@@ -154,6 +162,8 @@ cloche {
 
             dependencies {
                 fabricApi("0.92.6")
+
+                modImplementation(catalog.yacl.get1().get20().get1().fabric)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -176,6 +186,8 @@ cloche {
 
             dependencies {
                 fabricApi("0.116.6")
+
+                modImplementation(catalog.yacl.get1().get21().get1().fabric)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -314,6 +326,8 @@ cloche {
                 implementation(catalog.mixinextras.forge)
 
                 modImplementation("thedarkcolour:kotlinforforge:4.11.0")
+
+                modImplementation(catalog.yacl.get1().get20().get1().forge)
             }
         }
     }
@@ -321,6 +335,7 @@ cloche {
     run neoforge@{
         val neoforge121 = neoforge("neoforge:1.21") {
             minecraftVersion = "1.21.1"
+            loaderVersion = "21.1.192"
 
             metadata {
                 modLoader = "kotlinforforge"
@@ -335,10 +350,17 @@ cloche {
                         start = "1.21"
                     }
                 }
+
+                dependency {
+                    modId = "preloading_tricks"
+                    type = CommonMetadata.Dependency.Type.Required
+                }
             }
 
             dependencies {
                 modImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
+
+                modImplementation(catalog.yacl.get1().get21().get1().neoforge)
             }
         }
 
@@ -363,21 +385,21 @@ cloche {
                         }
                     }
                 }
+
+                include(catalog.preloadingTricks)
             }
 
             tasks {
                 val jar = register<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
                     group = "build"
-
                     archiveClassifier = "neoforge"
                     destinationDirectory = intermediateOutputsDirectory
                 }
 
                 val includesJar = register<JarJar>(lowerCamelCaseGradleName(featureName, "includeJar")) {
-                    group = "build"
                     dependsOn(targets.map { it.includeJarTaskName })
 
-                    archiveBaseName = "$id-${featureName.camelToKebabCase()}"
+                    archiveClassifier = "neoforge"
                     input = jar.flatMap { it.archiveFile }
                     fromResolutionResults(include)
                 }
@@ -386,17 +408,6 @@ cloche {
 
                 build {
                     dependsOn(includesJar)
-                }
-            }
-        }
-
-        targets.withType<NeoforgeTarget> {
-            loaderVersion = "21.1.192"
-
-            metadata {
-                modLoader = "kotlinforforge"
-                loaderVersion {
-                    start = "5"
                 }
             }
         }
@@ -416,9 +427,14 @@ cloche {
                 when (it) {
                     "1.20.1" -> "2023.09.03"
                     "1.21.1" -> "2024.11.17"
+                    "1.21.10" -> "2025.10.12"
                     else -> throw IllegalArgumentException("Unsupported minecraft version $it")
                 }
             })
+        }
+
+        dependencies {
+            implementation(catalog.preloadingTricks)
         }
     }
 }
@@ -445,11 +461,6 @@ val MinecraftTarget.generateModsManifestTaskName: String
         is ForgeLikeTarget -> generateModsTomlTaskName
         else -> throw IllegalArgumentException("Unsupported target $this")
     }
-
-fun String.camelToKebabCase(): String {
-    val pattern = "(?<=.)[A-Z]".toRegex()
-    return this.replace(pattern, "-$0").lowercase()
-}
 
 tasks {
     withType<ProcessResources> {
@@ -499,22 +510,32 @@ tasks {
         dependsOn(shadowContainersJar, shadowSourcesJar)
     }
 
-    // https://github.com/terrarium-earth/cloche/issues/115
-    val remapFabricMinecraftIntermediary by registering {
-        dependsOn(cloche.targets.filterIsInstance<FabricTarget>().flatMap {
-            listOf(
+    for (target in cloche.targets.filterIsInstance<FabricTarget>()) {
+        named(lowerCamelCaseGradleName("accessWiden", target.featureName, "commonMinecraft")) {
+            dependsOn(
                 lowerCamelCaseGradleName(
                     "remap",
-                    it.name,
+                    target.featureName,
                     "commonMinecraft",
                     MinecraftCodevFabricPlugin.INTERMEDIARY_MAPPINGS_NAMESPACE,
                 ), lowerCamelCaseGradleName(
                     "remap",
-                    it.name,
+                    target.featureName,
                     "clientMinecraft",
                     MinecraftCodevFabricPlugin.INTERMEDIARY_MAPPINGS_NAMESPACE,
-                )
+                ), lowerCamelCaseGradleName("generate", target.featureName, "MappingsArtifact")
             )
-        })
+        }
+
+        named(lowerCamelCaseGradleName("accessWiden", target.featureName, "Minecraft")) {
+            dependsOn(
+                lowerCamelCaseGradleName(
+                    "remap",
+                    target.featureName,
+                    "clientMinecraft",
+                    MinecraftCodevFabricPlugin.INTERMEDIARY_MAPPINGS_NAMESPACE,
+                ), lowerCamelCaseGradleName("generate", target.featureName, "MappingsArtifact")
+            )
+        }
     }
 }

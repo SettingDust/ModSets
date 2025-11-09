@@ -15,7 +15,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: false
 
@@ -42,67 +42,37 @@ jobs:
 
           # Only include this section if you wish to publish
           # your assets on CurseForge.
-          curseforge-id: 000000
+          curseforge-id: 890349
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
             build/libs/!(*-@(fabric*|neoforge*|forge*|sources)).jar
-            build/libs/*-@(fabric-*|neoforge-*|sources).jar
+            build/libs/*-@(fabric-*|neoforge-*|forge*|sources).jar
 
           version: ${{ github.ref_name }}
 
           loaders: |
             neoforge
             fabric
+            forge
 
           game-versions: |
             1.20.1
-            1.21
-            1.21.1
+            [1.21,)
+
           game-version-filter: releases
 
           dependencies: |
             fabric-language-kotlin
             kotlin-for-forge
+            preloading-tricks
 
           java: |
             17
             21
 
-      - name: Upload forge jar
-        uses: Kir-Antipov/mc-publish@v3.3.0
-        with:
-          changelog: ${{ steps.changelog.outputs.changes }}
-          # Only include this section if you wish to publish
-          # your assets on Modrinth.
-          modrinth-id: mod-sets
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # Only include this section if you wish to publish
-          # your assets on CurseForge.
-          curseforge-id: 000000
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            build/libs/*-forge-*.jar
-
-          version: ${{ github.ref_name }}
-
-          loaders: |
-            forge
-
-          game-versions: |
-            1.20.1
-          game-version-filter: releases
-
-          dependencies: |
-            kotlin-for-forge
-
-          java: |
-            17
-
       - name: Commit CHANGELOG.md
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           branch: main
           commit_message: 'docs: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
