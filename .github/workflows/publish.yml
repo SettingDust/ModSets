@@ -22,7 +22,7 @@ jobs:
       - uses: burrunan/gradle-cache-action@v3
         name: Execute Gradle build
         with:
-          arguments: remapFabricMinecraftIntermediary build
+          arguments: build
 
       - name: Update CHANGELOG
         id: changelog
@@ -42,19 +42,19 @@ jobs:
 
           # Only include this section if you wish to publish
           # your assets on CurseForge.
-          curseforge-id: 890349
+          curseforge-id: 000000
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
             build/libs/!(*-@(fabric*|neoforge*|forge*|sources)).jar
-            build/libs/*-@(fabric-*|neoforge-*|forge*|sources).jar
+            build/libs/*-@(fabric-*|neoforge-*|forge-*|sources).jar
 
           version: ${{ github.ref_name }}
 
           loaders: |
+            forge
             neoforge
             fabric
-            forge
 
           game-versions: |
             1.20.1
@@ -65,7 +65,7 @@ jobs:
           dependencies: |
             fabric-language-kotlin
             kotlin-for-forge
-            preloading-tricks
+            preloading-tricks(embedded)
 
           java: |
             17

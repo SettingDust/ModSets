@@ -23,14 +23,10 @@ object ModSets {
     fun id(path: String) = MinecraftAdapter.id(ID, path)
 
     fun reload() {
-        for (clazz in SavingData::class.sealedSubclasses) {
-            clazz.objectInstance?.reload()
-        }
+        SavingData.reload()
     }
 
     fun save() {
-        for (clazz in SavingData::class.sealedSubclasses) {
-            clazz.objectInstance?.save()
-        }
+        SavingData.save()
     }
 }

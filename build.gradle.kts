@@ -1,6 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.ResourceTransformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import earth.terrarium.cloche.INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE
 import earth.terrarium.cloche.api.attributes.CompilationAttributes
 import earth.terrarium.cloche.api.attributes.TargetAttributes
@@ -15,8 +20,10 @@ import net.msrandom.minecraftcodev.core.utils.lowerCamelCaseGradleName
 import net.msrandom.minecraftcodev.fabric.MinecraftCodevFabricPlugin
 import net.msrandom.minecraftcodev.fabric.task.JarInJar
 import net.msrandom.minecraftcodev.forge.task.JarJar
+import org.apache.tools.zip.ZipEntry
+import org.apache.tools.zip.ZipOutputStream
 import org.gradle.jvm.tasks.Jar
-
+import java.nio.charset.StandardCharsets
 
 plugins {
     java
@@ -29,7 +36,7 @@ plugins {
 
     id("com.gradleup.shadow") version "9.2.2"
 
-    id("earth.terrarium.cloche") version "0.16.1"
+    id("earth.terrarium.cloche") version "0.16.9-dust"
 }
 
 val archive_name: String by rootProject.properties
@@ -224,7 +231,7 @@ cloche {
                 val generateModJson =
                     register<GenerateFabricModJson>(lowerCamelCaseGradleName(featureName, "generateModJson")) {
                         modId = id
-                        targetMetadata = objects.newInstance(FabricMetadata::class.java, fabric1201).apply {
+                        metadata = objects.newInstance(FabricMetadata::class.java, fabric1201).apply {
                             license.value(cloche.metadata.license)
                             dependencies.value(cloche.metadata.dependencies)
                         }
@@ -257,7 +264,7 @@ cloche {
         }
 
         targets.withType<FabricTarget> {
-            loaderVersion = "0.16.14"
+            loaderVersion = "0.17.3"
 
             includedClient()
 
@@ -286,7 +293,7 @@ cloche {
             }
 
             dependencies {
-                modImplementation("net.fabricmc:fabric-language-kotlin:1.13.1+kotlin.2.1.10")
+                modImplementation("net.fabricmc:fabric-language-kotlin:1.13.7+kotlin.2.2.21")
             }
         }
     }
@@ -310,6 +317,11 @@ cloche {
                         end = "1.21"
                     }
                 }
+
+                dependency {
+                    modId = "preloading_tricks"
+                    type = CommonMetadata.Dependency.Type.Required
+                }
             }
 
             repositories {
@@ -328,6 +340,64 @@ cloche {
                 modImplementation("thedarkcolour:kotlinforforge:4.11.0")
 
                 modImplementation(catalog.yacl.get1().get20().get1().forge)
+            }
+
+            tasks {
+                named<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
+                    manifest {
+                        attributes(
+                            "ForgeVariant" to "LexForge"
+                        )
+                    }
+                }
+            }
+        }
+
+        run container@{
+            val featureName = "containerForge"
+            val include = configurations.register(lowerCamelCaseGradleName(featureName, "include")) {
+                isCanBeResolved = true
+                isTransitive = false
+
+                attributes {
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
+                    attribute(CompilationAttributes.DATA, false)
+                }
+            }
+            val targets = setOf(forge1201)
+
+            dependencies {
+                for (target in targets) {
+                    include(project(":")) {
+                        capabilities {
+                            requireFeature(target.capabilitySuffix!!)
+                        }
+                    }
+                }
+            }
+
+            tasks {
+                val jar = register<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
+                    group = "build"
+
+                    archiveClassifier = "forge"
+                    destinationDirectory = intermediateOutputsDirectory
+                }
+
+                val includesJar = register<JarJar>(lowerCamelCaseGradleName(featureName, "includeJar")) {
+                    group = "build"
+                    dependsOn(targets.map { it.includeJarTaskName })
+
+                    archiveClassifier = "forge"
+                    input = jar.flatMap { it.archiveFile }
+                    fromResolutionResults(include)
+                }
+
+                containerTasks += includesJar
+
+                build {
+                    dependsOn(includesJar)
+                }
             }
         }
     }
@@ -362,6 +432,16 @@ cloche {
 
                 modImplementation(catalog.yacl.get1().get21().get1().neoforge)
             }
+
+            tasks {
+                named<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
+                    manifest {
+                        attributes(
+                            "ForgeVariant" to "NeoForge"
+                        )
+                    }
+                }
+            }
         }
 
         run container@{
@@ -392,11 +472,13 @@ cloche {
             tasks {
                 val jar = register<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
                     group = "build"
+
                     archiveClassifier = "neoforge"
                     destinationDirectory = intermediateOutputsDirectory
                 }
 
                 val includesJar = register<JarJar>(lowerCamelCaseGradleName(featureName, "includeJar")) {
+                    group = "build"
                     dependsOn(targets.map { it.includeJarTaskName })
 
                     archiveClassifier = "neoforge"
@@ -480,7 +562,7 @@ tasks {
 
         for (task in containerTasks) {
             from(task.map { zipTree(it.archiveFile) })
-            manifest.inheritFrom(task.get().manifest)
+            manifest.from(task.get().manifest)
         }
 
         manifest {
@@ -490,6 +572,40 @@ tasks {
         }
 
         append("META-INF/accesstransformer.cfg")
+
+        transform(object : ResourceTransformer {
+            private val gson = GsonBuilder().setPrettyPrinting().create()
+            private val collected = JsonArray()
+            private val path = "META-INF/jarjar/metadata.json"
+            private var transformed = false
+
+            override fun canTransformResource(element: FileTreeElement): Boolean {
+                return element.path == path
+            }
+
+            override fun transform(context: TransformerContext) {
+                context.inputStream.use { input ->
+                    val json = gson.fromJson(input.reader(Charsets.UTF_8), JsonObject::class.java)
+                    val jars = json.getAsJsonArray("jars")
+                    jars?.forEach { collected.add(it) }
+                    transformed = true
+                }
+            }
+
+            override fun hasTransformedResource(): Boolean = transformed
+
+            override fun modifyOutputStream(os: ZipOutputStream, preserveFileTimestamps: Boolean) {
+                if (collected.size() == 0) return
+
+                val merged = JsonObject().apply {
+                    add("jars", collected)
+                }
+
+                os.putNextEntry(ZipEntry(path))
+                os.write(gson.toJson(merged).toByteArray(StandardCharsets.UTF_8))
+                os.closeEntry()
+            }
+        })
     }
 
     val shadowSourcesJar by registering(ShadowJar::class) {

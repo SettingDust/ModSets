@@ -17,11 +17,11 @@ jobs:
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: false
 
       - uses: burrunan/gradle-cache-action@v3
         name: Execute Gradle build
         with:
-          arguments: remapFabricMinecraftIntermediary build
+          arguments: build
