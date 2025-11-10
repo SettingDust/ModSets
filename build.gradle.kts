@@ -452,7 +452,7 @@ cloche {
             }
 
             dependencies {
-                modImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
+                modImplementation("thedarkcolour:kotlinforforge-neoforge:6.0.0")
 
                 modImplementation(catalog.yacl.get1().get21().get1().neoforge)
 
