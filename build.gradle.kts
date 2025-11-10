@@ -75,6 +75,12 @@ repositories {
         }
     }
 
+    maven("https://maven.terraformersmc.com/") {
+        content {
+            includeGroup("com.terraformersmc")
+        }
+    }
+
     mavenCentral()
 
     cloche {
@@ -154,6 +160,8 @@ cloche {
 
     run fabric@{
         val fabricCommon = common("fabric:common") {
+            dependsOn(commonIngame)
+
             // mixins.from(file("src/fabric/common/main/resources/$id.fabric.mixins.json"))
         }
 
@@ -177,6 +185,8 @@ cloche {
                 fabricApi("0.92.6")
 
                 modImplementation(catalog.yacl.get1().get20().get1().fabric)
+
+                modImplementation(catalog.modmenu.get1().get20().get1())
 
                 modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
                     classifier("fabric-1.20.1")
@@ -209,6 +219,8 @@ cloche {
                 fabricApi("0.116.6")
 
                 modImplementation(catalog.yacl.get1().get21().get1().fabric)
+
+                modImplementation(catalog.modmenu.get1().get21().get1())
 
                 modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
                     classifier("fabric-1.21")
@@ -299,6 +311,11 @@ cloche {
                 entrypoint("client") {
                     adapter = "kotlin"
                     value = "$group.fabric.ModSetsFabric::clientInit"
+                }
+
+                entrypoint("modmenu") {
+                    adapter = "kotlin"
+                    value = "$group.fabric.ModSetsModMenu"
                 }
 
                 dependency {

@@ -185,6 +185,28 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
             )
         )
     )
+
+    maven(
+        id = "modmenu",
+        group = "com.terraformersmc",
+        artifact = "modmenu",
+        mcVersionToVersion = mapOf(
+            "1.20.1" to "7.2.2",
+            "1.21.1" to "11.0.3"
+        ),
+        mapping = listOf(
+            VariantMapping(
+                "1.20.1", mapOf(
+                    "fabric" to VariantConfig
+                )
+            ),
+            VariantMapping(
+                "1.21.1", mapOf(
+                    "fabric" to VariantConfig
+                )
+            )
+        )
+    )
 }
 
 plugins {

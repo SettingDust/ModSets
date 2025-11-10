@@ -54,6 +54,16 @@ class GroupDslImpl(
         addDefaultText("$groupKey.description", lines)
     }
 
+    var collapsed: Boolean = false
+        set(value) {
+            field = value
+            builder.collapsed(value)
+        }
+
+    fun collapsed(collapsed: Boolean) {
+        this.collapsed = collapsed
+    }
+
     override fun build(): OptionGroup =
         builder.build().also {
             thisGroup.complete(it)

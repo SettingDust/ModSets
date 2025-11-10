@@ -1,0 +1,7 @@
+{
+  "modsets.name": "模组集",
+  "modsets.description": "预定义的模组集，这里的条目将用于规则中，这个配置界面可以通过编辑 config/modsets/common.json 隐藏",
+  "modsets.no_rules": "无规则",
+  "modmenu.nameTranslation.mod-sets": "模组集",
+  "modmenu.descriptionTranslation.mod-sets": "使用配置切换要加载的模组"
+}
