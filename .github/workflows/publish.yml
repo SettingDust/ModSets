@@ -66,6 +66,7 @@ jobs:
             fabric-language-kotlin
             kotlin-for-forge
             preloading-tricks(embedded)
+            kinecraft
 
           java: |
             17

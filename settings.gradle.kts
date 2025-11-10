@@ -159,6 +159,8 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
 
     library("kinecraft", "maven.modrinth", "kinecraft").version("2.2.1")
 
+    library("reflect", "net.lenni0451", "Reflect").version("1.5.0")
+
     maven(
         id = "yacl",
         group = "dev.isxander",

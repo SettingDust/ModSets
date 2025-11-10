@@ -17,7 +17,6 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.GsonElementSerializer
 import settingdust.mod_sets.ModSets
-import settingdust.mod_sets.data.SavingData
 import settingdust.mod_sets.ingame.rule.RuleSet
 import settingdust.mod_sets.ingame.util.ModSetLoadCallback
 import settingdust.mod_sets.util.LoaderAdapter
@@ -49,7 +48,15 @@ data class ModSet(
  * Main configuration object for the ModSets mod
  * Handles loading mod sets and rules, and generating the configuration UI
  */
-object ModSetsIngameConfig : SavingData {
+object ModSetsIngameConfig {
+    class SavingData : settingdust.mod_sets.data.SavingData {
+        override fun reload() {
+            ModSetsIngameConfig.reload()
+        }
+
+        override fun save() {}
+    }
+
     // JSON serializer with custom serializers for components and Gson elements
     private val json = Json(ModSets.configJson) {
         serializersModule += SerializersModule {
@@ -83,7 +90,7 @@ object ModSetsIngameConfig : SavingData {
         requireNotNull(get(name)) { "Mod sets $name not exist" }
 
     // Reload all configuration data from files
-    override fun reload() {
+    fun reload() {
         ensureModSetsFileExists()
         loadModSetsFromFile()
         notifyModSetLoadListeners()
@@ -149,7 +156,7 @@ object ModSetsIngameConfig : SavingData {
     }
 
     // Save the current configuration
-    override fun save() {
+    private fun save() {
         ModSets.save()
     }
 

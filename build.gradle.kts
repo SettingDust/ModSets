@@ -181,6 +181,8 @@ cloche {
                 modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
                     classifier("fabric-1.20.1")
                 })
+
+                implementation(catalog.reflect)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -211,6 +213,8 @@ cloche {
                 modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
                     classifier("fabric-1.21")
                 })
+
+                implementation(catalog.reflect)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {

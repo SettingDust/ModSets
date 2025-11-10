@@ -12,12 +12,16 @@ import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 import kotlin.io.path.writeText
 
-object ModSetsDisabledMods : SavingData {
-    var disabledMods = mutableSetOf<String>()
-        private set
-    lateinit var disabledModsInitial: Set<String>
-        private set
-    private val configPath = LoaderAdapter.configPath / "disabled_mods.json"
+class ModSetsDisabledMods : SavingData {
+    companion object {
+        var disabledMods = mutableSetOf<String>()
+            private set
+        lateinit var disabledModsInitial: Set<String>
+            private set
+        private val configPath = LoaderAdapter.configPath / "disabled_mods.json"
+
+        private fun isDisabledModsInitialInitialized() = ::disabledModsInitial.isInitialized
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun reload() {
@@ -27,7 +31,7 @@ object ModSetsDisabledMods : SavingData {
             configPath.writeText("[]")
         }
         disabledMods = ModSets.configJson.decodeFromStream(configPath.inputStream())
-        if (!this::disabledModsInitial.isInitialized) disabledModsInitial = disabledMods
+        if (!isDisabledModsInitialInitialized()) disabledModsInitial = disabledMods
         save()
     }
 
