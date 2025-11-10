@@ -139,6 +139,10 @@ cloche {
         }
     }
 
+    val commonIngame = common("common:ingame") {
+
+    }
+
     val commons = mapOf(
         "1.20.1" to common("common:1.20.1") {
             // mixins.from("src/common/1.20.1/main/resources/$id.1_20.mixins.json")
@@ -154,6 +158,8 @@ cloche {
         }
 
         val fabric1201 = fabric("fabric:1.20.1") {
+            dependsOn(commonIngame)
+
             minecraftVersion = "1.20.1"
 
             metadata {
@@ -171,6 +177,10 @@ cloche {
                 fabricApi("0.92.6")
 
                 modImplementation(catalog.yacl.get1().get20().get1().fabric)
+
+                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
+                    classifier("fabric-1.20.1")
+                })
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -179,6 +189,8 @@ cloche {
         }
 
         val fabric121 = fabric("fabric:1.21") {
+            dependsOn(commonIngame)
+
             minecraftVersion = "1.21.1"
 
             metadata {
@@ -195,6 +207,10 @@ cloche {
                 fabricApi("0.116.6")
 
                 modImplementation(catalog.yacl.get1().get21().get1().fabric)
+
+                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
+                    classifier("fabric-1.21")
+                })
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -300,6 +316,8 @@ cloche {
 
     run forge@{
         val forge1201 = forge("forge:1.20.1") {
+            dependsOn(commonIngame)
+
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
 
@@ -340,6 +358,10 @@ cloche {
                 modImplementation("thedarkcolour:kotlinforforge:4.11.0")
 
                 modImplementation(catalog.yacl.get1().get20().get1().forge)
+
+                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
+                    classifier("forge-1.20.1")
+                })
             }
 
             tasks {
@@ -404,6 +426,8 @@ cloche {
 
     run neoforge@{
         val neoforge121 = neoforge("neoforge:1.21") {
+            dependsOn(commonIngame)
+
             minecraftVersion = "1.21.1"
             loaderVersion = "21.1.192"
 
@@ -431,6 +455,10 @@ cloche {
                 modImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
 
                 modImplementation(catalog.yacl.get1().get21().get1().neoforge)
+
+                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
+                    classifier("neoforge-1.21")
+                })
             }
 
             tasks {

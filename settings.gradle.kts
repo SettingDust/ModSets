@@ -157,6 +157,8 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
 
     library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("2.4.1")
 
+    library("kinecraft", "maven.modrinth", "kinecraft").version("2.2.1")
+
     maven(
         id = "yacl",
         group = "dev.isxander",
