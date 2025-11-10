@@ -1,11 +1,10 @@
 package settingdust.mod_sets.data
 
-sealed interface SavingData {
+import settingdust.mod_sets.util.ServiceLoaderUtil
+
+interface SavingData {
     companion object : SavingData {
-        private val instances =
-            SavingData::class.sealedSubclasses
-                .mapNotNull { klass -> klass.objectInstance?.takeIf { it != Companion } }
-                .filter { it !== Companion }
+        private val instances by lazy { ServiceLoaderUtil.findServices<SavingData>() }
 
         override fun reload() {
             for (data in instances) {
