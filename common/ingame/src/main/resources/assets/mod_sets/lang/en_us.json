@@ -1,7 +1,0 @@
-{
-  "modsets.name": "Mod Sets",
-  "modsets.description": "Defined mod sets, entries defined here is consuming by rules. Can be hidden with option in `config/modsets/common.json`",
-  "modsets.no_rules": "No rule",
-  "modmenu.nameTranslation.mod-sets": "Mod Sets",
-  "modmenu.descriptionTranslation.mod-sets": "Switching mod loading by config"
-}

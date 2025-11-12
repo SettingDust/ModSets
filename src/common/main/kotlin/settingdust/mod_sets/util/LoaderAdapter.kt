@@ -10,4 +10,6 @@ interface LoaderAdapter {
     fun isModLoaded(modId: String): Boolean
 
     val configPath: Path
+
+    val modsDir: Path
 }

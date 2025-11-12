@@ -145,9 +145,7 @@ cloche {
         }
     }
 
-    val commonIngame = common("common:ingame") {
-
-    }
+    val commonIngame = common("common:ingame")
 
     val commons = mapOf(
         "1.20.1" to common("common:1.20.1") {
@@ -565,7 +563,7 @@ cloche {
         }
 
         dependencies {
-            implementation(catalog.preloadingTricks)
+            implementation(extractIncludes(catalog.preloadingTricks))
         }
     }
 }

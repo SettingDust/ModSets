@@ -16,11 +16,11 @@ class ModSetsDisabledMods : SavingData {
     companion object {
         var disabledMods = mutableSetOf<String>()
             private set
-        lateinit var disabledModsInitial: Set<String>
+        lateinit var definedModSets: Set<String>
             private set
         private val configPath = LoaderAdapter.configPath / "disabled_mods.json"
 
-        private fun isDisabledModsInitialInitialized() = ::disabledModsInitial.isInitialized
+        private fun isDefinedModSetsInitialized() = ::definedModSets.isInitialized
     }
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -31,7 +31,7 @@ class ModSetsDisabledMods : SavingData {
             configPath.writeText("[]")
         }
         disabledMods = ModSets.configJson.decodeFromStream(configPath.inputStream())
-        if (!isDisabledModsInitialInitialized()) disabledModsInitial = disabledMods
+        if (!isDefinedModSetsInitialized()) definedModSets = disabledMods
         save()
     }
 
