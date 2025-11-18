@@ -12,10 +12,7 @@ class ComponentSerializer : ComponentSerializer {
         Component.Serializer.toJson(Component.empty())
     }
 
-    override fun serialize(
-        encoder: Encoder,
-        value: Component
-    ) {
+    override fun serialize(encoder: Encoder, value: Component) {
         encoder.encodeSerializableValue(
             encoder.serializersModule.serializer<JsonElement>(),
             Component.Serializer.toJsonTree(value),

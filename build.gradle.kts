@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage", "INVISIBLE_REFERENCE")
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ResourceTransformer
@@ -7,19 +7,23 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import earth.terrarium.cloche.INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE
+import earth.terrarium.cloche.REMAPPED_ATTRIBUTE
 import earth.terrarium.cloche.api.attributes.CompilationAttributes
+import earth.terrarium.cloche.api.attributes.IncludeTransformationStateAttribute
 import earth.terrarium.cloche.api.attributes.TargetAttributes
 import earth.terrarium.cloche.api.metadata.CommonMetadata
 import earth.terrarium.cloche.api.metadata.FabricMetadata
 import earth.terrarium.cloche.api.target.FabricTarget
 import earth.terrarium.cloche.api.target.ForgeLikeTarget
 import earth.terrarium.cloche.api.target.MinecraftTarget
+import earth.terrarium.cloche.target.LazyConfigurableInternal
 import earth.terrarium.cloche.tasks.GenerateFabricModJson
 import groovy.lang.Closure
 import net.msrandom.minecraftcodev.core.utils.lowerCamelCaseGradleName
 import net.msrandom.minecraftcodev.fabric.MinecraftCodevFabricPlugin
 import net.msrandom.minecraftcodev.fabric.task.JarInJar
 import net.msrandom.minecraftcodev.forge.task.JarJar
+import net.msrandom.minecraftcodev.runs.MinecraftRunConfiguration
 import org.apache.tools.zip.ZipEntry
 import org.apache.tools.zip.ZipOutputStream
 import org.gradle.jvm.tasks.Jar
@@ -145,26 +149,36 @@ cloche {
         }
     }
 
-    val commonIngame = common("common:ingame")
+    val commonMain = common("common:common")
 
-    val commons = mapOf(
-        "1.20.1" to common("common:1.20.1") {
-            // mixins.from("src/common/1.20.1/main/resources/$id.1_20.mixins.json")
-        },
-        "1.21.1" to common("common:1.21.1") {
-            // mixins.from("src/common/1.21.1/main/resources/$id.1_21.mixins.json")
-        },
-    )
+    val commonIngame = common("common:ingame") {
+        dependencies {
+            implementation(project(":")) {
+                capabilities {
+                    requireFeature(commonMain.capabilitySuffix!!)
+                }
+            }
+        }
+    }
+
+    val common1201 = common("common:1.20.1") {
+        dependsOn(commonMain)
+        // mixins.from("src/common/1.20.1/main/resources/$id.1_20.mixins.json")
+    }
+    val common121 = common("common:1.21.1") {
+        dependsOn(commonMain)
+        // mixins.from("src/common/1.21.1/main/resources/$id.1_21.mixins.json")
+    }
 
     run fabric@{
         val fabricCommon = common("fabric:common") {
-            dependsOn(commonIngame)
+            dependsOn(commonIngame, commonMain)
 
             // mixins.from(file("src/fabric/common/main/resources/$id.fabric.mixins.json"))
         }
 
         val fabric1201 = fabric("fabric:1.20.1") {
-            dependsOn(commonIngame)
+            dependsOn(commonIngame, commonMain, common1201)
 
             minecraftVersion = "1.20.1"
 
@@ -199,7 +213,7 @@ cloche {
         }
 
         val fabric121 = fabric("fabric:1.21") {
-            dependsOn(commonIngame)
+            dependsOn(commonIngame, commonMain, common121)
 
             minecraftVersion = "1.21.1"
 
@@ -241,8 +255,10 @@ cloche {
                 isTransitive = false
 
                 attributes {
+                    attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+                    attribute(REMAPPED_ATTRIBUTE, true)
                     attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
-                    attribute(CompilationAttributes.DATA, false)
+                    attribute(IncludeTransformationStateAttribute.ATTRIBUTE, IncludeTransformationStateAttribute.None)
                 }
             }
             val targets = setOf(fabric1201, fabric121)
@@ -334,7 +350,30 @@ cloche {
     }
 
     run forge@{
-        val forge1201 = forge("forge:1.20.1") {
+        val forgeService = forge("forge:service") {
+            dependsOn(commonMain, common1201)
+
+            minecraftVersion = "1.20.1"
+            loaderVersion = "47.4.4"
+
+            repositories {
+                maven("https://repo.spongepowered.org/maven") {
+                    content {
+                        includeGroup("org.spongepowered")
+                    }
+                }
+            }
+
+            dependencies {
+                implementation("org.spongepowered:mixin:0.8.7")
+                compileOnly(catalog.mixinextras.common)
+                implementation(catalog.mixinextras.forge)
+
+                modImplementation("thedarkcolour:kotlinforforge:4.11.0")
+            }
+        }
+
+        val forgeIngame = forge("forge:ingame") {
             dependsOn(commonIngame)
 
             minecraftVersion = "1.20.1"
@@ -381,6 +420,12 @@ cloche {
                 modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
                     classifier("forge-1.20.1")
                 })
+
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(forgeService.capabilitySuffix!!)
+                    }
+                }
             }
 
             tasks {
@@ -390,6 +435,44 @@ cloche {
                             "ForgeVariant" to "LexForge"
                         )
                     }
+                }
+            }
+        }
+
+        forge("version:forge:1.20.1") {
+            minecraftVersion = "1.20.1"
+            loaderVersion = "47.4.4"
+
+            runs {
+                client {
+                    env("MOD_CLASSES", "")
+                }
+            }
+
+            dependencies {
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(forgeService.capabilitySuffix!!)
+                    }
+                }
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(forgeIngame.capabilitySuffix!!)
+                    }
+                }
+            }
+
+            tasks {
+                named(jarTaskName) {
+                    enabled = false
+                }
+
+                named(remapJarTaskName) {
+                    enabled = false
+                }
+
+                named(includeJarTaskName) {
+                    enabled = false
                 }
             }
         }
@@ -405,7 +488,18 @@ cloche {
                     attribute(CompilationAttributes.DATA, false)
                 }
             }
-            val targets = setOf(forge1201)
+            val embed = configurations.register(lowerCamelCaseGradleName(featureName, "embed")) {
+                isCanBeResolved = true
+                isTransitive = false
+
+                attributes {
+                    attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+                    attribute(REMAPPED_ATTRIBUTE, false)
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
+                    attribute(IncludeTransformationStateAttribute.ATTRIBUTE, IncludeTransformationStateAttribute.None)
+                }
+            }
+            val targets = setOf(forgeIngame)
 
             dependencies {
                 for (target in targets) {
@@ -417,12 +511,22 @@ cloche {
                 }
             }
 
+            project.dependencies {
+                embed(project(":")) {
+                    capabilities {
+                        requireFeature(forgeService.capabilitySuffix!!)
+                    }
+                }
+            }
+
             tasks {
                 val jar = register<Jar>(lowerCamelCaseGradleName(featureName, "jar")) {
                     group = "build"
 
                     archiveClassifier = "forge"
                     destinationDirectory = intermediateOutputsDirectory
+
+                    from(embed)
                 }
 
                 val includesJar = register<JarJar>(lowerCamelCaseGradleName(featureName, "includeJar")) {
@@ -445,7 +549,7 @@ cloche {
 
     run neoforge@{
         val neoforge121 = neoforge("neoforge:1.21") {
-            dependsOn(commonIngame)
+            dependsOn(commonMain, commonIngame, common121)
 
             minecraftVersion = "1.21.1"
             loaderVersion = "21.1.192"
@@ -543,11 +647,13 @@ cloche {
     }
 
     targets.all {
-        dependsOn(commons.getValue(minecraftVersion.get()))
-
         runs {
-            client {
-                jvmArguments("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
+            (client as LazyConfigurableInternal<MinecraftRunConfiguration>).onConfigured {
+                it.jvmArguments(
+                    "-Dmixin.debug.verbose=true",
+                    "-Dmixin.debug.export=true",
+                    "-Dclasstransform.dumpClasses=true"
+                )
             }
         }
 
@@ -590,6 +696,12 @@ val MinecraftTarget.generateModsManifestTaskName: String
         is ForgeLikeTarget -> generateModsTomlTaskName
         else -> throw IllegalArgumentException("Unsupported target $this")
     }
+
+val MinecraftTarget.jarTaskName: String
+    get() = lowerCamelCaseGradleName(featureName, "jar")
+
+val MinecraftTarget.remapJarTaskName: String
+    get() = lowerCamelCaseGradleName(featureName, "remapJar")
 
 tasks {
     withType<ProcessResources> {
