@@ -10,12 +10,14 @@ import earth.terrarium.cloche.INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE
 import earth.terrarium.cloche.REMAPPED_ATTRIBUTE
 import earth.terrarium.cloche.api.attributes.CompilationAttributes
 import earth.terrarium.cloche.api.attributes.IncludeTransformationStateAttribute
+import earth.terrarium.cloche.api.attributes.MinecraftModLoader
 import earth.terrarium.cloche.api.attributes.TargetAttributes
 import earth.terrarium.cloche.api.metadata.CommonMetadata
 import earth.terrarium.cloche.api.metadata.FabricMetadata
 import earth.terrarium.cloche.api.target.FabricTarget
 import earth.terrarium.cloche.api.target.ForgeLikeTarget
 import earth.terrarium.cloche.api.target.MinecraftTarget
+import earth.terrarium.cloche.commonBucketConfigurationName
 import earth.terrarium.cloche.target.LazyConfigurableInternal
 import earth.terrarium.cloche.tasks.GenerateFabricModJson
 import groovy.lang.Closure
@@ -40,7 +42,7 @@ plugins {
 
     id("com.gradleup.shadow") version "9.2.2"
 
-    id("earth.terrarium.cloche") version "0.16.9-dust"
+    id("earth.terrarium.cloche") version "0.16.12-dust"
 }
 
 val archive_name: String by rootProject.properties
@@ -106,10 +108,21 @@ class MinecraftVersionCompatibilityRule : AttributeCompatibilityRule<String> {
     }
 }
 
+class LoaderCompatibilityRule : AttributeCompatibilityRule<MinecraftModLoader> {
+    override fun execute(details: CompatibilityCheckDetails<MinecraftModLoader>) {
+        if (details.producerValue == MinecraftModLoader.common) {
+            details.compatible()
+        }
+    }
+}
+
 dependencies {
     attributesSchema {
         attribute(TargetAttributes.MINECRAFT_VERSION) {
             compatibilityRules.add(MinecraftVersionCompatibilityRule::class)
+        }
+        attribute(TargetAttributes.MOD_LOADER) {
+            compatibilityRules.add(LoaderCompatibilityRule::class)
         }
     }
 }
@@ -149,13 +162,21 @@ cloche {
         }
     }
 
-    val commonMain = common("common:common")
+    val commonMain = common("common:common") {
+        configurations.named("commonCommonRuntimeElements") {
+            attributes {
+                attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+            }
+        }
+    }
 
-    val commonIngame = common("common:ingame") {
-        dependencies {
+    val commonGame = common("common:game") {
+        project.dependencies {
+            val implementation =
+                sourceSet.commonBucketConfigurationName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
             implementation(project(":")) {
                 capabilities {
-                    requireFeature(commonMain.capabilitySuffix!!)
+                    requireFeature(commonMain.capabilitySuffix)
                 }
             }
         }
@@ -172,13 +193,13 @@ cloche {
 
     run fabric@{
         val fabricCommon = common("fabric:common") {
-            dependsOn(commonIngame, commonMain)
+            dependsOn(commonGame, commonMain)
 
             // mixins.from(file("src/fabric/common/main/resources/$id.fabric.mixins.json"))
         }
 
         val fabric1201 = fabric("fabric:1.20.1") {
-            dependsOn(commonIngame, commonMain, common1201)
+            dependsOn(commonGame, commonMain, common1201)
 
             minecraftVersion = "1.20.1"
 
@@ -213,7 +234,7 @@ cloche {
         }
 
         val fabric121 = fabric("fabric:1.21") {
-            dependsOn(commonIngame, commonMain, common121)
+            dependsOn(commonGame, commonMain, common121)
 
             minecraftVersion = "1.21.1"
 
@@ -373,8 +394,8 @@ cloche {
             }
         }
 
-        val forgeIngame = forge("forge:ingame") {
-            dependsOn(commonIngame)
+        val forgeGame = forge("forge:game") {
+            dependsOn(commonGame)
 
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
@@ -426,6 +447,12 @@ cloche {
                         requireFeature(forgeService.capabilitySuffix!!)
                     }
                 }
+
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(commonMain.capabilitySuffix)
+                    }
+                }
             }
 
             tasks {
@@ -457,7 +484,7 @@ cloche {
                 }
                 implementation(project(":")) {
                     capabilities {
-                        requireFeature(forgeIngame.capabilitySuffix!!)
+                        requireFeature(forgeGame.capabilitySuffix!!)
                     }
                 }
             }
@@ -499,7 +526,7 @@ cloche {
                     attribute(IncludeTransformationStateAttribute.ATTRIBUTE, IncludeTransformationStateAttribute.None)
                 }
             }
-            val targets = setOf(forgeIngame)
+            val targets = setOf(forgeGame)
 
             dependencies {
                 for (target in targets) {
@@ -549,7 +576,7 @@ cloche {
 
     run neoforge@{
         val neoforge121 = neoforge("neoforge:1.21") {
-            dependsOn(commonMain, commonIngame, common121)
+            dependsOn(commonMain, commonGame, common121)
 
             minecraftVersion = "1.21.1"
             loaderVersion = "21.1.192"
@@ -811,6 +838,18 @@ tasks {
                     MinecraftCodevFabricPlugin.INTERMEDIARY_MAPPINGS_NAMESPACE,
                 ), lowerCamelCaseGradleName("generate", target.featureName, "MappingsArtifact")
             )
+        }
+    }
+}
+
+gradle.taskGraph.whenReady {
+    allTasks.forEach { task ->
+        val deps = task.taskDependencies.getDependencies(task)
+        if (deps.isNotEmpty()) {
+            println("Task ${task.path} depends on:")
+            deps.forEach { dep ->
+                println("    - ${dep.path}")
+            }
         }
     }
 }

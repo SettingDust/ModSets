@@ -6,6 +6,7 @@ dependencyResolutionManagement {
             maven("https://maven.msrandom.net/repository/cloche")
             maven("https://raw.githubusercontent.com/SettingDust/cloche/refs/heads/maven-repo/")
             maven("https://raw.githubusercontent.com/SettingDust/minecraft-codev/refs/heads/maven-repo/")
+            maven("https://raw.githubusercontent.com/SettingDust/jvm-multiplatform/refs/heads/maven-repo/")
             mavenLocal()
         }
     }
