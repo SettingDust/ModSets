@@ -156,7 +156,7 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
         )
     )
 
-    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("2.5.3")
+    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("2.5.10")
 
     library("kinecraft", "maven.modrinth", "kinecraft").version("2.2.1")
 

@@ -1,4 +1,5 @@
 @file:Suppress("UnstableApiUsage", "INVISIBLE_REFERENCE")
+@file:OptIn(InternalKotlinGradlePluginApi::class)
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ResourceTransformer
@@ -8,8 +9,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import earth.terrarium.cloche.INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE
 import earth.terrarium.cloche.REMAPPED_ATTRIBUTE
-import earth.terrarium.cloche.api.attributes.CompilationAttributes
-import earth.terrarium.cloche.api.attributes.IncludeTransformationStateAttribute
 import earth.terrarium.cloche.api.attributes.MinecraftModLoader
 import earth.terrarium.cloche.api.attributes.TargetAttributes
 import earth.terrarium.cloche.api.metadata.CommonMetadata
@@ -17,18 +16,18 @@ import earth.terrarium.cloche.api.metadata.FabricMetadata
 import earth.terrarium.cloche.api.target.FabricTarget
 import earth.terrarium.cloche.api.target.ForgeLikeTarget
 import earth.terrarium.cloche.api.target.MinecraftTarget
-import earth.terrarium.cloche.commonBucketConfigurationName
 import earth.terrarium.cloche.target.LazyConfigurableInternal
 import earth.terrarium.cloche.tasks.GenerateFabricModJson
 import groovy.lang.Closure
 import net.msrandom.minecraftcodev.core.utils.lowerCamelCaseGradleName
-import net.msrandom.minecraftcodev.fabric.MinecraftCodevFabricPlugin
 import net.msrandom.minecraftcodev.fabric.task.JarInJar
 import net.msrandom.minecraftcodev.forge.task.JarJar
 import net.msrandom.minecraftcodev.runs.MinecraftRunConfiguration
+import net.msrandom.virtualsourcesets.SourceSetStaticLinkageInfo
 import org.apache.tools.zip.ZipEntry
 import org.apache.tools.zip.ZipOutputStream
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.InternalKotlinGradlePluginApi
 import java.nio.charset.StandardCharsets
 
 plugins {
@@ -42,7 +41,7 @@ plugins {
 
     id("com.gradleup.shadow") version "9.2.2"
 
-    id("earth.terrarium.cloche") version "0.16.12-dust"
+    id("earth.terrarium.cloche") version "0.16.21-dust"
 }
 
 val archive_name: String by rootProject.properties
@@ -108,7 +107,7 @@ class MinecraftVersionCompatibilityRule : AttributeCompatibilityRule<String> {
     }
 }
 
-class LoaderCompatibilityRule : AttributeCompatibilityRule<MinecraftModLoader> {
+class MinecraftModLoaderCompatibilityRule : AttributeCompatibilityRule<MinecraftModLoader> {
     override fun execute(details: CompatibilityCheckDetails<MinecraftModLoader>) {
         if (details.producerValue == MinecraftModLoader.common) {
             details.compatible()
@@ -122,7 +121,13 @@ dependencies {
             compatibilityRules.add(MinecraftVersionCompatibilityRule::class)
         }
         attribute(TargetAttributes.MOD_LOADER) {
-            compatibilityRules.add(LoaderCompatibilityRule::class)
+            compatibilityRules.add(MinecraftModLoaderCompatibilityRule::class)
+        }
+        attribute(TargetAttributes.CLOCHE_MINECRAFT_VERSION) {
+            compatibilityRules.add(MinecraftVersionCompatibilityRule::class)
+        }
+        attribute(TargetAttributes.CLOCHE_MOD_LOADER) {
+            compatibilityRules.add(MinecraftModLoaderCompatibilityRule::class)
         }
     }
 }
@@ -170,10 +175,19 @@ cloche {
         }
     }
 
+    val common1201 = common("common:1.20.1") {
+        dependsOn(commonMain)
+        // mixins.from("src/common/1.20.1/main/resources/$id.1_20.mixins.json")
+    }
+    val common121 = common("common:1.21.1") {
+        dependsOn(commonMain)
+        // mixins.from("src/common/1.21.1/main/resources/$id.1_21.mixins.json")
+    }
+
     val commonGame = common("common:game") {
         project.dependencies {
-            val implementation =
-                sourceSet.commonBucketConfigurationName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
+            val implementation = lowerCamelCaseGradleName(name, JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
+
             implementation(project(":")) {
                 capabilities {
                     requireFeature(commonMain.capabilitySuffix)
@@ -182,12 +196,12 @@ cloche {
         }
     }
 
-    val common1201 = common("common:1.20.1") {
-        dependsOn(commonMain)
+    val commonGame1201 = common("common:game:1.20.1") {
+        dependsOn(commonGame)
         // mixins.from("src/common/1.20.1/main/resources/$id.1_20.mixins.json")
     }
-    val common121 = common("common:1.21.1") {
-        dependsOn(commonMain)
+    val commonGame121 = common("common:game:1.21.1") {
+        dependsOn(commonGame)
         // mixins.from("src/common/1.21.1/main/resources/$id.1_21.mixins.json")
     }
 
@@ -199,9 +213,13 @@ cloche {
         }
 
         val fabric1201 = fabric("fabric:1.20.1") {
-            dependsOn(commonGame, commonMain, common1201)
+            dependsOn(commonMain, common1201, commonGame, commonGame1201)
+
+            sourceSet.the<SourceSetStaticLinkageInfo>().weakTreeLink(commonGame.sourceSet, commonMain.sourceSet)
 
             minecraftVersion = "1.20.1"
+
+            runs { client() }
 
             metadata {
                 dependency {
@@ -234,9 +252,13 @@ cloche {
         }
 
         val fabric121 = fabric("fabric:1.21") {
-            dependsOn(commonGame, commonMain, common121)
+            dependsOn(commonMain, common121, commonGame, commonGame121)
+
+            sourceSet.the<SourceSetStaticLinkageInfo>().weakTreeLink(commonGame.sourceSet, commonMain.sourceSet)
 
             minecraftVersion = "1.21.1"
+
+            runs { client() }
 
             metadata {
                 dependency {
@@ -276,10 +298,9 @@ cloche {
                 isTransitive = false
 
                 attributes {
-                    attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
-                    attribute(REMAPPED_ATTRIBUTE, true)
-                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
-                    attribute(IncludeTransformationStateAttribute.ATTRIBUTE, IncludeTransformationStateAttribute.None)
+                    attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+                    attribute(REMAPPED_ATTRIBUTE, false)
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
             val targets = setOf(fabric1201, fabric121)
@@ -395,7 +416,7 @@ cloche {
         }
 
         val forgeGame = forge("forge:game") {
-            dependsOn(commonGame)
+            dependsOn(commonGame, commonGame1201)
 
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
@@ -511,8 +532,9 @@ cloche {
                 isTransitive = false
 
                 attributes {
-                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
-                    attribute(CompilationAttributes.DATA, false)
+                    attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+                    attribute(REMAPPED_ATTRIBUTE, false)
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
             val embed = configurations.register(lowerCamelCaseGradleName(featureName, "embed")) {
@@ -520,10 +542,11 @@ cloche {
                 isTransitive = false
 
                 attributes {
-                    attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
-                    attribute(REMAPPED_ATTRIBUTE, false)
-                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
-                    attribute(IncludeTransformationStateAttribute.ATTRIBUTE, IncludeTransformationStateAttribute.None)
+                    attribute(
+                        LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                        objects.named(LibraryElements.CLASSES_AND_RESOURCES)
+                    )
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
             val targets = setOf(forgeGame)
@@ -576,7 +599,10 @@ cloche {
 
     run neoforge@{
         val neoforge121 = neoforge("neoforge:1.21") {
-            dependsOn(commonMain, commonGame, common121)
+            dependsOn(commonMain, common121, commonGame, commonGame121)
+
+            // TODO Split into service
+            sourceSet.the<SourceSetStaticLinkageInfo>().weakTreeLink(commonGame.sourceSet, commonMain.sourceSet)
 
             minecraftVersion = "1.21.1"
             loaderVersion = "21.1.192"
@@ -629,8 +655,9 @@ cloche {
                 isTransitive = false
 
                 attributes {
-                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, true)
-                    attribute(CompilationAttributes.DATA, false)
+                    attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+                    attribute(REMAPPED_ATTRIBUTE, false)
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
             val targets = setOf(neoforge121)
