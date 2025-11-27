@@ -8,9 +8,9 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory
 import settingdust.mod_sets.ModSets
 import settingdust.mod_sets.data.ModSetsDisabledMods
-import settingdust.mod_sets.ingame.ModSet
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.util.ModSetLoadCallback
+import settingdust.mod_sets.game.ModSet
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.util.ModSetLoadCallback
 import settingdust.mod_sets.util.Entrypoint
 import thedarkcolour.kotlinforforge.neoforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS

@@ -6,9 +6,9 @@ import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
 import settingdust.mod_sets.ModSets
 import settingdust.mod_sets.data.ModSetsDisabledMods
-import settingdust.mod_sets.ingame.ModSet
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.util.ModSetLoadCallback
+import settingdust.mod_sets.game.ModSet
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.util.ModSetLoadCallback
 import settingdust.mod_sets.util.Entrypoint
 
 object ModSetsFabric {

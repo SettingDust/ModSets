@@ -9,9 +9,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.loading.moddiscovery.ModsFolderLocator
 import settingdust.mod_sets.ModSets
 import settingdust.mod_sets.data.ModSetsDisabledMods
-import settingdust.mod_sets.ingame.ModSet
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.util.ModSetLoadCallback
+import settingdust.mod_sets.game.ModSet
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.util.ModSetLoadCallback
 import settingdust.mod_sets.util.Entrypoint
 import settingdust.preloading_tricks.lexforge.mod_candidate.DefinedModLocator
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT

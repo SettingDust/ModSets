@@ -1,12 +1,12 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.Binding
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
 import settingdust.mod_sets.data.ModSetsDisabledMods
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.ModSetsIngameConfig.getOrThrow
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.ModSetsIngameConfig.getOrThrow
 
 /**
  * A set of rules that can be grouped together in the configuration UI

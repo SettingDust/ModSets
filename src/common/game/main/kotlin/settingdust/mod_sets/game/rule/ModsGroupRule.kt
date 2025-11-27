@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionDescription
@@ -13,8 +13,8 @@ import dev.isxander.yacl3.gui.controllers.LabelController
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.ModSetsIngameConfig.getOrThrow
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.ModSetsIngameConfig.getOrThrow
 
 private const val DUMMY_ID = "_DUMMY_"
 

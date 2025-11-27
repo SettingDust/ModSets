@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionDescription
@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.HoverEvent
 import settingdust.mod_sets.ModSets
 import settingdust.mod_sets.data.ModSetsDisabledMods
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
-import settingdust.mod_sets.ingame.ModSetsIngameConfig.getOrThrow
+import settingdust.mod_sets.game.ModSetsIngameConfig
+import settingdust.mod_sets.game.ModSetsIngameConfig.getOrThrow
 
 /**
  * A cycling rule that allows selecting one option from a list of mod sets

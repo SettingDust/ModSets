@@ -1,11 +1,11 @@
 package settingdust.mod_sets.util
 
+import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import settingdust.mod_sets.ModSets
 import java.util.*
 
 object ServiceLoaderUtil {
-    val defaultLogger: Logger = ModSets.LOGGER
+    val defaultLogger = LogManager.getLogger("ModSets")
 
     inline fun <reified T> load() = ServiceLoader.load(T::class.java)!!
 

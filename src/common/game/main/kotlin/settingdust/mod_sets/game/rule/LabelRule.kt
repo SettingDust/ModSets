@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionDescription

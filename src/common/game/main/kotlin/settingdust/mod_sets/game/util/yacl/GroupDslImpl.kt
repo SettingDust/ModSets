@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.util
+package settingdust.mod_sets.game.util.yacl
 
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.OptionDescription
@@ -10,13 +10,24 @@ import dev.isxander.yacl3.dsl.OptionRegistrarImpl
 import dev.isxander.yacl3.dsl.addDefaultText
 import net.minecraft.network.chat.Component
 import settingdust.mod_sets.ModSets
+import settingdust.mod_sets.util.ServiceLoaderUtil
 import java.util.concurrent.CompletableFuture
 
-class GroupDslImpl(
+abstract class GroupDslImpl(
     override val groupId: String,
-    private val parent: CategoryDsl,
-    private val builder: OptionGroup.Builder = OptionGroup.createBuilder()
+    protected val parent: CategoryDsl,
+    protected val builder: OptionGroup.Builder = OptionGroup.createBuilder()
 ) : GroupDsl {
+    companion object : Factory by ServiceLoaderUtil.findService<Factory>()
+
+    interface Factory {
+        fun create(
+            groupId: String,
+            parent: CategoryDsl,
+            builder: OptionGroup.Builder = OptionGroup.createBuilder()
+        ): GroupDslImpl
+    }
+
     override val groupKey = "${parent.categoryKey}.group.$groupId"
 
     override val thisGroup = CompletableFuture<OptionGroup>()
@@ -54,15 +65,7 @@ class GroupDslImpl(
         addDefaultText("$groupKey.description", lines)
     }
 
-    var collapsed: Boolean = false
-        set(value) {
-            field = value
-            builder.collapsed(value)
-        }
-
-    fun collapsed(collapsed: Boolean) {
-        this.collapsed = collapsed
-    }
+    abstract fun `mod_sets$collapsed`(collapsed: Boolean)
 
     override fun build(): OptionGroup =
         builder.build().also {

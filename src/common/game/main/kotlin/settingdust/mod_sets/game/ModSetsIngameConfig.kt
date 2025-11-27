@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame
+package settingdust.mod_sets.game
 
 import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.dsl.RootDsl
@@ -17,8 +17,8 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import settingdust.kinecraft.serialization.GsonElementSerializer
 import settingdust.mod_sets.ModSets
-import settingdust.mod_sets.ingame.rule.RuleSet
-import settingdust.mod_sets.ingame.util.ModSetLoadCallback
+import settingdust.mod_sets.game.rule.RuleSet
+import settingdust.mod_sets.game.util.ModSetLoadCallback
 import settingdust.mod_sets.util.LoaderAdapter
 import settingdust.mod_sets.util.serialization.ComponentSerializer
 import kotlin.io.path.createDirectories

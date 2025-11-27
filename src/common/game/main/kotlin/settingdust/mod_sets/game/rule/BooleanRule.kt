@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.StateManager
@@ -6,7 +6,7 @@ import dev.isxander.yacl3.dsl.OptionRegistrar
 import dev.isxander.yacl3.dsl.tickBox
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import settingdust.mod_sets.ingame.ModSetsIngameConfig
+import settingdust.mod_sets.game.ModSetsIngameConfig
 
 /**
  * A boolean rule that provides a simple on/off toggle for a mod set

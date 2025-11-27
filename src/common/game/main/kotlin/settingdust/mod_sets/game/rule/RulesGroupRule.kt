@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.rule
+package settingdust.mod_sets.game.rule
 
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.api.OptionDescription
@@ -12,7 +12,7 @@ import dev.isxander.yacl3.gui.controllers.LabelController
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.network.chat.Component
-import settingdust.mod_sets.ingame.util.GroupDslImpl
+import settingdust.mod_sets.game.util.yacl.GroupDslImpl
 
 private const val DUMMY_ID = "_DUMMY_"
 
@@ -54,11 +54,9 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
      */
     override fun registerCategory(rule: Rule, category: CategoryDsl) {
         category.groups.register(
-            OptionGroup.createBuilder()
+            createGroup(rule, category)
                 .apply {
-                    collapsed(collapsed)
-                    val group = createGroup(rule, category, this)
-                    registerSubRules(group)
+                    registerSubRules(this)
                 }
                 .build())
     }
@@ -74,9 +72,10 @@ data class RulesGroupRule(val rules: List<Rule>, val collapsed: Boolean = true) 
     private fun createGroup(
         rule: Rule,
         category: CategoryDsl,
-        builder: OptionGroup.Builder
+        builder: OptionGroup.Builder = OptionGroup.createBuilder()
     ): GroupDsl {
-        return GroupDslImpl(DUMMY_ID, category, builder).apply {
+        return GroupDslImpl.create(DUMMY_ID, category, builder).apply {
+            `mod_sets$collapsed`(collapsed)
             name(rule.text)
             rule.description?.let { description(OptionDescription.of(it)) }
         }

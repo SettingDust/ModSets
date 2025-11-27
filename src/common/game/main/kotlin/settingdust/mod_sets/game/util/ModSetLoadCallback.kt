@@ -1,4 +1,4 @@
-package settingdust.mod_sets.ingame.util
+package settingdust.mod_sets.game.util
 
 import settingdust.kinecraft.event.Event
 
