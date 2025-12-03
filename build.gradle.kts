@@ -1,5 +1,4 @@
 @file:Suppress("UnstableApiUsage", "INVISIBLE_REFERENCE")
-@file:OptIn(InternalKotlinGradlePluginApi::class)
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ResourceTransformer
@@ -28,7 +27,6 @@ import net.msrandom.virtualsourcesets.SourceSetStaticLinkageInfo
 import org.apache.tools.zip.ZipEntry
 import org.apache.tools.zip.ZipOutputStream
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.InternalKotlinGradlePluginApi
 import java.nio.charset.StandardCharsets
 
 plugins {
@@ -362,10 +360,6 @@ cloche {
                     type = CommonMetadata.Dependency.Type.Required
                 }
             }
-
-            dependencies {
-                modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.13.7+kotlin.2.2.21")
-            }
         }
     }
 
@@ -393,14 +387,6 @@ cloche {
             tasks {
                 named(generateModsTomlTaskName) {
                     enabled = false
-                }
-
-                named<Jar>(jarTaskName) {
-//                    manifest {
-//                        attributes(
-//                            "FMLModType" to "LIBRARY"
-//                        )
-//                    }
                 }
             }
         }
@@ -470,14 +456,6 @@ cloche {
             }
         }
 
-        forgeService.dependencies {
-            include(project(":")) {
-                capabilities {
-                    requireFeature(forgeGame.capabilitySuffix!!)
-                }
-            }
-        }
-
         forge("version:forge:1.20.1") {
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
@@ -522,6 +500,7 @@ cloche {
 
         run container@{
             val featureName = "containerForge"
+
             val include = configurations.register(lowerCamelCaseGradleName(featureName, "include")) {
                 isCanBeResolved = true
                 isTransitive = false
@@ -532,6 +511,7 @@ cloche {
                     attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
+
             val embed = configurations.register(lowerCamelCaseGradleName(featureName, "embed")) {
                 isCanBeResolved = true
                 isTransitive = false
@@ -544,14 +524,11 @@ cloche {
                     attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
-            val targets = setOf(forgeGame)
 
             dependencies {
-                for (target in targets) {
-                    include(project(":")) {
-                        capabilities {
-                            requireFeature(target.capabilitySuffix!!)
-                        }
+                include(project(":")) {
+                    capabilities {
+                        requireFeature(forgeGame.capabilitySuffix!!)
                     }
                 }
             }
@@ -593,11 +570,21 @@ cloche {
     }
 
     run neoforge@{
-        val neoforge121 = neoforge("neoforge:1.21") {
-            dependsOn(commonMain, common121, commonGame, commonGame121)
+        val neoforgeService = neoforge("neoforge:service") {
+            dependsOn(commonMain, common121)
 
-            // TODO Split into service
-            sourceSet.the<SourceSetStaticLinkageInfo>().weakTreeLink(commonGame.sourceSet, commonMain.sourceSet)
+            minecraftVersion = "1.21.1"
+            loaderVersion = "21.1.192"
+
+            tasks {
+                named(generateModsTomlTaskName) {
+                    enabled = false
+                }
+            }
+        }
+
+        val neoforgeGame = neoforge("neoforge:game") {
+            dependsOn(commonGame, commonGame121)
 
             minecraftVersion = "1.21.1"
             loaderVersion = "21.1.192"
@@ -619,6 +606,18 @@ cloche {
 
             dependencies {
                 modImplementation(catalog.yacl.get1().get21().get1().neoforge)
+
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
+                    }
+                }
+
+                implementation(project(":")) {
+                    capabilities {
+                        requireFeature(commonMain.capabilitySuffix)
+                    }
+                }
             }
 
             tasks {
@@ -629,11 +628,117 @@ cloche {
                         )
                     }
                 }
+
+                named(accessWidenTaskName) {
+                    dependsOn(neoforgeService.accessWidenTaskName)
+                }
+            }
+        }
+
+        neoforge("version:neoforge:1.21") {
+            minecraftVersion = "1.21.1"
+            loaderVersion = "21.1.192"
+
+            runs {
+                client {
+                    env("MOD_CLASSES", "")
+                }
+            }
+
+            dependencies {
+                legacyClasspath(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
+                    }
+
+                    attributes {
+                        attribute(REMAPPED_ATTRIBUTE, false)
+                        attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
+                    }
+                }
+                modImplementation(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
+                    }
+                }
+                modImplementation(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeGame.capabilitySuffix!!)
+                    }
+                }
+                legacyClasspath(catalog.preloadingTricks)
+            }
+
+            tasks {
+                named(jarTaskName) {
+                    enabled = false
+                }
+
+                named(remapJarTaskName) {
+                    enabled = false
+                }
+
+                named(includeJarTaskName) {
+                    enabled = false
+                }
+
+                named(accessWidenTaskName) {
+                    dependsOn(neoforgeService.accessWidenTaskName, neoforgeGame.accessWidenTaskName)
+                }
+            }
+        }
+
+        neoforge("version:neoforge:1.21.10") {
+            minecraftVersion = "1.21.10"
+            loaderVersion = "21.10.38-beta"
+
+            runs {
+                client {
+                    env("MOD_CLASSES", "")
+                }
+            }
+
+            dependencies {
+                modImplementation(catalog.yacl.get1().get21().get9().neoforge)
+
+                modImplementation(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
+                    }
+                }
+                modImplementation(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeGame.capabilitySuffix!!)
+                    }
+                }
+            }
+
+            tasks {
+                named(generateModsTomlTaskName) {
+                    enabled = false
+                }
+
+                named(jarTaskName) {
+                    enabled = false
+                }
+
+                named(remapJarTaskName) {
+                    enabled = false
+                }
+
+                named(includeJarTaskName) {
+                    enabled = false
+                }
+
+                named(accessWidenTaskName) {
+                    dependsOn(neoforgeService.accessWidenTaskName, neoforgeGame.accessWidenTaskName)
+                }
             }
         }
 
         run container@{
             val featureName = "containerNeoforge"
+
             val include = configurations.register(lowerCamelCaseGradleName(featureName, "include")) {
                 isCanBeResolved = true
                 isTransitive = false
@@ -644,14 +749,32 @@ cloche {
                     attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
                 }
             }
-            val targets = setOf(neoforge121)
+
+            val embed = configurations.register(lowerCamelCaseGradleName(featureName, "embed")) {
+                isCanBeResolved = true
+                isTransitive = false
+
+                attributes {
+                    attribute(
+                        LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                        objects.named(LibraryElements.CLASSES_AND_RESOURCES)
+                    )
+                    attribute(INCLUDE_TRANSFORMED_OUTPUT_ATTRIBUTE, false)
+                }
+            }
 
             dependencies {
-                for (target in targets) {
-                    include(project(":")) {
-                        capabilities {
-                            requireFeature(target.capabilitySuffix!!)
-                        }
+                include(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
+                    }
+                }
+            }
+
+            project.dependencies {
+                embed(project(":")) {
+                    capabilities {
+                        requireFeature(neoforgeService.capabilitySuffix!!)
                     }
                 }
             }
@@ -662,6 +785,8 @@ cloche {
 
                     archiveClassifier = "neoforge"
                     destinationDirectory = intermediateOutputsDirectory
+
+                    from(embed)
                 }
 
                 val includesJar = register<JarJar>(lowerCamelCaseGradleName(featureName, "includeJar")) {
