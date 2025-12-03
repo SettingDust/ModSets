@@ -10,7 +10,6 @@ import settingdust.preloading_tricks.api.PreloadingEntrypoint;
 import settingdust.preloading_tricks.api.PreloadingTricksCallbacks;
 
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 
 public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
@@ -25,12 +24,10 @@ public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
 
         PreloadingTricksCallbacks.COLLECT_MOD_CANDIDATES.register(manager -> {
             try {
-                var subDirectories = Files.find(
+                var subDirectories = Lists.newArrayList(Files.newDirectoryStream(
                     LoaderAdapter.get().getModsDirectory(),
-                    1,
-                    (path, basicFileAttributes) -> basicFileAttributes.isDirectory(),
-                    FileVisitOption.FOLLOW_LINKS
-                ).toList();
+                    Files::isDirectory
+                ));
 
                 LOGGER.info("Loading mods from {} sub-folders in 'mods' folder", subDirectories.size());
                 LOGGER.debug(String.join(", ", Lists.transform(subDirectories, it -> it.getFileName().toString())));

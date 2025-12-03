@@ -20,7 +20,7 @@ public class ModSetsForgePreloadingEntrypoint implements PreloadingEntrypoint {
                             .getLocation()
                             .toURI()))
                         .getFileSystem().getPrimaryPath();
-                manager.add(selfPath, ModSets.ID);
+                manager.add(selfPath, ModSets.ID + "_service");
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }

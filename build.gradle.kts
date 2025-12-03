@@ -128,8 +128,6 @@ dependencies {
     }
 }
 
-val containerTasks = mutableSetOf<TaskProvider<out Jar>>()
-
 cloche {
     metadata {
         modId = id
@@ -326,8 +324,6 @@ cloche {
                     input = jar.flatMap { it.archiveFile }
                     fromResolutionResults(include)
                 }
-
-                containerTasks += includesJar
 
                 build {
                     dependsOn(includesJar)
@@ -560,8 +556,6 @@ cloche {
                     fromResolutionResults(include)
                 }
 
-                containerTasks += includesJar
-
                 build {
                     dependsOn(includesJar)
                 }
@@ -766,7 +760,7 @@ cloche {
             dependencies {
                 include(project(":")) {
                     capabilities {
-                        requireFeature(neoforgeService.capabilitySuffix!!)
+                        requireFeature(neoforgeGame.capabilitySuffix!!)
                     }
                 }
             }
@@ -797,8 +791,6 @@ cloche {
                     input = jar.flatMap { it.archiveFile }
                     fromResolutionResults(include)
                 }
-
-                containerTasks += includesJar
 
                 build {
                     dependsOn(includesJar)
@@ -886,18 +878,25 @@ tasks {
     val shadowContainersJar by registering(ShadowJar::class) {
         archiveClassifier = ""
 
-        for (task in containerTasks) {
-            from(task.map { zipTree(it.archiveFile) })
-            manifest.from(task.get().manifest)
-        }
+        val fabricJar = project.tasks.named<Jar>(lowerCamelCaseGradleName("containerFabric", "includeJar"))
+        from(fabricJar.map { zipTree(it.archiveFile) })
+        manifest.from(fabricJar.get().manifest)
 
-        manifest {
-            attributes(
-                "FMLModType" to "LIBRARY"
-            )
+        val forgeJar = project.tasks.named<Jar>(lowerCamelCaseGradleName("containerForge", "includeJar"))
+        from(forgeJar.map { zipTree(it.archiveFile) })
+        manifest.from(forgeJar.get().manifest)
+
+        val neoforgeJar =
+            project.tasks.named<Jar>(lowerCamelCaseGradleName("containerNeoforge", "includeJar"))
+        from(neoforgeJar.map { zipTree(it.archiveFile) }) {
+            include("settingdust/mod_sets/neoforge/**/*")
+            include("META-INF/services/*")
+            include("META-INF/jars/*")
         }
 
         append("META-INF/accesstransformer.cfg")
+
+        mergeServiceFiles()
 
         transform(object : ResourceTransformer {
             private val gson = GsonBuilder().setPrettyPrinting().create()
