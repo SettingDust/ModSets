@@ -32,7 +32,7 @@ jobs:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
 
-      - name: Upload bundled jar
+      - name: Upload jar
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           changelog: ${{ steps.changelog.outputs.changes }}
@@ -43,7 +43,7 @@ jobs:
 
           # Only include this section if you wish to publish
           # your assets on CurseForge.
-          curseforge-id: 000000
+          curseforge-id: 890349
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
@@ -64,10 +64,7 @@ jobs:
           game-version-filter: releases
 
           dependencies: |
-            fabric-language-kotlin
-            kotlin-for-forge
-            preloading-tricks(embedded)
-            kinecraft
+            preloading-tricks
 
           java: |
             17

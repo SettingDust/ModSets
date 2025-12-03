@@ -20,6 +20,7 @@ import earth.terrarium.cloche.target.LazyConfigurableInternal
 import earth.terrarium.cloche.tasks.GenerateFabricModJson
 import groovy.lang.Closure
 import net.msrandom.minecraftcodev.core.utils.lowerCamelCaseGradleName
+import net.msrandom.minecraftcodev.fabric.MinecraftCodevFabricPlugin
 import net.msrandom.minecraftcodev.fabric.task.JarInJar
 import net.msrandom.minecraftcodev.forge.task.JarJar
 import net.msrandom.minecraftcodev.runs.MinecraftRunConfiguration
@@ -33,9 +34,6 @@ import java.nio.charset.StandardCharsets
 plugins {
     java
     idea
-
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
 
     id("com.palantir.git-version") version "4.1.0"
 
@@ -238,12 +236,6 @@ cloche {
                 modImplementation(catalog.yacl.get1().get20().get1().fabric)
 
                 modImplementation(catalog.modmenu.get1().get20().get1())
-
-                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
-                    classifier("fabric-1.20.1")
-                })
-
-                implementation(catalog.reflect)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -276,12 +268,6 @@ cloche {
                 modImplementation(catalog.yacl.get1().get21().get1().fabric)
 
                 modImplementation(catalog.modmenu.get1().get21().get1())
-
-                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
-                    classifier("fabric-1.21")
-                })
-
-                implementation(catalog.reflect)
             }
 
             tasks.named<GenerateFabricModJson>(generateModsManifestTaskName) {
@@ -352,7 +338,7 @@ cloche {
         }
 
         targets.withType<FabricTarget> {
-            loaderVersion = "0.17.3"
+            loaderVersion = "0.18.1"
 
             includedClient()
 
@@ -360,17 +346,14 @@ cloche {
 
             metadata {
                 entrypoint("main") {
-                    adapter = "kotlin"
                     value = "$group.fabric.ModSetsFabric::init"
                 }
 
                 entrypoint("client") {
-                    adapter = "kotlin"
                     value = "$group.fabric.ModSetsFabric::clientInit"
                 }
 
                 entrypoint("modmenu") {
-                    adapter = "kotlin"
                     value = "$group.fabric.ModSetsModMenu"
                 }
 
@@ -378,15 +361,10 @@ cloche {
                     modId = "fabric-api"
                     type = CommonMetadata.Dependency.Type.Required
                 }
-
-                dependency {
-                    modId = "fabric-language-kotlin"
-                    type = CommonMetadata.Dependency.Type.Required
-                }
             }
 
             dependencies {
-                modImplementation("net.fabricmc:fabric-language-kotlin:1.13.7+kotlin.2.2.21")
+                modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.13.7+kotlin.2.2.21")
             }
         }
     }
@@ -410,8 +388,20 @@ cloche {
                 implementation("org.spongepowered:mixin:0.8.7")
                 compileOnly(catalog.mixinextras.common)
                 implementation(catalog.mixinextras.forge)
+            }
 
-                modImplementation("thedarkcolour:kotlinforforge:4.11.0")
+            tasks {
+                named(generateModsTomlTaskName) {
+                    enabled = false
+                }
+
+                named<Jar>(jarTaskName) {
+//                    manifest {
+//                        attributes(
+//                            "FMLModType" to "LIBRARY"
+//                        )
+//                    }
+                }
             }
         }
 
@@ -422,11 +412,6 @@ cloche {
             loaderVersion = "47.4.4"
 
             metadata {
-                modLoader = "kotlinforforge"
-                loaderVersion {
-                    start = "4"
-                }
-
                 dependency {
                     modId = "minecraft"
                     type = CommonMetadata.Dependency.Type.Required
@@ -455,13 +440,7 @@ cloche {
                 compileOnly(catalog.mixinextras.common)
                 implementation(catalog.mixinextras.forge)
 
-                modImplementation("thedarkcolour:kotlinforforge:4.11.0")
-
                 modImplementation(catalog.yacl.get1().get20().get1().forge)
-
-                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
-                    classifier("forge-1.20.1")
-                })
 
                 implementation(project(":")) {
                     capabilities {
@@ -483,6 +462,18 @@ cloche {
                             "ForgeVariant" to "LexForge"
                         )
                     }
+                }
+
+                named(accessWidenTaskName) {
+                    dependsOn(forgeService.accessWidenTaskName)
+                }
+            }
+        }
+
+        forgeService.dependencies {
+            include(project(":")) {
+                capabilities {
+                    requireFeature(forgeGame.capabilitySuffix!!)
                 }
             }
         }
@@ -521,6 +512,10 @@ cloche {
 
                 named(includeJarTaskName) {
                     enabled = false
+                }
+
+                named(accessWidenTaskName) {
+                    dependsOn(forgeService.accessWidenTaskName, forgeGame.accessWidenTaskName)
                 }
             }
         }
@@ -608,11 +603,6 @@ cloche {
             loaderVersion = "21.1.192"
 
             metadata {
-                modLoader = "kotlinforforge"
-                loaderVersion {
-                    start = "5"
-                }
-
                 dependency {
                     modId = "minecraft"
                     type = CommonMetadata.Dependency.Type.Required
@@ -628,13 +618,7 @@ cloche {
             }
 
             dependencies {
-                modImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
-
                 modImplementation(catalog.yacl.get1().get21().get1().neoforge)
-
-                modImplementation(project.dependencies.variantOf(catalog.kinecraft) {
-                    classifier("neoforge-1.21")
-                })
             }
 
             tasks {
@@ -670,8 +654,6 @@ cloche {
                         }
                     }
                 }
-
-                include(catalog.preloadingTricks)
             }
 
             tasks {
@@ -757,6 +739,12 @@ val MinecraftTarget.jarTaskName: String
 val MinecraftTarget.remapJarTaskName: String
     get() = lowerCamelCaseGradleName(featureName, "remapJar")
 
+val MinecraftTarget.accessWidenTaskName: String
+    get() = lowerCamelCaseGradleName("accessWiden", featureName, "minecraft")
+
+val MinecraftTarget.decompileMinecraftTaskName: String
+    get() = lowerCamelCaseGradleName("decompile", featureName, "minecraft")
+
 tasks {
     withType<ProcessResources> {
         duplicatesStrategy = DuplicatesStrategy.WARN
@@ -780,7 +768,7 @@ tasks {
 
         manifest {
             attributes(
-                "FMLModType" to "GAMELIBRARY"
+                "FMLModType" to "LIBRARY"
             )
         }
 
