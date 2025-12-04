@@ -30,8 +30,8 @@ public class ModSetsIngameConfig implements SavingData {
             .registerTypeAdapterFactory(ControllerRegistrar.SERIALIZER)
             .create();
 
-    private static final Path modSetsPath = LoaderAdapter.get().getModsDirectory().resolve("modsets.json");
-    private static final Path rulesPath = LoaderAdapter.get().getModsDirectory().resolve("rules");
+    private static final Path modSetsPath = LoaderAdapter.get().getConfigDirectory().resolve("modsets.json");
+    private static final Path rulesPath = LoaderAdapter.get().getConfigDirectory().resolve("rules");
     private static Map<String, ModSet> modSets = new HashMap<>();
     private static Multimap<String, ModSet> modSetsByMod = HashMultimap.create();
     private static Map<String, ModSet> definedModSets = new HashMap<>();
