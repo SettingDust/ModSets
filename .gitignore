@@ -40,3 +40,7 @@ bin/
 .DS_Store
 
 run/*
+
+.qoder
+
+.cache-proxy
