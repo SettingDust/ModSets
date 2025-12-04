@@ -348,10 +348,6 @@ cloche {
                     value = "$group.fabric.ModSetsFabric::init"
                 }
 
-                entrypoint("client") {
-                    value = "$group.fabric.ModSetsFabric::clientInit"
-                }
-
                 entrypoint("modmenu") {
                     value = "$group.fabric.ModSetsModMenu"
                 }
