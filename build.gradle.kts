@@ -146,6 +146,11 @@ cloche {
                 start = "1.20.1"
             }
         }
+
+        dependency {
+            modId = "yet_another_config_lib_v3"
+            type = CommonMetadata.Dependency.Type.Required
+        }
     }
 
     mappings {
@@ -891,6 +896,7 @@ tasks {
         from(neoforgeJar.map { zipTree(it.archiveFile) }) {
             include("settingdust/mod_sets/neoforge/**/*")
             include("META-INF/services/*")
+            include("META-INF/jarjar/*")
             include("META-INF/jars/*")
         }
 

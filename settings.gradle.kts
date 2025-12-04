@@ -156,7 +156,7 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
         )
     )
 
-    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("3.3.0")
+    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("3.3.1")
 
     maven(
         id = "yacl",
