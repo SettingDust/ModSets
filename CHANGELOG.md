@@ -1,3 +1,8 @@
+## [1.0.1] - 2025-12-04
+### :bug: Bug Fixes
+- [`4ded2b0`](https://github.com/SettingDust/ModSets/commit/4ded2b0d4c3bfc943f6afba9aa5453ebc156b297) - **fabric**: remove client entrypoint *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.0.0] - 2025-12-04
 ### :sparkles: New Features
 - [`ba061b7`](https://github.com/SettingDust/ModSets/commit/ba061b75cbc6bdff9291d3a5efce9f3af210ba04) - start rewriting *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -237,3 +242,4 @@
 [0.10.7]: https://github.com/SettingDust/ModSets/compare/0.10.6...0.10.7
 [0.11.0]: https://github.com/SettingDust/ModSets/compare/0.10.7...0.11.0
 [1.0.0]: https://github.com/SettingDust/ModSets/compare/0.11.0...1.0.0
+[1.0.1]: https://github.com/SettingDust/ModSets/compare/1.0.0...1.0.1
