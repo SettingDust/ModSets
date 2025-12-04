@@ -1,3 +1,29 @@
+## [1.0.0] - 2025-12-04
+### :sparkles: New Features
+- [`ba061b7`](https://github.com/SettingDust/ModSets/commit/ba061b75cbc6bdff9291d3a5efce9f3af210ba04) - start rewriting *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`6de8e6f`](https://github.com/SettingDust/ModSets/commit/6de8e6fbe53123c8bc287416481fd3d10d9827a8) - add back rules definition *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`c9b76f1`](https://github.com/SettingDust/ModSets/commit/c9b76f190862a28ab9c4e9b987293ffd9cd193a3) - add back fabric implementation *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`d89d54c`](https://github.com/SettingDust/ModSets/commit/d89d54cb410cd856cadb30dca8fa8ee19ef26aab) - **fabric**: add back modmenu config screen *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`01ad7d1`](https://github.com/SettingDust/ModSets/commit/01ad7d1da82fb64d7eb6b917e3e32b810cbcdb94) - add implementation for forge, neoforge 1.21 and fabric *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`003eb6d`](https://github.com/SettingDust/ModSets/commit/003eb6d5b9a6a04f7b4ef202720e45f4822f0719) - try to split the forge into service module *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`df36f8d`](https://github.com/SettingDust/ModSets/commit/df36f8d5786e2869d01d82235000b8d7d4e42f24) - implement the group dsl for versions *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`3762cc1`](https://github.com/SettingDust/ModSets/commit/3762cc15a2cc99936c9006d52727966e9b7dd052) - add neoforge support *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :bug: Bug Fixes
+- [`d8116cd`](https://github.com/SettingDust/ModSets/commit/d8116cd354d1925834cb3a1cc73d942670ac5886) - **forge**: isn't loaded at all *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`7914459`](https://github.com/SettingDust/ModSets/commit/79144593982b48f43d15da44034fcf31fdc0022b) - creating config in mods dir *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :recycle: Refactors
+- [`75a6478`](https://github.com/SettingDust/ModSets/commit/75a6478aff0b18e392a8b24d9c203fec5f74f667) - copier the template *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`023ed7e`](https://github.com/SettingDust/ModSets/commit/023ed7e4f2d60b70e3823820fc2c814c188ea38b) - using java implement *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`5844d24`](https://github.com/SettingDust/ModSets/commit/5844d247d68a4a6407a9803e49f056efa9e39c95) - implement config path adapter *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`7f49a5b`](https://github.com/SettingDust/ModSets/commit/7f49a5b7a9cf10650b6bcd816649daaf8cbe02c2) - wrongly added unused files *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`7a7271a`](https://github.com/SettingDust/ModSets/commit/7a7271a6ea22733bd29271e42d39a41ce7a88ce5) - rename ingame to game *(commit by [@SettingDust](https://github.com/SettingDust))*
+- [`06aa2f8`](https://github.com/SettingDust/ModSets/commit/06aa2f856519b25db53f72eb9dffff04f9e58d13) - move the `COLLECT_ADDITIONAL_DEPENDENCY_SOURCES` listener out *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [0.11.0] - 2025-02-21
 ### :sparkles: New Features
 - [`a15856e`](https://github.com/SettingDust/ModSets/commit/a15856e294a3dc58732182000a34ad73f1f51cda) - support fancymenu open screen by split the config screen into class *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -210,3 +236,4 @@
 [0.10.6]: https://github.com/SettingDust/ModSets/compare/1.10.5...0.10.6
 [0.10.7]: https://github.com/SettingDust/ModSets/compare/0.10.6...0.10.7
 [0.11.0]: https://github.com/SettingDust/ModSets/compare/0.10.7...0.11.0
+[1.0.0]: https://github.com/SettingDust/ModSets/compare/0.11.0...1.0.0
