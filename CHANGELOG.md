@@ -1,3 +1,11 @@
+## [1.0.2] - 2025-12-05
+### :bug: Bug Fixes
+- [`afb5f42`](https://github.com/SettingDust/ModSets/commit/afb5f42778eddf60def7a2796dedad1eb0d9c25a) - **fabric**: include configs spi *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`fef1a7d`](https://github.com/SettingDust/ModSets/commit/fef1a7d1e445495c24f716935cda0c9692c69fcf) - **fabric**: add name for implementations *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.0.1] - 2025-12-04
 ### :bug: Bug Fixes
 - [`4ded2b0`](https://github.com/SettingDust/ModSets/commit/4ded2b0d4c3bfc943f6afba9aa5453ebc156b297) - **fabric**: remove client entrypoint *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -243,3 +251,4 @@
 [0.11.0]: https://github.com/SettingDust/ModSets/compare/0.10.7...0.11.0
 [1.0.0]: https://github.com/SettingDust/ModSets/compare/0.11.0...1.0.0
 [1.0.1]: https://github.com/SettingDust/ModSets/compare/1.0.0...1.0.1
+[1.0.2]: https://github.com/SettingDust/ModSets/compare/1.0.1...1.0.2
