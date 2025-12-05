@@ -214,6 +214,8 @@ cloche {
             runs { client() }
 
             metadata {
+                name = cloche.metadata.name.map { "$it 1.20" }
+
                 dependency {
                     modId = "minecraft"
                     type = CommonMetadata.Dependency.Type.Required
@@ -222,6 +224,8 @@ cloche {
                         end = "1.21"
                     }
                 }
+
+                custom("modmenu" to mapOf("parent" to id))
             }
 
             dependencies {
@@ -247,6 +251,8 @@ cloche {
             runs { client() }
 
             metadata {
+                name = cloche.metadata.name.map { "$it 1.21" }
+
                 dependency {
                     modId = "minecraft"
                     type = CommonMetadata.Dependency.Type.Required
@@ -254,6 +260,8 @@ cloche {
                         start = "1.21"
                     }
                 }
+
+                custom("modmenu" to mapOf("parent" to id))
             }
 
             dependencies {
