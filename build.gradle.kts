@@ -157,14 +157,7 @@ cloche {
         official()
     }
 
-    common {
-        // mixins.from(file("src/common/main/resources/$id.mixins.json"))
-        // accessWideners.from(file("src/common/main/resources/$id.accessWidener"))
-
-        dependencies {
-            compileOnly("org.spongepowered:mixin:0.8.7")
-        }
-    }
+    common()
 
     val commonMain = common("common:common") {
         configurations.named("commonCommonRuntimeElements") {
@@ -366,20 +359,6 @@ cloche {
 
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
-
-            repositories {
-                maven("https://repo.spongepowered.org/maven") {
-                    content {
-                        includeGroup("org.spongepowered")
-                    }
-                }
-            }
-
-            dependencies {
-                implementation("org.spongepowered:mixin:0.8.7")
-                compileOnly(catalog.mixinextras.common)
-                implementation(catalog.mixinextras.forge)
-            }
 
             tasks {
                 named(generateModsTomlTaskName) {
