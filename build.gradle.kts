@@ -37,7 +37,7 @@ plugins {
 
     id("com.gradleup.shadow") version "9.2.2"
 
-    id("earth.terrarium.cloche") version "0.16.21-dust"
+    id("earth.terrarium.cloche") version "0.16.20-dust.2"
 }
 
 val archive_name: String by rootProject.properties
@@ -966,18 +966,6 @@ tasks {
                     MinecraftCodevFabricPlugin.INTERMEDIARY_MAPPINGS_NAMESPACE,
                 ), lowerCamelCaseGradleName("generate", target.featureName, "MappingsArtifact")
             )
-        }
-    }
-}
-
-gradle.taskGraph.whenReady {
-    allTasks.forEach { task ->
-        val deps = task.taskDependencies.getDependencies(task)
-        if (deps.isNotEmpty()) {
-            println("Task ${task.path} depends on:")
-            deps.forEach { dep ->
-                println("    - ${dep.path}")
-            }
         }
     }
 }
