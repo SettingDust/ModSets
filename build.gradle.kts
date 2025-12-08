@@ -33,7 +33,7 @@ plugins {
     java
     idea
 
-    id("com.palantir.git-version") version "4.1.0"
+    id("com.palantir.git-version") version "4.2.0"
 
     id("com.gradleup.shadow") version "9.2.2"
 
