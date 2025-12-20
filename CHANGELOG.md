@@ -1,3 +1,11 @@
+## [1.0.4] - 2025-12-20
+### :bug: Bug Fixes
+- [`a5f9700`](https://github.com/SettingDust/ModSets/commit/a5f9700d55e82a9ac0c3c0503cc8402e0afc4f86) - **fabric**: crash with mixins target game classes *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`badef28`](https://github.com/SettingDust/ModSets/commit/badef28f49a0a828453300888bd118c7aab03d07) - bump cloche *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.0.3] - 2025-12-07
 ### :bug: Bug Fixes
 - [`decdae7`](https://github.com/SettingDust/ModSets/commit/decdae7a9d6895deb67cc22dbb419cc1c3516e97) - bump cloche to fix isn't loading on NF and Forge *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -258,3 +266,4 @@
 [1.0.1]: https://github.com/SettingDust/ModSets/compare/1.0.0...1.0.1
 [1.0.2]: https://github.com/SettingDust/ModSets/compare/1.0.1...1.0.2
 [1.0.3]: https://github.com/SettingDust/ModSets/compare/1.0.2...1.0.3
+[1.0.4]: https://github.com/SettingDust/ModSets/compare/1.0.3...1.0.4
