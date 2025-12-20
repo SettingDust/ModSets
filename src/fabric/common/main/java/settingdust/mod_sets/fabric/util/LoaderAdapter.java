@@ -11,6 +11,8 @@ public class LoaderAdapter implements settingdust.mod_sets.util.LoaderAdapter {
     private final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(ModSets.ID);
     private final Path modsDirectory = FabricLoaderImpl.INSTANCE.getModsDirectory().toPath();
 
+    public static boolean inGame = false;
+
     @Override
     public boolean isClient() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
@@ -29,5 +31,10 @@ public class LoaderAdapter implements settingdust.mod_sets.util.LoaderAdapter {
     @Override
     public Path getModsDirectory() {
         return modsDirectory;
+    }
+
+    @Override
+    public boolean isInGame() {
+        return inGame;
     }
 }

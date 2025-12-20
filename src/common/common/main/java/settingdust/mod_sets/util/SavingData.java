@@ -15,6 +15,7 @@ public interface SavingData {
         @Override
         public void load() {
             for (final var data : services.get()) {
+                if (!data.shouldLoad()) continue;
                 data.load();
             }
         }
@@ -22,6 +23,7 @@ public interface SavingData {
         @Override
         public void save() {
             for (final var data : services.get()) {
+                if (!data.shouldLoad()) continue;
                 data.save();
             }
         }
@@ -30,4 +32,8 @@ public interface SavingData {
     void load();
 
     void save();
+
+    default boolean shouldLoad() {
+        return true;
+    }
 }

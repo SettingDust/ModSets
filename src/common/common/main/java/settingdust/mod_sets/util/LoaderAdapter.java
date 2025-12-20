@@ -24,4 +24,6 @@ public interface LoaderAdapter {
     Path getConfigDirectory();
 
     Path getModsDirectory();
+
+    boolean isInGame();
 }

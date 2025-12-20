@@ -10,6 +10,8 @@ public class LoaderAdapter implements settingdust.mod_sets.util.LoaderAdapter {
 
     public static final Path configDirectory = FMLPaths.CONFIGDIR.get().resolve(ModSets.ID);
 
+    public static boolean inGame = false;
+
     @Override
     public boolean isClient() {
         return FMLLoader.getDist().isClient();
@@ -28,5 +30,10 @@ public class LoaderAdapter implements settingdust.mod_sets.util.LoaderAdapter {
     @Override
     public Path getModsDirectory() {
         return FMLPaths.MODSDIR.get();
+    }
+
+    @Override
+    public boolean isInGame() {
+        return inGame;
     }
 }

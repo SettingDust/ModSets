@@ -100,4 +100,9 @@ public class ModSetsIngameConfig implements SavingData {
 
     @Override
     public void save() {}
+
+    @Override
+    public boolean shouldLoad() {
+        return LoaderAdapter.get().isInGame();
+    }
 }

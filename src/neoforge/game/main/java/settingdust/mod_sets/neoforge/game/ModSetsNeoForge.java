@@ -14,10 +14,12 @@ import settingdust.mod_sets.game.ModSetsConfigScreenGenerator;
 import settingdust.mod_sets.game.ModSetsIngameConfig;
 import settingdust.mod_sets.game.data.ModSet;
 import settingdust.mod_sets.game.util.ModSetLoadCallback;
+import settingdust.mod_sets.neoforge.util.LoaderAdapter;
 
 @Mod(ModSets.ID)
 public class ModSetsNeoForge {
     public ModSetsNeoForge(IEventBus modBus) {
+        LoaderAdapter.inGame = true;
         modBus.addListener((FMLCommonSetupEvent event) -> {
             ModLoadingContext.get().registerExtensionPoint(
                 IConfigScreenFactory.class,

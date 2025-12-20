@@ -10,6 +10,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.moddiscovery.ModsFolderLocator;
 import settingdust.mod_sets.ModSets;
 import settingdust.mod_sets.data.ModSetsDisabledMods;
+import settingdust.mod_sets.forge.util.LoaderAdapter;
 import settingdust.mod_sets.game.ModSetsConfigScreenGenerator;
 import settingdust.mod_sets.game.ModSetsIngameConfig;
 import settingdust.mod_sets.game.data.ModSet;
@@ -19,6 +20,7 @@ import settingdust.preloading_tricks.lexforge.mod_candidate.DefinedModLocator;
 @Mod(ModSets.ID)
 public class ModSetsForge {
     public ModSetsForge() {
+        LoaderAdapter.inGame = true;
         @SuppressWarnings("removal")
         var loadingContext = FMLJavaModLoadingContext.get();
         var modBus = loadingContext.getModEventBus();

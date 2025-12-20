@@ -8,12 +8,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import settingdust.mod_sets.ModSets;
 import settingdust.mod_sets.data.ModSetsDisabledMods;
+import settingdust.mod_sets.fabric.util.LoaderAdapter;
 import settingdust.mod_sets.game.ModSetsIngameConfig;
 import settingdust.mod_sets.game.data.ModSet;
 import settingdust.mod_sets.game.util.ModSetLoadCallback;
 
 public class ModSetsFabric {
     public static void init() {
+        LoaderAdapter.inGame = true;
         ModSetLoadCallback.EVENT.register(() -> {
             var modSets = ModSetsIngameConfig.modSets();
             for (var mod : FabricLoader.getInstance().getAllMods()) {
