@@ -1,3 +1,11 @@
+## [1.0.5] - 2025-12-21
+### :bug: Bug Fixes
+- [`8972d72`](https://github.com/SettingDust/ModSets/commit/8972d72339d0eee9efa39974fcc052d0449eb831) - adapt with YACL 3.8 *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`36f8c71`](https://github.com/SettingDust/ModSets/commit/36f8c71bbcc341640bbe62a4a2e751c6a48facff) - fix icon *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.0.4] - 2025-12-20
 ### :bug: Bug Fixes
 - [`a5f9700`](https://github.com/SettingDust/ModSets/commit/a5f9700d55e82a9ac0c3c0503cc8402e0afc4f86) - **fabric**: crash with mixins target game classes *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -267,3 +275,4 @@
 [1.0.2]: https://github.com/SettingDust/ModSets/compare/1.0.1...1.0.2
 [1.0.3]: https://github.com/SettingDust/ModSets/compare/1.0.2...1.0.3
 [1.0.4]: https://github.com/SettingDust/ModSets/compare/1.0.3...1.0.4
+[1.0.5]: https://github.com/SettingDust/ModSets/compare/1.0.4...1.0.5
