@@ -164,8 +164,8 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
         artifact = "yet-another-config-lib",
         mcVersionToVersion = mapOf(
             "1.20.1" to "3.6.6",
-            "1.21.1" to "3.8.0",
-            "1.21.9" to "3.8.0",
+            "1.21.1" to "3.8.1",
+            "1.21.10" to "3.8.1",
         ),
         versionFormat = VersionFormats.versionPlusMc,
         mapping = listOf(
@@ -182,7 +182,7 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
                 )
             ),
             VariantMapping(
-                "1.21.9", mapOf(
+                "1.21.10", mapOf(
                     "neoforge" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader),
                     "fabric" to VariantConfig(versionTransformer = VersionTransformers.versionDashLoader)
                 )

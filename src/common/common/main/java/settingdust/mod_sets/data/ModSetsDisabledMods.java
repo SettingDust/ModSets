@@ -46,8 +46,8 @@ public class ModSetsDisabledMods implements SavingData {
 
     @Override
     public void save() {
-        try {
-            GSON.toJson(disabledMods, Files.newBufferedWriter(configPath));
+        try (var writer = Files.newBufferedWriter(configPath)) {
+            GSON.toJson(disabledMods, writer);
         } catch (IOException e) {
             throw new RuntimeException("Fail to save disabled mods", e);
         }

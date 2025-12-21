@@ -664,6 +664,10 @@ cloche {
                     enabled = false
                 }
 
+                named(generateModsManifestTaskName) {
+                    enabled = false
+                }
+
                 named(accessWidenTaskName) {
                     dependsOn(neoforgeService.accessWidenTaskName, neoforgeGame.accessWidenTaskName)
                 }
@@ -681,7 +685,7 @@ cloche {
             }
 
             dependencies {
-                modImplementation(catalog.yacl.get1().get21().get9().neoforge)
+                modImplementation(catalog.yacl.get1().get21().get10().neoforge)
 
                 modImplementation(project(":")) {
                     capabilities {
