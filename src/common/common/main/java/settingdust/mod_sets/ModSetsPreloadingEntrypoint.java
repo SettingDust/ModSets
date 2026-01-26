@@ -1,7 +1,6 @@
 package settingdust.mod_sets;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Streams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import settingdust.mod_sets.data.ModSetsDisabledMods;
@@ -26,19 +25,26 @@ public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
             try {
                 var subDirectories = Lists.newArrayList(Files.newDirectoryStream(
                     LoaderAdapter.get().getModsDirectory(),
-                    Files::isDirectory
+                    it -> Files.isDirectory(it) && it.getFileName().toString().charAt(0) != '.'
                 ));
 
+                var subDirectoriesString = String.join(
+                    ", ",
+                    Lists.transform(subDirectories, it -> it.getFileName().toString())
+                );
+                System.setProperty(
+                    "connector.additionalModLocations",
+                    System.getProperty("connectoModuleClassLoaderr.additionalModLocations") + "," +
+                    subDirectoriesString
+                );
+
                 LOGGER.info("Loading mods from {} sub-folders in 'mods' folder", subDirectories.size());
-                LOGGER.debug(String.join(", ", Lists.transform(subDirectories, it -> it.getFileName().toString())));
-                manager.addAll(
-                    subDirectories.stream().flatMap(it -> {
-                        try {
-                            return Streams.stream(Files.newDirectoryStream(it, "*.jar"));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).toList());
+                LOGGER.debug(subDirectoriesString);
+                for (final var directory : subDirectories) {
+                    try (var files = Files.newDirectoryStream(directory, "*.jar")) {
+                        files.forEach(manager::add);
+                    }
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
