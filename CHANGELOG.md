@@ -1,3 +1,11 @@
+## [2.1.0] - 2026-01-26
+### :sparkles: New Features
+- [`9839cda`](https://github.com/SettingDust/ModSets/commit/9839cda6a75fa98445eba2a12a8bf2f493fc7525) - add support for connector *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+### :wrench: Chores
+- [`8a0e786`](https://github.com/SettingDust/ModSets/commit/8a0e786164ba8b40b78550d1f91fe9dd4db3f353) - bump dependencies *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [1.0.5] - 2025-12-21
 ### :bug: Bug Fixes
 - [`8972d72`](https://github.com/SettingDust/ModSets/commit/8972d72339d0eee9efa39974fcc052d0449eb831) - adapt with YACL 3.8 *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -276,3 +284,4 @@
 [1.0.3]: https://github.com/SettingDust/ModSets/compare/1.0.2...1.0.3
 [1.0.4]: https://github.com/SettingDust/ModSets/compare/1.0.3...1.0.4
 [1.0.5]: https://github.com/SettingDust/ModSets/compare/1.0.4...1.0.5
+[2.1.0]: https://github.com/SettingDust/ModSets/compare/1.0.5...2.1.0
