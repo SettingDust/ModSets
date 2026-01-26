@@ -4,9 +4,9 @@ dependencyResolutionManagement {
             mavenCentral()
             gradlePluginPortal()
             maven("https://maven.msrandom.net/repository/cloche")
-            maven("https://raw.githubusercontent.com/SettingDust/cloche/refs/heads/maven-repo/")
-            maven("https://raw.githubusercontent.com/SettingDust/minecraft-codev/refs/heads/maven-repo/")
-            maven("https://raw.githubusercontent.com/SettingDust/jvm-multiplatform/refs/heads/maven-repo/")
+            maven("https://raw.githubusercontent.com/settingdust/maven/main/repository/") {
+                name = "SettingDust's Maven"
+            }
             mavenLocal()
         }
     }
@@ -156,7 +156,7 @@ dependencyResolutionManagement.versionCatalogs.create("catalog") {
         )
     )
 
-    library("preloadingTricks", "maven.modrinth", "preloading-tricks").version("3.3.1")
+    library("preloadingTricks", "settingdust.preloading_tricks", "PreloadingTricks").version("3.5.0")
 
     maven(
         id = "yacl",

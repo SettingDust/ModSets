@@ -37,7 +37,7 @@ plugins {
 
     id("com.gradleup.shadow") version "9.3.0"
 
-    id("earth.terrarium.cloche") version "0.16.26-dust"
+    id("earth.terrarium.cloche") version "0.17.4-dust.2"
 }
 
 val archive_name: String by rootProject.properties
@@ -80,6 +80,16 @@ repositories {
         content {
             includeGroup("com.terraformersmc")
         }
+    }
+
+    maven("https://maven.lenni0451.net/snapshots/") {
+        content {
+            includeGroupAndSubgroups("net.lenni0451")
+        }
+    }
+
+    maven("https://raw.githubusercontent.com/settingdust/maven/main/repository/") {
+        name = "SettingDust's Maven"
     }
 
     mavenCentral()
@@ -814,7 +824,7 @@ cloche {
         }
 
         dependencies {
-            implementation(extractIncludes(catalog.preloadingTricks))
+            implementation(catalog.preloadingTricks)
         }
     }
 }

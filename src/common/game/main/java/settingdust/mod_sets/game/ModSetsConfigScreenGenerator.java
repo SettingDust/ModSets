@@ -58,11 +58,12 @@ public class ModSetsConfigScreenGenerator {
         for (final var option : options) {
             option.addEventListener((currentOption, event) -> {
                 var changed = false;
+                var currentValue = currentOption.binding().getValue();
                 for (final var anotherOption : options) {
                     if (anotherOption == currentOption ||
                         anotherOption.pendingValue() == anotherOption.binding().getValue()) continue;
                     anotherOption.requestSet(anotherOption.stateManager().get());
-                    if (changed || currentOption.pendingValue() == currentOption.binding().getValue()) continue;
+                    if (changed || currentOption.pendingValue() == currentValue) continue;
                     changed = true;
                     ModSets.LOGGER.warn(
                         "Option {} change is conflicting with option {}. Can't apply.",
@@ -70,12 +71,12 @@ public class ModSetsConfigScreenGenerator {
                         anotherOption.name()
                     );
                 }
-                if (currentOption.pendingValue() != currentOption.binding().getValue()) {
+                if (currentOption.pendingValue() != currentValue) {
                     ModSets.LOGGER.warn(
                         "Option {} change is conflicting with unknown option. Can't apply.",
                         currentOption.name()
                     );
-                    currentOption.requestSet(currentOption.binding().getValue());
+                    currentOption.requestSet(currentValue);
                 }
                 currentOption.applyValue();
                 save();
