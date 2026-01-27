@@ -1,3 +1,8 @@
+## [2.1.1] - 2026-01-27
+### :bug: Bug Fixes
+- [`36b536b`](https://github.com/SettingDust/ModSets/commit/36b536bf4da5664b80a1abcd2492bbcb1725c3df) - avoid load mods contains connector placeholder *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [2.1.0] - 2026-01-26
 ### :sparkles: New Features
 - [`9839cda`](https://github.com/SettingDust/ModSets/commit/9839cda6a75fa98445eba2a12a8bf2f493fc7525) - add support for connector *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -285,3 +290,4 @@
 [1.0.4]: https://github.com/SettingDust/ModSets/compare/1.0.3...1.0.4
 [1.0.5]: https://github.com/SettingDust/ModSets/compare/1.0.4...1.0.5
 [2.1.0]: https://github.com/SettingDust/ModSets/compare/1.0.5...2.1.0
+[2.1.1]: https://github.com/SettingDust/ModSets/compare/2.1.0...2.1.1
