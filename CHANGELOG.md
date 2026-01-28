@@ -1,3 +1,8 @@
+## [2.1.3] - 2026-01-28
+### :bug: Bug Fixes
+- [`59cac30`](https://github.com/SettingDust/ModSets/commit/59cac30627a86fe09d31d6c8523163ee5e10f443) - fail to load fabric mods in sub directories by wrong `connector.additionalModLocations` *(commit by [@SettingDust](https://github.com/SettingDust))*
+
+
 ## [2.1.2] - 2026-01-28
 ### :bug: Bug Fixes
 - [`ec4217b`](https://github.com/SettingDust/ModSets/commit/ec4217b46d6e3f704d72805fb9c9cf7bd8721092) - failing to load fabric mods in sub directories *(commit by [@SettingDust](https://github.com/SettingDust))*
@@ -297,3 +302,4 @@
 [2.1.0]: https://github.com/SettingDust/ModSets/compare/1.0.5...2.1.0
 [2.1.1]: https://github.com/SettingDust/ModSets/compare/2.1.0...2.1.1
 [2.1.2]: https://github.com/SettingDust/ModSets/compare/2.1.1...2.1.2
+[2.1.3]: https://github.com/SettingDust/ModSets/compare/2.1.2...2.1.3
