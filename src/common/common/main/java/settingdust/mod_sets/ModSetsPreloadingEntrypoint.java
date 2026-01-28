@@ -29,7 +29,7 @@ public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
                 ));
 
                 var subDirectoriesString = String.join(
-                    ", ",
+                    ",",
                     Lists.transform(subDirectories, it -> it.getFileName().toString())
                 );
                 System.setProperty(

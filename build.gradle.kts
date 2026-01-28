@@ -92,6 +92,12 @@ repositories {
         name = "SettingDust's Maven"
     }
 
+    maven("https://maven.su5ed.dev/releases") {
+        content {
+            includeGroupAndSubgroups("org.sinytra")
+        }
+    }
+
     mavenCentral()
 
     cloche {
@@ -377,6 +383,15 @@ cloche {
 
             minecraftVersion = "1.20.1"
             loaderVersion = "47.4.4"
+
+            dependencies {
+                modImplementation("org.sinytra:Connector:1.0.0-beta.47+1.20.1")
+                legacyClasspath("org.sinytra:Connector:1.0.0-beta.47+1.20.1") {
+                    attributes {
+                        attribute(REMAPPED_ATTRIBUTE, true)
+                    }
+                }
+            }
 
             tasks {
                 named(generateModsTomlTaskName) {
