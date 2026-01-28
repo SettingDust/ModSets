@@ -5,9 +5,7 @@ import cpw.mods.modlauncher.api.ITransformationService;
 import cpw.mods.modlauncher.api.ITransformer;
 import cpw.mods.niofs.union.UnionPath;
 import settingdust.mod_sets.ModSets;
-import settingdust.preloading_tricks.api.PreloadingTricksCallbacks;
 import settingdust.preloading_tricks.api.modlauncher.ModLauncherPreloadingCallbacks;
-import settingdust.preloading_tricks.lexforge.LexForgeModManager;
 import settingdust.preloading_tricks.util.LoaderPredicates;
 
 import java.net.URISyntaxException;
@@ -32,12 +30,6 @@ public class ModSetsTransformationService implements ITransformationService {
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
-        });
-
-        PreloadingTricksCallbacks.SETUP_MODS.register(_manager -> {
-            if (!(_manager instanceof LexForgeModManager manager)) return;
-            manager.removeIf(it -> it.getModFileInfo() != null &&
-                                   it.getModFileInfo().getFileProperties().containsKey("connector:placeholder"));
         });
     }
 

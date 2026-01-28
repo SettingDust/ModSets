@@ -10,6 +10,7 @@ import settingdust.preloading_tricks.api.PreloadingTricksCallbacks;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
 
@@ -27,19 +28,20 @@ public class ModSetsPreloadingEntrypoint implements PreloadingEntrypoint {
                     LoaderAdapter.get().getModsDirectory(),
                     it -> Files.isDirectory(it) && it.getFileName().toString().charAt(0) != '.'
                 ));
-
-                var subDirectoriesString = String.join(
-                    ",",
-                    Lists.transform(subDirectories, it -> it.getFileName().toString())
-                );
                 System.setProperty(
                     "connector.additionalModLocations",
                     System.getProperty("connectoModuleClassLoaderr.additionalModLocations") + "," +
-                    subDirectoriesString
+                    String.join(
+                        ",",
+                        Lists.transform(subDirectories, Path::toString)
+                    )
                 );
 
                 LOGGER.info("Loading mods from {} sub-folders in 'mods' folder", subDirectories.size());
-                LOGGER.debug(subDirectoriesString);
+                LOGGER.debug(String.join(
+                    ", ",
+                    Lists.transform(subDirectories, it -> it.getFileName().toString())
+                ));
                 for (final var directory : subDirectories) {
                     try (var files = Files.newDirectoryStream(directory, "*.jar")) {
                         files.forEach(manager::add);
